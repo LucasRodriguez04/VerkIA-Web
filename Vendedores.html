@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Vendedores</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="vendIA-global.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --deep:#064e3b; --mid:#006c49; --accent:#22c55e; --sage:#d1fae5;
+  --surface:#ecfdf5; --bg:#f0fdf4; --border:#a7f3d0;
+  --muted:#4b7c68; --dark:#191c1e; --alert:#ea580c; --warning:#ca8a04;
+}
+html,body { height:100%; font-family:'DM Sans',sans-serif; background:var(--bg); overflow:hidden; }
+.app { display:flex; height:100vh; overflow:hidden; }
+
+/* ── SIDEBAR ── */
+.sidebar { width:220px; flex-shrink:0; background:var(--deep); display:flex; flex-direction:column; height:100vh; z-index:200; transition:transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+.sb-logo { padding:24px 20px 16px; }
+.sb-logo-name { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:700; color:var(--accent); letter-spacing:-0.5px; line-height:1; }
+.sb-logo-sub  { font-size:10px; font-weight:500; color:rgba(255,255,255,0.28); letter-spacing:2.5px; text-transform:uppercase; margin-top:3px; }
+.sb-div { height:1px; background:rgba(255,255,255,0.07); margin:8px 0; }
+.sb-nav { flex:1; display:flex; flex-direction:column; padding:4px 0; overflow-y:auto; overflow-x:hidden; }
+.sb-nav::-webkit-scrollbar { width:0; }
+.sb-lbl { font-size:9.5px; font-weight:600; color:rgba(255,255,255,0.25); letter-spacing:1.8px; text-transform:uppercase; padding:10px 20px 6px; }
+.nl { display:flex; align-items:center; gap:10px; padding:9px 14px; margin:1px 10px; border-radius:8px; cursor:pointer; color:rgba(255,255,255,0.55); font-size:13.5px; font-weight:500; border:none; background:none; width:calc(100% - 20px); text-align:left; border-left:3px solid transparent; transition:background 0.15s,color 0.15s; white-space:nowrap; }
+.nl:hover  { background:rgba(255,255,255,0.08); color:white; }
+.nl.active { background:rgba(34,197,94,0.14); color:#22c55e; border-left-color:var(--accent); font-weight:600; }
+.nl svg { flex-shrink:0; width:17px; height:17px; }
+.nl-badge { margin-left:auto; background:var(--alert); color:white; font-size:10px; font-weight:700; min-width:18px; height:18px; border-radius:999px; display:flex; align-items:center; justify-content:center; padding:0 5px; }
+.sb-bottom { padding:8px 0 16px; }
+.sb-user { display:flex; align-items:center; gap:10px; padding:10px 16px; margin:0 10px; }
+.sb-av   { width:34px; height:34px; border-radius:50%; background:var(--mid); color:white; font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.sb-uname { font-size:13px; font-weight:600; color:white; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.sb-role  { display:inline-block; font-size:9.5px; font-weight:600; padding:1px 7px; border-radius:999px; margin-top:2px; letter-spacing:0.5px; text-transform:uppercase; background:rgba(34,197,94,0.18); color:var(--accent); }
+.btn-logout { display:flex; align-items:center; gap:8px; padding:8px 16px; margin:4px 10px 0; border-radius:8px; border:none; background:none; cursor:pointer; color:rgba(255,255,255,0.35); font-family:'DM Sans',sans-serif; font-size:13px; width:calc(100% - 20px); transition:background 0.15s,color 0.15s; }
+.btn-logout:hover { background:rgba(234,88,12,0.12); color:var(--alert); }
+
+/* ── TOPBAR ── */
+.main-col { flex:1; display:flex; flex-direction:column; overflow:hidden; min-width:0; }
+.topbar { height:56px; background:white; border-bottom:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; padding:0 24px; flex-shrink:0; }
+.tb-left  { display:flex; align-items:center; gap:8px; }
+.tb-title { font-size:16px; font-weight:600; color:var(--dark); }
+.hamburger { display:none; width:36px; height:36px; border-radius:8px; border:none; background:none; cursor:pointer; color:var(--dark); align-items:center; justify-content:center; }
+.hamburger:hover { background:var(--surface); }
+.tb-right { display:flex; align-items:center; gap:4px; }
+.tb-btn   { width:36px; height:36px; border-radius:8px; border:none; background:none; cursor:pointer; display:flex; align-items:center; justify-content:center; color:var(--muted); position:relative; transition:background 0.15s,color 0.15s; }
+.tb-btn:hover { background:var(--surface); color:var(--deep); }
+.tb-notif { position:absolute; top:5px; right:5px; width:16px; height:16px; background:var(--alert); color:white; font-size:9px; font-weight:700; border-radius:50%; display:flex; align-items:center; justify-content:center; border:2px solid white; }
+.tb-sep   { width:1px; height:22px; background:rgba(0,0,0,0.08); margin:0 8px; }
+.tb-user  { display:flex; align-items:center; gap:8px; padding:4px 8px; border-radius:8px; cursor:pointer; transition:background 0.15s; }
+.tb-user:hover { background:var(--surface); }
+.tb-av   { width:32px; height:32px; border-radius:50%; background:var(--mid); color:white; font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+.tb-name { font-size:13px; font-weight:600; color:var(--dark); }
+.tb-role { font-size:9.5px; font-weight:600; padding:1px 7px; border-radius:999px; text-transform:uppercase; background:rgba(6,78,59,0.08); color:var(--deep); }
+
+.content { flex:1; overflow-y:auto; padding:28px; }
+.content::-webkit-scrollbar { width:6px; }
+.content::-webkit-scrollbar-thumb { background:var(--border); border-radius:999px; }
+
+/* ── SHARED ── */
+.breadcrumb { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); margin-bottom:6px; }
+.breadcrumb a { color:var(--muted); text-decoration:none; cursor:pointer; transition:color 0.15s; }
+.breadcrumb a:hover { color:var(--mid); }
+.breadcrumb-sep { color:var(--border); }
+.page-title { font-family:'Barlow Condensed',sans-serif; font-size:32px; font-weight:700; color:var(--dark); letter-spacing:-0.5px; line-height:1; }
+.page-sub { font-size:13.5px; color:var(--muted); margin-top:4px; }
+
+.btn-primary { display:inline-flex; align-items:center; gap:7px; background:var(--accent); color:var(--deep); border:none; border-radius:9px; padding:9px 18px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:700; cursor:pointer; transition:background 0.15s,transform 0.15s; box-shadow:0 4px 12px rgba(34,197,94,0.25); }
+.btn-primary:hover { background:#16a34a; transform:translateY(-1px); }
+.btn-outline { display:inline-flex; align-items:center; gap:6px; background:white; color:var(--mid); border:1.5px solid var(--border); border-radius:9px; padding:7px 14px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:border-color 0.15s,background 0.15s; }
+.btn-outline:hover { border-color:var(--accent); background:var(--surface); }
+
+.st { display:inline-block; font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; }
+.st-track  { background:rgba(34,197,94,0.10); color:#16a34a; }
+.st-risk   { background:rgba(202,138,4,0.10);  color:#b45309; }
+.st-behind { background:rgba(220,38,38,0.10);  color:#dc2626; }
+
+/* ── VENDOR GRID ── */
+.vend-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+.vend-card {
+  background:white; border:1px solid var(--border); border-radius:12px;
+  padding:24px; cursor:pointer; display:flex; flex-direction:column; gap:16px;
+  transition:border-color 0.15s,transform 0.15s,box-shadow 0.15s;
+  animation:cardIn 0.4s ease both;
+}
+.vend-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 10px 28px rgba(6,78,59,0.10); }
+.vend-card.behind { border:2px solid rgba(234,88,12,0.45); }
+.vend-card.behind:hover { border-color:var(--alert); box-shadow:0 10px 28px rgba(234,88,12,0.12); }
+
+.vc-top { display:flex; align-items:center; gap:14px; }
+.vc-avatar { width:48px; height:48px; border-radius:50%; background:var(--mid); color:white; font-family:'DM Sans',sans-serif; font-size:16px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.vc-avatar.behind { background:#dc2626; }
+.vc-info { flex:1; min-width:0; }
+.vc-name { font-size:15px; font-weight:600; color:var(--dark); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.vc-badge { display:inline-block; font-size:10px; font-weight:700; padding:1px 7px; border-radius:999px; background:rgba(0,0,0,0.05); color:var(--muted); margin-top:3px; letter-spacing:0.3px; }
+
+/* KPIs compactos */
+.vc-kpis { display:flex; align-items:center; gap:0; }
+.vc-kpi  { flex:1; text-align:center; padding:0 8px; }
+.vc-kpi + .vc-kpi { border-left:1px solid var(--border); }
+.vc-kpi-val { font-family:'Barlow Condensed',sans-serif; font-size:20px; font-weight:700; color:var(--dark); line-height:1; }
+.vc-kpi-lbl { font-size:10.5px; color:var(--muted); margin-top:2px; }
+
+/* Ring section */
+.vc-ring-row { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.vc-ring-wrap { position:relative; flex-shrink:0; cursor:pointer; }
+.ring-tooltip {
+  display:none; position:absolute; bottom:110%; left:50%; transform:translateX(-50%);
+  background:var(--deep); color:white; border-radius:9px; padding:8px 12px;
+  font-size:11.5px; white-space:nowrap; z-index:20;
+  box-shadow:0 4px 16px rgba(0,0,0,0.22); pointer-events:none;
+}
+.ring-tooltip::after { content:''; position:absolute; top:100%; left:50%; transform:translateX(-50%); border:5px solid transparent; border-top-color:var(--deep); }
+.vc-ring-wrap:hover .ring-tooltip { display:block; }
+.vc-status-col { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+.badge-atrasado { display:inline-flex; align-items:center; gap:3px; font-size:10px; font-weight:700; padding:2px 8px; border-radius:999px; background:#fef2f2; color:#dc2626; cursor:pointer; transition:background 0.15s; }
+.badge-atrasado:hover { background:#fee2e2; }
+
+/* Ver cartera btn */
+.vc-footer { padding-top:8px; border-top:1px solid var(--surface); }
+.btn-cartera { width:100%; padding:8px; background:var(--surface); border:1.5px solid var(--border); border-radius:8px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; color:var(--mid); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:background 0.15s,border-color 0.15s,color 0.15s; }
+.btn-cartera:hover { background:var(--sage); border-color:var(--accent); color:var(--deep); }
+
+/* ── DETAIL VIEW ── */
+.detail-header { margin-bottom:24px; animation:fadeUp 0.35s ease both; }
+.detail-profile { display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.detail-avatar { width:64px; height:64px; border-radius:50%; background:var(--mid); color:white; font-size:22px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-family:'DM Sans',sans-serif; }
+.detail-info { flex:1; }
+.detail-name { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:700; color:var(--dark); letter-spacing:-0.3px; line-height:1; }
+.detail-meta { display:flex; align-items:center; gap:8px; margin-top:6px; flex-wrap:wrap; }
+.detail-cartera-txt { font-size:13px; color:var(--muted); }
+
+/* Tabs */
+.tabs-bar { display:flex; align-items:flex-end; gap:0; border-bottom:2px solid var(--border); margin-bottom:24px; }
+.tab-btn { padding:10px 18px; border:none; background:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500; color:var(--muted); border-bottom:2px solid transparent; margin-bottom:-2px; transition:color 0.15s,border-color 0.15s; white-space:nowrap; }
+.tab-btn:hover { color:var(--dark); }
+.tab-btn.active { color:var(--deep); font-weight:600; border-bottom-color:var(--accent); }
+
+/* ── MI CARTERA TAB ── */
+.toolbar { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+.search-wrap { position:relative; flex:1; min-width:180px; }
+.search-ico  { position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); pointer-events:none; }
+.search-input { width:100%; padding:9px 36px; border:1.5px solid var(--border); border-radius:9px; font-family:'DM Sans',sans-serif; font-size:13.5px; color:var(--dark); background:white; outline:none; transition:border-color 0.2s,box-shadow 0.2s; }
+.search-input::placeholder { color:#b3c9c0; }
+.search-input:focus { border-color:var(--accent); box-shadow:0 0 0 3px rgba(34,197,94,0.10); }
+.filter-select { padding:9px 30px 9px 12px; border:1.5px solid var(--border); border-radius:9px; font-family:'DM Sans',sans-serif; font-size:13px; color:var(--dark); background:white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234b7c68' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center; outline:none; cursor:pointer; appearance:none; transition:border-color 0.2s; }
+.filter-select:focus,.filter-select.active { border-color:var(--accent); }
+.results-count { font-size:12.5px; color:var(--muted); white-space:nowrap; }
+
+.client-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.client-card { background:white; border:1px solid var(--border); border-radius:14px; padding:20px; cursor:pointer; display:flex; flex-direction:column; gap:12px; transition:border-color 0.15s,transform 0.15s,box-shadow 0.15s; animation:cardIn 0.35s ease both; }
+.client-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 10px 28px rgba(6,78,59,0.10); }
+.client-card.has-atrasado { border-color:rgba(234,88,12,0.30); }
+.client-card.has-atrasado:hover { border-color:var(--alert); }
+.cc-header { display:flex; align-items:flex-start; justify-content:space-between; gap:8px; }
+.cc-name { font-size:15px; font-weight:600; color:var(--dark); line-height:1.2; }
+.status-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; margin-top:3px; }
+.status-dot.green  { background:var(--accent); box-shadow:0 0 0 2px rgba(34,197,94,0.2); }
+.status-dot.yellow { background:var(--warning); box-shadow:0 0 0 2px rgba(202,138,4,0.2); }
+.status-dot.red    { background:var(--alert);   box-shadow:0 0 0 2px rgba(234,88,12,0.2); }
+.cc-tipo { font-size:11px; color:var(--muted); margin-top:2px; }
+.cc-badges { display:flex; flex-wrap:wrap; gap:4px; }
+.badge { font-size:10px; font-weight:700; padding:2px 7px; border-radius:999px; display:inline-block; white-space:nowrap; }
+.b-declive  { background:#fff7ed; color:var(--alert); }
+.b-reorden  { background:var(--surface); color:var(--mid); }
+.b-cross    { background:#eff6ff; color:#1d4ed8; }
+.b-upsell   { background:#f5f3ff; color:#7c3aed; }
+.b-atrasado { background:#fef2f2; color:#dc2626; }
+.b-promo    { background:var(--deep); color:var(--accent); }
+.b-maquinaria { background:#eff6ff; color:#1d4ed8; }
+.cc-desc { font-size:12.5px; color:var(--muted); line-height:1.45; flex:1; }
+.cc-val  { font-family:'Barlow Condensed',sans-serif; font-size:24px; font-weight:700; color:var(--accent); line-height:1; }
+.cc-val-lbl { font-size:11px; color:var(--muted); margin-top:1px; }
+.cc-footer { display:flex; align-items:center; justify-content:space-between; padding-top:10px; border-top:1px solid var(--surface); }
+.cc-age    { font-size:11.5px; color:var(--muted); display:flex; align-items:center; gap:4px; }
+.btn-ver   { display:flex; align-items:center; gap:4px; font-size:12.5px; font-weight:600; color:var(--mid); border:none; background:none; cursor:pointer; padding:0; transition:color 0.15s; }
+.btn-ver:hover { color:var(--deep); }
+
+.empty-state { display:none; flex-direction:column; align-items:center; justify-content:center; min-height:40vh; gap:14px; text-align:center; }
+.empty-state.visible { display:flex; }
+.empty-ico { width:64px; height:64px; border-radius:18px; background:var(--surface); border:1px solid var(--border); display:flex; align-items:center; justify-content:center; color:var(--border); }
+.empty-title { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:700; color:var(--deep); }
+.empty-sub   { font-size:14px; color:var(--muted); }
+
+/* ── PERFORMANCE TAB ── */
+.period-bar { display:flex; align-items:center; background:white; border:1px solid var(--border); border-radius:11px; padding:4px; width:fit-content; margin-bottom:20px; }
+.period-btn { padding:6px 18px; border-radius:7px; border:none; background:none; cursor:pointer; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; color:var(--muted); transition:background 0.15s,color 0.15s; }
+.period-btn:hover { background:var(--surface); color:var(--dark); }
+.period-btn.active { background:var(--deep); color:white; font-weight:700; box-shadow:0 2px 8px rgba(6,78,59,0.25); }
+.charts-row { display:grid; grid-template-columns:60fr 40fr; gap:16px; }
+.chart-card { background:white; border:1px solid var(--border); border-radius:16px; padding:22px 24px; }
+.chart-title { font-size:11px; font-weight:700; letter-spacing:0.8px; text-transform:uppercase; color:var(--muted); margin-bottom:2px; }
+.chart-subtitle { font-size:13px; font-weight:600; color:var(--dark); margin-bottom:16px; }
+.donut-wrap { position:relative; }
+.donut-center { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); text-align:center; pointer-events:none; margin-top:8px; }
+.donut-center-val { font-family:'DM Sans',sans-serif; font-size:18px; font-weight:700; color:var(--dark); line-height:1; }
+.donut-center-sub { font-size:10px; color:var(--muted); margin-top:2px; }
+
+/* ── ALERTAS TAB ── */
+.alertas-toolbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:16px; }
+.alertas-toolbar-left { display:flex; align-items:center; gap:10px; flex:1; flex-wrap:wrap; }
+.feed-list { display:flex; flex-direction:column; gap:8px; }
+.feed-item { background:white; border:1px solid var(--border); border-radius:12px; padding:14px 18px; display:flex; align-items:center; gap:14px; transition:background 0.15s; }
+.feed-item:hover { background:var(--surface); }
+.feed-item.atrasado { background:rgba(234,88,12,0.06); border-color:rgba(234,88,12,0.25); border-left:3px solid var(--alert); }
+.feed-ts { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); white-space:nowrap; min-width:140px; }
+.feed-tipo { flex-shrink:0; }
+.feed-content { flex:1; min-width:0; }
+.feed-cliente { font-size:13.5px; font-weight:600; color:var(--dark); cursor:pointer; transition:color 0.15s; }
+.feed-cliente:hover { color:var(--mid); text-decoration:underline; }
+.feed-producto { font-size:12px; color:var(--muted); margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.feed-estado { flex-shrink:0; }
+.feed-estado-badge { font-size:10.5px; font-weight:700; padding:3px 9px; border-radius:999px; white-space:nowrap; }
+.fst-pendiente  { background:rgba(202,138,4,0.10); color:#b45309; }
+.fst-realizado  { background:rgba(34,197,94,0.10);  color:#16a34a; }
+.fst-atrasado   { background:rgba(220,38,38,0.10);  color:#dc2626; }
+
+/* ── OBJETIVOS TAB (vendor view) ── */
+.kpi-hero-tab { background:var(--deep); border-radius:16px; padding:32px; margin-bottom:18px; position:relative; overflow:hidden; }
+.kpi-hero-tab::before { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(34,197,94,0.06); top:-80px; right:-40px; pointer-events:none; }
+.hero-label { font-size:12px; font-weight:600; color:rgba(255,255,255,0.6); letter-spacing:1px; text-transform:uppercase; margin-bottom:8px; }
+.hero-val   { font-family:'Barlow Condensed',sans-serif; font-size:64px; font-weight:700; color:var(--accent); line-height:1; margin-bottom:6px; }
+.hero-sub   { font-size:14px; color:rgba(255,255,255,0.7); }
+.progress-card { background:white; border:1px solid var(--border); border-radius:16px; padding:22px 28px; margin-bottom:18px; }
+.bar-track { height:24px; border-radius:999px; background:var(--border); position:relative; overflow:visible; }
+.bar-fill-real  { position:absolute; left:0; top:0; height:100%; border-radius:999px; background:var(--accent); z-index:2; width:0; transition:width 0.7s cubic-bezier(0.4,0,0.2,1); }
+.bar-fill-motor { position:absolute; left:0; top:0; height:100%; border-radius:999px; background:var(--mid); opacity:0.45; z-index:1; width:0; transition:width 0.9s cubic-bezier(0.4,0,0.2,1) 0.1s; }
+.bar-marker { position:absolute; top:-6px; bottom:-6px; width:2px; border-left:2px dashed var(--muted); z-index:3; }
+.bar-marker-label { position:absolute; bottom:-22px; left:50%; transform:translateX(-50%); font-size:10px; color:var(--muted); font-weight:600; white-space:nowrap; }
+.bar-sublabels { display:flex; flex-wrap:wrap; gap:8px 20px; margin-top:32px; }
+.bar-sublabel { display:flex; align-items:center; gap:6px; font-size:12px; color:var(--muted); }
+.bar-dot { width:10px; height:10px; border-radius:3px; flex-shrink:0; }
+.motor-card { background:var(--deep); border-radius:12px; padding:22px 24px; margin-bottom:18px; display:flex; align-items:center; gap:24px; flex-wrap:wrap; }
+.motor-body { font-size:14px; color:rgba(255,255,255,0.7); line-height:1.5; margin-bottom:6px; }
+.motor-result { font-size:18px; font-weight:700; color:var(--accent); }
+.btn-secondary-dark { display:inline-flex; align-items:center; gap:7px; background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.85); border:1px solid rgba(255,255,255,0.18); border-radius:9px; padding:8px 16px; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.15s; }
+.btn-secondary-dark:hover { background:rgba(255,255,255,0.15); }
+.family-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; }
+.family-card { background:white; border:1px solid var(--border); border-radius:14px; padding:16px 18px; cursor:pointer; transition:border-color 0.15s,transform 0.15s,box-shadow 0.15s; }
+.family-card:hover { border-color:var(--accent); transform:translateY(-2px); box-shadow:0 8px 24px rgba(6,78,59,0.10); }
+.family-bar { height:6px; border-radius:999px; background:var(--border); margin-bottom:8px; overflow:hidden; }
+.family-bar-fill { height:100%; border-radius:999px; transition:width 0.8s ease; }
+
+/* ── OVERLAY + TOAST ── */
+.overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.45); z-index:150; backdrop-filter:blur(2px); }
+.overlay.open { display:block; }
+.toast-wrap { position:fixed; bottom:24px; right:24px; z-index:9999; display:flex; flex-direction:column-reverse; gap:8px; pointer-events:none; }
+.toast { background:var(--deep); color:white; border-radius:10px; padding:12px 16px; font-size:13.5px; font-weight:500; display:flex; align-items:center; gap:10px; min-width:240px; box-shadow:0 8px 24px rgba(0,0,0,0.18); pointer-events:all; animation:toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left:3px solid var(--accent); }
+.toast-out { animation:toastOut 0.2s ease forwards; }
+
+@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes cardIn  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes toastIn { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut{ to{opacity:0;transform:translateX(16px)} }
+
+@media (max-width:1100px) { .vend-grid{grid-template-columns:repeat(2,1fr);} .charts-row{grid-template-columns:1fr;} .client-grid{grid-template-columns:repeat(2,1fr);} .family-grid{grid-template-columns:repeat(2,1fr);} }
+@media (max-width:768px) {
+  .sidebar{position:fixed;left:0;top:0;bottom:0;transform:translateX(-100%);}
+  .sidebar.open{transform:translateX(0);}
+  .hamburger{display:flex !important;}
+  .tb-name,.tb-role{display:none;}
+  .content{padding:16px;}
+  .vend-grid,.client-grid,.family-grid{grid-template-columns:1fr;}
+  .charts-row{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">VendIA</div>
+      <div class="sb-logo-sub">Scarpati Hnos.</div>
+    </div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl" onclick="showToast('Navegando a Home…','success')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+        <span class="nl-badge">3</span>
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Productos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        KPIs
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Objetivos
+      </button>
+      <button class="nl active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        Vendedores
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+        Promociones
+      </button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div"></div>
+      <button class="nl" style="margin:4px 10px 8px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Configuración
+      </button>
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user">
+        <div class="sb-av">AS</div>
+        <div>
+          <div class="sb-uname">Admin Scarpati</div>
+          <span class="sb-role">Admin</span>
+        </div>
+      </div>
+      <button class="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main-col">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <span class="tb-title">Vendedores</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="tb-notif">3</span>
+        </button>
+        <div class="tb-sep"></div>
+        <div class="tb-user">
+          <div class="tb-av">AS</div>
+          <span class="tb-name">Admin Scarpati</span>
+          <span class="tb-role">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ═══════════════════════════════
+           VISTA GRID
+      ═══════════════════════════════ -->
+      <div id="view-grid">
+        <div style="display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:22px;animation:fadeUp 0.35s ease both">
+          <div>
+            <div class="breadcrumb">
+              <a href="#">Inicio</a><span class="breadcrumb-sep">›</span><span>Vendedores</span>
+            </div>
+            <div class="page-title">EQUIPO COMERCIAL</div>
+            <div class="page-sub" id="gridSubtitle">7 vendedores activos · Abril 2026</div>
+          </div>
+          <button class="btn-outline" onclick="showToast('Exportando reporte del equipo…','success')">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+            Exportar
+          </button>
+        </div>
+        <div class="vend-grid" id="vendGrid"></div>
+      </div>
+
+      <!-- ═══════════════════════════════
+           VISTA DETAIL
+      ═══════════════════════════════ -->
+      <div id="view-detail" style="display:none">
+
+        <!-- Profile header -->
+        <div class="detail-header">
+          <div class="breadcrumb" style="margin-bottom:14px">
+            <a onclick="goGrid()">Vendedores</a>
+            <span class="breadcrumb-sep">›</span>
+            <span id="detail-breadcrumb-name">Lucas Rodriguez</span>
+          </div>
+          <div class="detail-profile">
+            <div class="detail-avatar" id="detail-avatar">LR</div>
+            <div class="detail-info">
+              <div class="detail-name" id="detail-name">LUCAS RODRIGUEZ</div>
+              <div class="detail-meta">
+                <span class="badge" style="background:rgba(0,0,0,0.06);color:var(--muted);font-size:10.5px">VENDEDOR</span>
+                <span class="st st-track" id="detail-estado">ON TRACK</span>
+                <span class="detail-cartera-txt" id="detail-cartera">Cartera: 12 clientes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs-bar">
+          <button class="tab-btn active" data-tab="cartera"     onclick="switchTab('cartera',this)">Mi Cartera</button>
+          <button class="tab-btn"        data-tab="performance" onclick="switchTab('performance',this)">Performance</button>
+          <button class="tab-btn"        data-tab="alertas"     onclick="switchTab('alertas',this)">Alertas</button>
+          <button class="tab-btn"        data-tab="objetivos"   onclick="switchTab('objetivos',this)">Objetivos</button>
+        </div>
+
+        <!-- TAB: MI CARTERA -->
+        <div id="tab-cartera">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <svg class="search-ico" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              <input class="search-input" id="searchClients" placeholder="Buscar cliente…" oninput="filterClients()">
+            </div>
+            <select class="filter-select" id="filterTipo" onchange="filterClients()">
+              <option value="">Todos los tipos</option>
+              <option value="Hotelería">Hotelería</option>
+              <option value="Gastronomía">Gastronomía</option>
+              <option value="Catering">Catering</option>
+              <option value="Panadería">Panadería</option>
+              <option value="Bar">Bar</option>
+              <option value="Club">Club</option>
+              <option value="Almacén">Almacén</option>
+            </select>
+            <select class="filter-select" id="filterPrioridad" onchange="filterClients()">
+              <option value="">Todas las prioridades</option>
+              <option value="alta">Alta</option>
+              <option value="media">Media</option>
+              <option value="baja">Baja</option>
+            </select>
+            <span class="results-count" id="clientCount"></span>
+          </div>
+          <div class="client-grid" id="clientGrid"></div>
+          <div class="empty-state" id="clientEmpty">
+            <div class="empty-ico">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            </div>
+            <div class="empty-title">Sin resultados</div>
+            <div class="empty-sub">Ajustá los filtros para ver clientes</div>
+          </div>
+        </div>
+
+        <!-- TAB: PERFORMANCE -->
+        <div id="tab-performance" style="display:none">
+          <div class="period-bar" id="perfPeriodBar">
+            <button class="period-btn" data-p="1m" onclick="setPerfPeriod('1m',this)">1M</button>
+            <button class="period-btn active" data-p="3m" onclick="setPerfPeriod('3m',this)">3M</button>
+            <button class="period-btn" data-p="6m" onclick="setPerfPeriod('6m',this)">6M</button>
+            <button class="period-btn" data-p="12m" onclick="setPerfPeriod('12m',this)">12M</button>
+          </div>
+          <div class="charts-row">
+            <div class="chart-card">
+              <div class="chart-title">Evolución mensual</div>
+              <div class="chart-subtitle">Ventas por Familia de Producto</div>
+              <div id="perf-bar-root" style="width:100%;height:300px"></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Distribución actual</div>
+              <div class="chart-subtitle">Clientes por Estado</div>
+              <div class="donut-wrap">
+                <div id="perf-donut-root" style="width:100%;height:300px"></div>
+                <div class="donut-center">
+                  <div class="donut-center-val" id="donutCenterVal">12</div>
+                  <div class="donut-center-sub">clientes</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB: ALERTAS -->
+        <div id="tab-alertas" style="display:none">
+          <div class="alertas-toolbar">
+            <div class="alertas-toolbar-left">
+              <select class="filter-select" id="filtAlertaTipo" onchange="filterAlertas()">
+                <option value="">Todos los tipos</option>
+                <option value="DECLIVE">Declive</option>
+                <option value="REORDEN">Reorden</option>
+                <option value="CROSS-SELL">Cross-sell</option>
+                <option value="UPSELL">Upsell</option>
+                <option value="MAQUINARIA">Maquinaria</option>
+                <option value="PROMO">Promo</option>
+              </select>
+              <select class="filter-select" id="filtAlertaEstado" onchange="filterAlertas()">
+                <option value="">Todos los estados</option>
+                <option value="PENDIENTE">Pendiente</option>
+                <option value="REALIZADO">Realizado</option>
+                <option value="ATRASADO">Atrasado</option>
+              </select>
+              <select class="filter-select" id="filtAlertaPeriodo" onchange="filterAlertas()">
+                <option value="1m">Último mes</option>
+                <option value="3m">Últimos 3 meses</option>
+              </select>
+            </div>
+            <button class="btn-outline" style="font-size:12px;padding:6px 12px" onclick="showToast('Exportando alertas CSV…','success')">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+              Exportar CSV
+            </button>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+            <div style="font-size:13px;font-weight:600;color:var(--dark)">Feed de Alertas</div>
+            <span class="results-count" id="alertaCount"></span>
+          </div>
+          <div class="feed-list" id="feedList"></div>
+          <div class="empty-state" id="alertaEmpty">
+            <div class="empty-ico">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+            </div>
+            <div class="empty-title">Sin alertas</div>
+            <div class="empty-sub">No hay alertas con los filtros seleccionados</div>
+          </div>
+        </div>
+
+        <!-- TAB: OBJETIVOS -->
+        <div id="tab-objetivos" style="display:none">
+          <div class="kpi-hero-tab">
+            <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;position:relative;z-index:1">
+              <div>
+                <div class="hero-label">Objetivo del mes</div>
+                <div class="hero-val" id="objHeroVal">$420.000</div>
+                <div class="hero-sub" id="objHeroSub">Previsto: $410.000</div>
+              </div>
+              <div style="text-align:right">
+                <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Progreso actual</div>
+                <div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:white;line-height:1" id="objHeroPct">42.9%</div>
+                <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px" id="objHeroFrac">$180.000 de $420.000</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="progress-card">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+              <div style="font-size:13px;font-weight:600;color:var(--dark)">Progreso hacia el objetivo</div>
+              <span class="st st-track">ON TRACK</span>
+            </div>
+            <div style="position:relative;padding-top:8px;padding-bottom:32px">
+              <div class="bar-track">
+                <div class="bar-fill-motor" id="objBarMotor"></div>
+                <div class="bar-fill-real"  id="objBarReal"></div>
+                <div class="bar-marker" style="left:97.62%">
+                  <div class="bar-marker-label">Previsto $410k</div>
+                </div>
+              </div>
+            </div>
+            <div class="bar-sublabels">
+              <div class="bar-sublabel"><div class="bar-dot" style="background:var(--accent)"></div><span>Vendido: <strong id="objRealLbl">$180.000</strong></span></div>
+              <div class="bar-sublabel"><div class="bar-dot" style="background:var(--mid);opacity:0.6"></div><span>Motor: <strong id="objMotorLbl">+$210.000</strong></span></div>
+              <div class="bar-sublabel"><div style="width:10px;height:10px;border-left:2px dashed var(--muted)"></div><span>Previsto: <strong>$410.000</strong></span></div>
+            </div>
+          </div>
+
+          <div class="motor-card">
+            <div style="flex:1">
+              <div class="motor-body">Si concretás las recomendaciones activas este mes:</div>
+              <div class="motor-result" id="objMotorResult">alcanzás el 92% del objetivo</div>
+            </div>
+            <div>
+              <button class="btn-secondary-dark" onclick="showToast('Abriendo cartera con acciones pendientes…','success')">
+                Ver recomendaciones →
+              </button>
+            </div>
+          </div>
+
+          <div style="margin-bottom:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--dark)">Avance del mes</div>
+              <div style="display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:3px">
+                <button class="period-btn active" style="padding:4px 12px;font-size:12px;border-radius:5px" data-op="1m" onclick="setObjPeriod('1m',this)">1M</button>
+                <button class="period-btn" style="padding:4px 12px;font-size:12px;border-radius:5px" data-op="3m" onclick="setObjPeriod('3m',this)">3M</button>
+                <button class="period-btn" style="padding:4px 12px;font-size:12px;border-radius:5px" data-op="6m" onclick="setObjPeriod('6m',this)">6M</button>
+                <button class="period-btn" style="padding:4px 12px;font-size:12px;border-radius:5px" data-op="12m" onclick="setObjPeriod('12m',this)">12M</button>
+              </div>
+            </div>
+            <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:22px 24px">
+              <div id="obj-line-root" style="width:100%;height:260px"></div>
+            </div>
+          </div>
+
+          <div style="font-family:'Barlow Condensed',sans-serif;font-size:18px;font-weight:700;color:var(--dark);margin-bottom:12px">Breakdown por Familia</div>
+          <div class="family-grid" id="objFamilyGrid"></div>
+        </div>
+
+      </div><!-- /view-detail -->
+    </main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- RECHARTS -->
+<script type="text/babel">
+const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
+        PieChart, Pie, Cell, LineChart, Line, ResponsiveContainer } = Recharts;
+
+const FAMILIAS = ['Cuchillería','Maquinaria','Herramientas','Insumos','Embalaje'];
+const FAM_COLORS = { Cuchillería:'#22c55e', Maquinaria:'#1d4ed8', Herramientas:'#7c3aed', Insumos:'#ea580c', Embalaje:'#ca8a04' };
+
+function scaleSalesData(factor) {
+  const base = [
+    { mes:'Oct', Cuchillería:190, Maquinaria:35, Herramientas:65, Insumos:120, Embalaje:90 },
+    { mes:'Nov', Cuchillería:220, Maquinaria:40, Herramientas:72, Insumos:130, Embalaje:100 },
+    { mes:'Dic', Cuchillería:155, Maquinaria:28, Herramientas:55, Insumos:108, Embalaje:72 },
+    { mes:'Ene', Cuchillería:245, Maquinaria:48, Herramientas:75, Insumos:148, Embalaje:112 },
+    { mes:'Feb', Cuchillería:210, Maquinaria:38, Herramientas:68, Insumos:128, Embalaje:98 },
+    { mes:'Mar', Cuchillería:228, Maquinaria:44, Herramientas:72, Insumos:140, Embalaje:105 },
+  ];
+  return base.map(d => Object.fromEntries(Object.entries(d).map(([k,v]) => [k, typeof v === 'number' ? Math.round(v * factor) : v])));
+}
+
+const DONUT_VENDEDOR = {
+  1: [{ name:'Activos',value:67,color:'#22c55e',count:8 },{ name:'En Riesgo',value:25,color:'#ca8a04',count:3 },{ name:'Perdidos',value:8,color:'#ea580c',count:1 }],
+  3: [{ name:'Activos',value:40,color:'#22c55e',count:6 },{ name:'En Riesgo',value:33,color:'#ca8a04',count:5 },{ name:'Perdidos',value:20,color:'#ea580c',count:3 },{ name:'Overdue',value:7,color:'#9ca3af',count:1 }],
+};
+
+const TIP_STYLE = { background:'#064e3b',border:'none',borderRadius:10,color:'white',fontSize:12,fontFamily:'DM Sans',padding:'10px 14px',boxShadow:'0 8px 24px rgba(0,0,0,0.2)' };
+
+function SalesBarChart({ data, hidden, onToggle }) {
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={TIP_STYLE}>
+        <div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>
+        {payload.map(p => <div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+          <div style={{width:8,height:8,borderRadius:2,background:p.fill,flexShrink:0}}/>
+          <span style={{color:'rgba(255,255,255,0.7)'}}>{p.dataKey}:</span>
+          <span style={{fontWeight:700}}>{p.value}k</span>
+        </div>)}
+      </div>
+    );
+  };
+  const renderLegend = ({ payload }) => (
+    <div style={{display:'flex',flexWrap:'wrap',gap:'6px 14px',justifyContent:'center',marginTop:4}}>
+      {payload.map(e => (
+        <div key={e.value} onClick={() => onToggle(e.value)}
+          style={{display:'flex',alignItems:'center',gap:5,cursor:'pointer',opacity:hidden[e.value]?0.35:1,transition:'opacity 0.2s',fontSize:11.5,color:hidden[e.value]?'#9ca3af':'#4b7c68',userSelect:'none'}}>
+          <div style={{width:9,height:9,borderRadius:2,background:e.color}}/>
+          {e.value}
+        </div>
+      ))}
+    </div>
+  );
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <BarChart data={data} margin={{top:4,right:8,left:-12,bottom:0}} barCategoryGap="30%">
+        <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" vertical={false}/>
+        <XAxis dataKey="mes" tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false}/>
+        <YAxis tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}k`}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Legend content={renderLegend}/>
+        {FAMILIAS.map(f => <Bar key={f} dataKey={f} stackId="a" fill={FAM_COLORS[f]} hide={!!hidden[f]} radius={f==='Embalaje'?[4,4,0,0]:[0,0,0,0]} isAnimationActive animationDuration={600}/>)}
+      </BarChart>
+    </ResponsiveContainer>
+  );
+}
+
+function DonutVendChart({ vendId }) {
+  const data = DONUT_VENDEDOR[vendId] || DONUT_VENDEDOR[1];
+  const CustomTooltip = ({ active, payload }) => {
+    if (!active || !payload?.length) return null;
+    const d = payload[0].payload;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:d.color,marginBottom:4,fontSize:13}}>{d.name}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{d.count} cliente(s) · {d.value}%</div></div>;
+  };
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <PieChart>
+        <Pie data={data} cx="50%" cy="48%" innerRadius={55} outerRadius={85} dataKey="value" paddingAngle={2} animationDuration={700}>
+          {data.map((e,i) => <Cell key={i} fill={e.color} stroke="white" strokeWidth={2}/>)}
+        </Pie>
+        <Tooltip content={<CustomTooltip/>}/>
+        <Legend iconType="circle" iconSize={8} formatter={(v,e) => <span style={{fontSize:11.5,color:'#4b7c68',fontFamily:'DM Sans',fontWeight:500}}>{v} <span style={{color:e.payload.color,fontWeight:700}}>{e.payload.value}%</span></span>}/>
+      </PieChart>
+    </ResponsiveContainer>
+  );
+}
+
+const OBJ_LINE = {
+  '1m': [{l:'1',r:8000,o:14000},{l:'5',r:45000,o:70000},{l:'10',r:98000,o:140000},{l:'15',r:180000,o:210000},{l:'20',r:null,o:280000},{l:'25',r:null,o:350000},{l:'30',r:null,o:420000}],
+  '3m': [{l:'Sem1',r:32000,o:38000},{l:'Sem2',r:74000,o:80000},{l:'Sem3',r:128000,o:120000},{l:'Sem4',r:175000,o:160000},{l:'Sem5',r:228000,o:210000},{l:'Sem6',r:null,o:265000},{l:'Sem7',r:null,o:320000},{l:'Sem8',r:null,o:380000},{l:'Sem9',r:null,o:420000}],
+  '6m': [{l:'Nov',r:285000,o:310000},{l:'Dic',r:198000,o:280000},{l:'Ene',r:322000,o:360000},{l:'Feb',r:275000,o:310000},{l:'Mar',r:310000,o:340000},{l:'Abr',r:180000,o:420000}],
+  '12m':[{l:'May',r:255000,o:270000},{l:'Jun',r:230000,o:260000},{l:'Jul',r:278000,o:290000},{l:'Ago',r:260000,o:280000},{l:'Sep',r:295000,o:310000},{l:'Oct',r:248000,o:300000},{l:'Nov',r:285000,o:310000},{l:'Dic',r:198000,o:280000},{l:'Ene',r:322000,o:360000},{l:'Feb',r:275000,o:310000},{l:'Mar',r:310000,o:340000},{l:'Abr',r:180000,o:420000}],
+};
+
+function ObjLineChart({ period }) {
+  const data = OBJ_LINE[period] || OBJ_LINE['1m'];
+  const fmt = v => v == null ? '—' : '$' + v.toLocaleString('es-AR');
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>{payload.filter(p=>p.value!=null).map(p=><div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}><div style={{width:8,height:8,borderRadius:'50%',background:p.color}}/><span style={{color:'rgba(255,255,255,0.7)'}}>{p.dataKey==='r'?'Real':'Objetivo'}:</span><span style={{fontWeight:700}}>{fmt(p.value)}</span></div>)}</div>;
+  };
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} margin={{top:4,right:16,left:8,bottom:0}}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" vertical={false}/>
+        <XAxis dataKey="l" tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false}/>
+        <YAxis tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false} tickFormatter={v=>'$'+(v>=1000?(v/1000).toFixed(0)+'k':v)}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{stroke:'rgba(34,197,94,0.15)',strokeWidth:1}}/>
+        <Legend formatter={v => <span style={{fontSize:11.5,color:'#4b7c68',fontFamily:'DM Sans',fontWeight:500}}>{v==='r'?'Ventas reales':'Curva objetivo'}</span>}/>
+        <Line type="monotone" dataKey="o" name="o" stroke="#006c49" strokeWidth={2} strokeDasharray="6 4" dot={false} connectNulls animationDuration={600}/>
+        <Line type="monotone" dataKey="r" name="r" stroke="#22c55e" strokeWidth={2.5} dot={false} connectNulls={false} animationDuration={600}/>
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+// Roots
+window._chartRoots = {};
+window.mountPerfCharts = function(vendId, period, factor) {
+  const barEl = document.getElementById('perf-bar-root');
+  const donutEl = document.getElementById('perf-donut-root');
+  if (!barEl || !donutEl) return;
+  const data = scaleSalesData(factor);
+  const hidden = window._perfHidden || {};
+  if (!window._chartRoots.perfBar) window._chartRoots.perfBar = ReactDOM.createRoot(barEl);
+  window._chartRoots.perfBar.render(React.createElement(SalesBarChart, {
+    data, hidden,
+    onToggle: (f) => { window._perfHidden = {...(window._perfHidden||{}), [f]:!((window._perfHidden||{})[f])}; window.mountPerfCharts(vendId, period, factor); }
+  }));
+  if (!window._chartRoots.perfDonut) window._chartRoots.perfDonut = ReactDOM.createRoot(donutEl);
+  window._chartRoots.perfDonut.render(React.createElement(DonutVendChart, { vendId }));
+  const v = window.VEND_DATA?.find(x=>x.id===vendId);
+  if (v) document.getElementById('donutCenterVal').textContent = v.clientes;
+};
+window.mountObjLine = function(period) {
+  const el = document.getElementById('obj-line-root');
+  if (!el) return;
+  if (!window._chartRoots.objLine) window._chartRoots.objLine = ReactDOM.createRoot(el);
+  window._chartRoots.objLine.render(React.createElement(ObjLineChart, { period }));
+};
+</script>
+
+<script>
+/* ── DATA ── */
+const VEND_DATA = [
+  { id:1, initials:'LR', nombre:'Lucas Rodriguez', clientes:12, oportunidades:34, objPct:78, realK:328, objK:420, estado:'track',  atrasados:0 },
+  { id:2, initials:'CP', nombre:'Carlos Pérez',    clientes:9,  oportunidades:28, objPct:91, realK:392, objK:430, estado:'track',  atrasados:0 },
+  { id:3, initials:'AM', nombre:'Ana Martínez',    clientes:15, oportunidades:41, objPct:34, realK:163, objK:480, estado:'behind', atrasados:3 },
+  { id:4, initials:'JB', nombre:'Jorge Blanco',    clientes:11, oportunidades:29, objPct:62, realK:248, objK:400, estado:'risk',   atrasados:0 },
+  { id:5, initials:'MT', nombre:'María Torres',    clientes:8,  oportunidades:19, objPct:88, realK:352, objK:400, estado:'track',  atrasados:0 },
+  { id:6, initials:'PG', nombre:'Pedro Gómez',     clientes:13, oportunidades:38, objPct:22, realK:88,  objK:400, estado:'behind', atrasados:1 },
+  { id:7, initials:'LV', nombre:'Lucía Varela',    clientes:10, oportunidades:24, objPct:85, realK:340, objK:400, estado:'track',  atrasados:0 },
+];
+window.VEND_DATA = VEND_DATA;
+
+const ALL_CLIENTS = [
+  { id:101, vendId:1, initials:'HG', nombre:'Hotel Gran Buenos Aires', tipo:'Hotelería',  prioridad:'alta',  statusDot:'yellow', tags:['DECLIVE','CROSS-SELL'], opCount:3, opVal:'$48.000', desc:'Caída en vajilla detectada. Cross-sell maquinaria hotelera posible.',   diasCompra:8 },
+  { id:102, vendId:1, initials:'RL', nombre:'Restaurante La Pampa',    tipo:'Gastronomía',prioridad:'alta',  statusDot:'green',  tags:['REORDEN','UPSELL'],     opCount:2, opVal:'$22.000', desc:'Reorden mensual cuchillería + upsell accesorios chef.',                diasCompra:3 },
+  { id:103, vendId:1, initials:'CS', nombre:'Catering Serrano',         tipo:'Catering',   prioridad:'media', statusDot:'green',  tags:['CROSS-SELL'],           opCount:1, opVal:'$18.000', desc:'Cross-sell en embalaje hermético premium para servicio exterior.',    diasCompra:12 },
+  { id:104, vendId:1, initials:'PD', nombre:'Panadería Don Alberto',    tipo:'Panadería',  prioridad:'baja',  statusDot:'green',  tags:['UPSELL'],               opCount:1, opVal:'$12.500', desc:'Upsell en utensilios de pastelería de alta gama.',                    diasCompra:1 },
+  { id:105, vendId:1, initials:'PE', nombre:'Pizzería El Cardenal',     tipo:'Gastronomía',prioridad:'media', statusDot:'green',  tags:['REORDEN','UPSELL'],     opCount:2, opVal:'$29.000', desc:'Reorden herramientas + upsell horno industrial refractario.',        diasCompra:5 },
+  { id:106, vendId:1, initials:'BL', nombre:'Bar La Esquina',           tipo:'Bar',        prioridad:'alta',  statusDot:'red',    tags:['ATRASADO'],             opCount:1, opVal:'$8.000',  desc:'Acción sin respuesta hace 22 días. Requiere seguimiento urgente.',   diasCompra:22 },
+  { id:107, vendId:1, initials:'CF', nombre:'Club de Field Palermo',    tipo:'Club',       prioridad:'media', statusDot:'green',  tags:['CROSS-SELL'],           opCount:2, opVal:'$35.000', desc:'Oportunidad en equipamiento cocina para sector gastronómico.',       diasCompra:7 },
+  { id:108, vendId:1, initials:'AC', nombre:'Almacén Central Sur',      tipo:'Almacén',    prioridad:'baja',  statusDot:'yellow', tags:['DECLIVE'],              opCount:1, opVal:'$9.500',  desc:'Caída sostenida vs. trimestre anterior. Evaluar propuesta.',          diasCompra:15 },
+  { id:201, vendId:2, initials:'MC', nombre:'Mercado Carnicería Norte', tipo:'Carnicería', prioridad:'media', statusDot:'green',  tags:['REORDEN'],              opCount:2, opVal:'$28.000', desc:'Reorden cuchillería profesional. Alta satisfacción histórica.',       diasCompra:4 },
+  { id:202, vendId:2, initials:'FR', nombre:'Food Republic SRL',        tipo:'Gastronomía',prioridad:'alta',  statusDot:'green',  tags:['UPSELL','CROSS-SELL'],  opCount:3, opVal:'$55.000', desc:'Upsell vajilla premium + cross-sell maquinaria cocina.',              diasCompra:2 },
+  { id:203, vendId:2, initials:'HC', nombre:'Hotel Cielo Azul',         tipo:'Hotelería',  prioridad:'alta',  statusDot:'green',  tags:['REORDEN'],              opCount:1, opVal:'$38.000', desc:'Reorden semestral vajilla y equipamiento.',                           diasCompra:6 },
+  { id:301, vendId:3, initials:'HA', nombre:'Hotel Atlántico',          tipo:'Hotelería',  prioridad:'alta',  statusDot:'red',    tags:['ATRASADO','DECLIVE'],   opCount:4, opVal:'$72.000', desc:'Caída severa + 2 acciones sin respuesta. Prioridad máxima.',        diasCompra:18 },
+  { id:302, vendId:3, initials:'RS', nombre:'Restaurant Sunflower',     tipo:'Gastronomía',prioridad:'alta',  statusDot:'red',    tags:['ATRASADO'],             opCount:2, opVal:'$38.000', desc:'Acción pendiente 15 días. Sin respuesta a cotización enviada.',      diasCompra:15 },
+  { id:303, vendId:3, initials:'CF', nombre:'Café Fortuna',             tipo:'Bar',        prioridad:'media', statusDot:'yellow', tags:['DECLIVE','CROSS-SELL'], opCount:2, opVal:'$24.000', desc:'Caída moderada. Oportunidad cross-sell en equipos de café.',         diasCompra:9 },
+];
+
+const ALERTAS_DATA = {
+  1: [
+    { id:1,  ts:'15 abr 2026 · 09:14', tipo:'DECLIVE',    tipoKey:'declive',    cliente:'Hotel Gran Buenos Aires', clienteId:101, producto:'Cuchillos de cocina — 2kg',         estado:'ATRASADO'  },
+    { id:2,  ts:'14 abr 2026 · 16:30', tipo:'CROSS-SELL', tipoKey:'cross',      cliente:'Catering Serrano',        clienteId:103, producto:'Embalaje hermético Premium',          estado:'REALIZADO' },
+    { id:3,  ts:'13 abr 2026 · 11:05', tipo:'REORDEN',    tipoKey:'reorden',    cliente:'Restaurante La Pampa',    clienteId:102, producto:'Cuchillería Pro — 1.5kg',            estado:'PENDIENTE' },
+    { id:4,  ts:'12 abr 2026 · 08:22', tipo:'UPSELL',     tipoKey:'upsell',     cliente:'Pizzería El Cardenal',    clienteId:105, producto:'Horno industrial HT-500',             estado:'PENDIENTE' },
+    { id:5,  ts:'10 abr 2026 · 14:48', tipo:'REORDEN',    tipoKey:'reorden',    cliente:'Bar La Esquina',          clienteId:106, producto:'Vasos y copas — kit 24u',            estado:'ATRASADO'  },
+    { id:6,  ts:'08 abr 2026 · 10:30', tipo:'CROSS-SELL', tipoKey:'cross',      cliente:'Club de Field Palermo',   clienteId:107, producto:'Batería de cocina inox completa',    estado:'REALIZADO' },
+    { id:7,  ts:'07 abr 2026 · 17:15', tipo:'DECLIVE',    tipoKey:'declive',    cliente:'Almacén Central Sur',     clienteId:108, producto:'Insumos varios — pedido mensual',    estado:'PENDIENTE' },
+    { id:8,  ts:'05 abr 2026 · 09:00', tipo:'MAQUINARIA', tipoKey:'maquinaria', cliente:'Hotel Gran Buenos Aires', clienteId:101, producto:'Lavavajillas industrial LX-300',      estado:'ATRASADO'  },
+    { id:9,  ts:'03 abr 2026 · 11:20', tipo:'PROMO',      tipoKey:'promo',      cliente:'Catering Serrano',        clienteId:103, producto:'Pack embalaje x100 — 15% off',        estado:'REALIZADO' },
+    { id:10, ts:'01 abr 2026 · 15:45', tipo:'REORDEN',    tipoKey:'reorden',    cliente:'Panadería Don Alberto',   clienteId:104, producto:'Espátulas y rodillos — set básico',  estado:'PENDIENTE' },
+  ]
+};
+// Default for other vendors
+for (let i = 2; i <= 7; i++) {
+  if (!ALERTAS_DATA[i]) ALERTAS_DATA[i] = ALERTAS_DATA[1].slice(0, 6).map(a => ({...a, id: a.id + i*100}));
+}
+
+const FAM_DATA = [
+  { name:'Cuchillería', real:145000, obj:180000, color:'#22c55e' },
+  { name:'Maquinaria',  real:28000,  obj:60000,  color:'#1d4ed8' },
+  { name:'Herramientas',real:42000,  obj:45000,  color:'#7c3aed' },
+  { name:'Insumos',     real:38000,  obj:80000,  color:'#ea580c' },
+  { name:'Embalaje',    real:15000,  obj:55000,  color:'#ca8a04' },
+];
+
+/* ── SVG RING ── */
+function progressRing(pct, estado) {
+  const r = 42, C = 2 * Math.PI * r;
+  const filled = (pct / 100) * C;
+  const color = estado === 'track' ? '#22c55e' : estado === 'risk' ? '#ca8a04' : '#dc2626';
+  return `<svg width="100" height="100" viewBox="0 0 100 100">
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="#a7f3d0" stroke-width="8"/>
+    <circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="8"
+      stroke-dasharray="${filled.toFixed(1)} ${C.toFixed(1)}" stroke-linecap="round"
+      transform="rotate(-90 50 50)" style="transition:stroke-dasharray 0.7s ease"/>
+    <text x="50" y="50" text-anchor="middle" dominant-baseline="central"
+      font-family="'Barlow Condensed',sans-serif" font-size="18" font-weight="700" fill="#191c1e">${pct}%</text>
+  </svg>`;
+}
+
+/* ── RENDER VENDOR GRID ── */
+const stLabel = { track:'ON TRACK', risk:'AT RISK', behind:'BEHIND' };
+const stClass = { track:'st-track', risk:'st-risk', behind:'st-behind' };
+
+function renderVendGrid() {
+  const el = document.getElementById('vendGrid');
+  el.innerHTML = VEND_DATA.map((v, i) => `
+    <div class="vend-card ${v.estado==='behind'?'behind':''}" style="animation-delay:${i*0.06}s" onclick="openVendedor(${v.id})">
+      <div class="vc-top">
+        <div class="vc-avatar ${v.estado==='behind'?'behind':''}">${v.initials}</div>
+        <div class="vc-info">
+          <div class="vc-name">${v.nombre}</div>
+          <span class="vc-badge">VENDEDOR</span>
+        </div>
+      </div>
+      <div class="vc-kpis">
+        <div class="vc-kpi"><div class="vc-kpi-val">${v.clientes}</div><div class="vc-kpi-lbl">Clientes</div></div>
+        <div class="vc-kpi"><div class="vc-kpi-val">${v.oportunidades}</div><div class="vc-kpi-lbl">Opor.</div></div>
+        <div class="vc-kpi"><div class="vc-kpi-val">${v.objPct}%</div><div class="vc-kpi-lbl">Obj.</div></div>
+      </div>
+      <div class="vc-ring-row">
+        <div class="vc-ring-wrap">
+          ${progressRing(v.objPct, v.estado)}
+          <div class="ring-tooltip">${v.objPct}% del objetivo mensual · $${v.realK}k de $${v.objK}k</div>
+        </div>
+        <div class="vc-status-col">
+          <span class="st ${stClass[v.estado]}" style="font-size:12px;padding:4px 12px">${stLabel[v.estado]}</span>
+          ${v.atrasados > 0 ? `<span class="badge-atrasado" onclick="event.stopPropagation();openVendedor(${v.id},'alertas')">${v.atrasados} ATRASADO${v.atrasados>1?'S':''}</span>` : ''}
+        </div>
+      </div>
+      <div class="vc-footer">
+        <button class="btn-cartera" onclick="event.stopPropagation();openVendedor(${v.id},'cartera')">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Ver cartera →
+        </button>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ── NAVIGATION ── */
+let currentVend = null;
+let currentTab  = 'cartera';
+
+function openVendedor(id, tab = 'cartera', filterEstado = '') {
+  currentVend = VEND_DATA.find(v => v.id === id);
+  if (!currentVend) return;
+
+  // Update detail header
+  document.getElementById('detail-breadcrumb-name').textContent = currentVend.nombre;
+  document.getElementById('detail-avatar').textContent = currentVend.initials;
+  document.getElementById('detail-name').textContent = currentVend.nombre.toUpperCase();
+  document.getElementById('detail-estado').textContent = stLabel[currentVend.estado];
+  document.getElementById('detail-estado').className = `st ${stClass[currentVend.estado]}`;
+  document.getElementById('detail-cartera').textContent = `Cartera: ${currentVend.clientes} clientes`;
+
+  document.getElementById('view-grid').style.display = 'none';
+  document.getElementById('view-detail').style.display = '';
+
+  // Activate tab
+  switchTab(tab, document.querySelector(`.tab-btn[data-tab="${tab}"]`));
+
+  // Pre-filter alertas if needed
+  if (tab === 'alertas' && filterEstado) {
+    document.getElementById('filtAlertaEstado').value = filterEstado;
+  }
+
+  window.scrollTo(0, 0);
+}
+
+function goGrid() {
+  document.getElementById('view-grid').style.display = '';
+  document.getElementById('view-detail').style.display = 'none';
+  currentVend = null;
+  // Reset chart roots so they remount fresh next time
+  window._chartRoots = {};
+  window._perfHidden = {};
+}
+
+/* ── TABS ── */
+function switchTab(tab, btn) {
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  ['cartera','performance','alertas','objetivos'].forEach(t => {
+    document.getElementById(`tab-${t}`).style.display = t === tab ? '' : 'none';
+  });
+
+  if (tab === 'cartera') {
+    renderClientGrid(currentVend?.id || 1);
+  }
+  if (tab === 'performance') {
+    const factor = (currentVend?.objPct || 78) / 100;
+    setTimeout(() => window.mountPerfCharts(currentVend?.id || 1, '3m', factor), 50);
+  }
+  if (tab === 'alertas') {
+    renderAlertas(currentVend?.id || 1);
+  }
+  if (tab === 'objetivos') {
+    const v = currentVend;
+    if (v) {
+      const real = Math.round(v.realK * 1000);
+      const obj  = Math.round(v.objK  * 1000);
+      const pct  = ((real / obj) * 100).toFixed(1);
+      document.getElementById('objHeroVal').textContent  = '$' + obj.toLocaleString('es-AR');
+      document.getElementById('objHeroSub').textContent  = `Previsto: $${Math.round(obj * 0.976).toLocaleString('es-AR')}`;
+      document.getElementById('objHeroPct').textContent  = pct + '%';
+      document.getElementById('objHeroFrac').textContent = `$${real.toLocaleString('es-AR')} de $${obj.toLocaleString('es-AR')}`;
+      const motorReal  = parseFloat(pct) / 100;
+      const motorTotal = Math.min(0.93, motorReal + 0.5);
+      document.getElementById('objRealLbl').textContent  = '$' + real.toLocaleString('es-AR');
+      document.getElementById('objMotorLbl').textContent = '+$' + Math.round((motorTotal - motorReal) * obj).toLocaleString('es-AR');
+      document.getElementById('objMotorResult').textContent = `alcanzás el ${Math.round(motorTotal * 100)}% del objetivo`;
+      const motorPct = Math.round(motorTotal * 100);
+      const realPct  = parseFloat(pct);
+      const stEl = document.querySelector('#tab-objetivos .progress-card .st');
+      if (stEl) {
+        if (realPct >= 40) { stEl.textContent='ON TRACK'; stEl.className='st st-track'; }
+        else if (realPct >= 20) { stEl.textContent='AT RISK'; stEl.className='st st-risk'; }
+        else { stEl.textContent='BEHIND'; stEl.className='st st-behind'; }
+      }
+      setTimeout(() => {
+        document.getElementById('objBarReal').style.width  = realPct + '%';
+        document.getElementById('objBarMotor').style.width = motorPct + '%';
+        renderObjFamilies(v.objPct);
+        window.mountObjLine('1m');
+      }, 60);
+    }
+  }
+}
+
+/* ── CLIENT GRID ── */
+const BADGE_MAP = {
+  'DECLIVE':'b-declive','REORDEN':'b-reorden','CROSS-SELL':'b-cross',
+  'UPSELL':'b-upsell','ATRASADO':'b-atrasado','PROMO':'b-promo','MAQUINARIA':'b-maquinaria'
+};
+function tagBadge(t) { return `<span class="badge ${BADGE_MAP[t]||'b-reorden'}">${t}</span>`; }
+
+function renderClientGrid(vendId) {
+  const q   = (document.getElementById('searchClients')?.value||'').toLowerCase();
+  const tip = document.getElementById('filterTipo')?.value || '';
+  const pri = document.getElementById('filterPrioridad')?.value || '';
+
+  let clients = ALL_CLIENTS.filter(c => c.vendId === vendId);
+  if (q)   clients = clients.filter(c => c.nombre.toLowerCase().includes(q));
+  if (tip) clients = clients.filter(c => c.tipo === tip);
+  if (pri) clients = clients.filter(c => c.prioridad === pri);
+
+  const grid  = document.getElementById('clientGrid');
+  const empty = document.getElementById('clientEmpty');
+  const cnt   = document.getElementById('clientCount');
+  cnt.textContent = `${clients.length} cliente${clients.length !== 1 ? 's' : ''}`;
+
+  if (!clients.length) { grid.innerHTML=''; empty.classList.add('visible'); return; }
+  empty.classList.remove('visible');
+
+  grid.innerHTML = clients.map((c, i) => `
+    <div class="client-card ${c.tags.includes('ATRASADO')?'has-atrasado':''}" style="animation-delay:${i*0.05}s" onclick="showToast('Abriendo perfil de ${c.nombre}…','success')">
+      <div class="cc-header">
+        <div>
+          <div class="cc-name">${c.nombre}</div>
+          <div class="cc-tipo">${c.tipo}</div>
+        </div>
+        <div class="status-dot ${c.statusDot}"></div>
+      </div>
+      <div class="cc-badges">${c.tags.map(tagBadge).join('')}</div>
+      <div class="cc-desc">${c.desc}</div>
+      <div>
+        <div class="cc-val">${c.opVal}</div>
+        <div class="cc-val-lbl">${c.opCount} oportunidad${c.opCount>1?'es':''} activa${c.opCount>1?'s':''}</div>
+      </div>
+      <div class="cc-footer">
+        <span class="cc-age">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Última compra ${c.diasCompra === 1 ? 'ayer' : `hace ${c.diasCompra} días`}
+        </span>
+        <button class="btn-ver">Ver cliente <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m9 18 6-6-6-6"/></svg></button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function filterClients() { if (currentVend) renderClientGrid(currentVend.id); }
+
+/* ── ALERTAS FEED ── */
+const TIPO_BADGE = {
+  'DECLIVE':   'b-declive','REORDEN':'b-reorden','CROSS-SELL':'b-cross',
+  'UPSELL':    'b-upsell','MAQUINARIA':'b-maquinaria','PROMO':'b-promo','ATRASADO':'b-atrasado'
+};
+const EST_CLS = { 'PENDIENTE':'fst-pendiente','REALIZADO':'fst-realizado','ATRASADO':'fst-atrasado' };
+
+function renderAlertas(vendId) {
+  const tipo    = document.getElementById('filtAlertaTipo')?.value    || '';
+  const estado  = document.getElementById('filtAlertaEstado')?.value  || '';
+
+  let items = ALERTAS_DATA[vendId] || ALERTAS_DATA[1];
+  if (tipo)   items = items.filter(a => a.tipo === tipo);
+  if (estado) items = items.filter(a => a.estado === estado);
+
+  const list  = document.getElementById('feedList');
+  const empty = document.getElementById('alertaEmpty');
+  const cnt   = document.getElementById('alertaCount');
+  cnt.textContent = `${items.length} alerta${items.length!==1?'s':''}`;
+
+  if (!items.length) { list.innerHTML=''; empty.classList.add('visible'); return; }
+  empty.classList.remove('visible');
+
+  list.innerHTML = items.map(a => `
+    <div class="feed-item ${a.estado==='ATRASADO'?'atrasado':''}">
+      <div class="feed-ts">${a.ts}</div>
+      <div class="feed-tipo"><span class="badge ${TIPO_BADGE[a.tipo]||'b-reorden'}">${a.tipo}</span></div>
+      <div class="feed-content">
+        <div class="feed-cliente" onclick="showToast('Abriendo perfil de ${a.cliente}…','success')">${a.cliente}</div>
+        <div class="feed-producto">${a.producto}</div>
+      </div>
+      <div class="feed-estado"><span class="feed-estado-badge ${EST_CLS[a.estado]||'fst-pendiente'}">${a.estado}</span></div>
+    </div>
+  `).join('');
+}
+
+function filterAlertas() { if (currentVend) renderAlertas(currentVend.id); }
+
+/* ── OBJETIVOS FAMILY GRID ── */
+function getFamilyStatus(pct) {
+  if (pct >= 75) return { label:'ON TRACK', cls:'st-track' };
+  if (pct >= 45) return { label:'AT RISK',  cls:'st-risk' };
+  return               { label:'BEHIND',    cls:'st-behind' };
+}
+
+function renderObjFamilies(objPct) {
+  const scale = objPct / 78;
+  const families = FAM_DATA.map(f => ({...f, real: Math.round(f.real * scale), obj: Math.round(f.obj * scale)}));
+  const sorted = [...families].sort((a,b) => (a.real/a.obj) - (b.real/b.obj));
+  const grid = document.getElementById('objFamilyGrid');
+  grid.innerHTML = sorted.map(f => {
+    const pct = Math.round((f.real / f.obj) * 100);
+    const st  = getFamilyStatus(pct);
+    return `
+      <div class="family-card" onclick="showToast('Filtrando por familia: ${f.name}…','success')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:7px">
+            <div style="width:10px;height:10px;border-radius:3px;background:${f.color};flex-shrink:0"></div>
+            <span style="font-size:12.5px;font-weight:700;color:var(--dark)">${f.name}</span>
+          </div>
+          <span class="st ${st.cls}" style="font-size:10px">${st.label}</span>
+        </div>
+        <div class="family-bar">
+          <div class="family-bar-fill" style="width:0%;background:${f.color}" data-pct="${pct}"></div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:4px">Real: <strong>$${(f.real/1000).toFixed(0)}k</strong> · Obj: <strong>$${(f.obj/1000).toFixed(0)}k</strong></div>
+        <div style="font-size:13px;font-weight:700;color:${f.color}">${pct}%</div>
+      </div>
+    `;
+  }).join('');
+  setTimeout(() => {
+    grid.querySelectorAll('.family-bar-fill').forEach(el => { el.style.width = el.dataset.pct + '%'; });
+  }, 80);
+}
+
+/* ── PERF / OBJ PERIOD ── */
+function setPerfPeriod(p, btn) {
+  document.querySelectorAll('#perfPeriodBar .period-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (currentVend) window.mountPerfCharts(currentVend.id, p, currentVend.objPct / 100);
+}
+
+function setObjPeriod(p, btn) {
+  document.querySelectorAll('[data-op]').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  window.mountObjLine(p);
+}
+
+/* ── SIDEBAR ── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+/* ── TOAST ── */
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>${msg}`;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 200); }, 3000);
+}
+
+/* ── INIT ── */
+renderVendGrid();
+</script>
+<script src="vendIA-global.js"></script>
+</body>
+</html>

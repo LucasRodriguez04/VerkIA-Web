@@ -1,0 +1,968 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Productos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep:    #064e3b;
+  --mid:     #006c49;
+  --accent:  #22c55e;
+  --sage:    #d1fae5;
+  --surface: #ecfdf5;
+  --bg:      #f0fdf4;
+  --border:  #a7f3d0;
+  --muted:   #4b7c68;
+  --dark:    #191c1e;
+  --alert:   #ea580c;
+  --warning: #ca8a04;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); overflow: hidden; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ══ SIDEBAR ══ */
+.sidebar { width: 220px; flex-shrink: 0; background: var(--deep); display: flex; flex-direction: column; height: 100vh; z-index: 200; transition: transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+.sb-logo { padding: 24px 20px 16px; }
+.sb-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.sb-logo-sub  { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 3px; }
+.sb-div { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.sb-nav { flex: 1; display: flex; flex-direction: column; padding: 4px 0; overflow-y: auto; }
+.sb-lbl { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.25); letter-spacing: 1.8px; text-transform: uppercase; padding: 10px 20px 6px; }
+.nl { display: flex; align-items: center; gap: 10px; padding: 9px 14px; margin: 1px 10px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 500; border: none; background: none; width: calc(100% - 20px); text-align: left; border-left: 3px solid transparent; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+.nl:hover  { background: rgba(255,255,255,0.08); color: white; }
+.nl.active { background: rgba(34,197,94,0.14); color: #22c55e; border-left-color: var(--accent); font-weight: 600; }
+.nl svg { flex-shrink: 0; width: 17px; height: 17px; }
+.nl-badge { margin-left: auto; background: var(--alert); color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.sb-bottom { padding: 8px 0 16px; }
+.sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 0 10px; }
+.sb-av   { width: 34px; height: 34px; border-radius: 50%; background: var(--mid); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sb-uname { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-role  { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; background: rgba(34,197,94,0.18); color: var(--accent); }
+.btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 16px; margin: 4px 10px 0; border-radius: 8px; border: none; background: none; cursor: pointer; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-size: 13px; width: calc(100% - 20px); transition: background 0.15s, color 0.15s; }
+.btn-logout:hover { background: rgba(234,88,12,0.12); color: var(--alert); }
+
+/* ══ MAIN ══ */
+.main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: 56px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.tb-left { display: flex; align-items: center; gap: 8px; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+.hamburger { display: none; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--dark); align-items: center; justify-content: center; }
+.hamburger:hover { background: var(--surface); }
+.tb-right { display: flex; align-items: center; gap: 4px; }
+.tb-btn   { width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); position: relative; transition: background 0.15s, color 0.15s; }
+.tb-btn:hover { background: var(--surface); color: var(--deep); }
+.tb-notif { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; background: var(--alert); color: white; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.tb-sep  { width: 1px; height: 22px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+.tb-user { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.tb-user:hover { background: var(--surface); }
+.tb-av   { width: 32px; height: 32px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tb-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.tb-role { font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; background: rgba(6,78,59,0.08); color: var(--deep); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ══ PAGE HEADER ══ */
+.page-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.page-eyebrow { font-size: 11px; font-weight: 600; color: var(--muted); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+.page-title { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; line-height: 1; }
+.page-sub { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.header-actions { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+
+/* Buttons */
+.btn-primary   { display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: var(--accent); color: var(--deep); border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s, transform 0.15s; white-space: nowrap; }
+.btn-primary:hover { background: #16a34a; transform: translateY(-1px); }
+.btn-secondary { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; background: white; color: var(--mid); border: 1.5px solid var(--border); border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s; white-space: nowrap; }
+.btn-secondary:hover { border-color: var(--accent); background: var(--surface); }
+.btn-ghost     { display: inline-flex; align-items: center; gap: 6px; padding: 8px 12px; background: none; color: var(--muted); border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.btn-ghost:hover { background: var(--surface); color: var(--dark); }
+
+/* ══ TOOLBAR ══ */
+.toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+.search-wrap { position: relative; flex: 1; min-width: 220px; }
+.search-ico { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.search-input { width: 100%; padding: 9px 36px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--dark); background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s; }
+.search-input::placeholder { color: #b3c9c0; }
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.10); }
+.filter-select { padding: 9px 30px 9px 12px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark); background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234b7c68' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 10px center; outline: none; appearance: none; cursor: pointer; transition: border-color 0.2s; }
+.filter-select:focus { border-color: var(--accent); }
+.filter-select.active { border-color: var(--accent); color: var(--mid); background-color: var(--surface); }
+
+/* Toggle switch */
+.toggle-wrap { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.toggle-label { font-size: 12.5px; font-weight: 600; color: var(--muted); }
+.toggle { position: relative; width: 36px; height: 20px; }
+.toggle input { opacity: 0; width: 0; height: 0; }
+.toggle-slider { position: absolute; inset: 0; background: var(--border); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+.toggle-slider::before { content: ''; position: absolute; width: 14px; height: 14px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.15); }
+.toggle input:checked + .toggle-slider { background: var(--accent); }
+.toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+
+/* ══ TABLE ══ */
+.table-card { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--deep); }
+thead th { padding: 13px 14px; text-align: left; font-weight: 600; font-size: 10.5px; letter-spacing: 0.7px; text-transform: uppercase; color: rgba(255,255,255,0.65); white-space: nowrap; }
+thead th.c { text-align: center; }
+thead th.r { text-align: right; }
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { color: white; }
+.sort-ico { margin-left: 3px; opacity: 0.4; }
+thead th.sort-active { color: white; }
+thead th.sort-active .sort-ico { opacity: 1; }
+
+tbody tr { border-bottom: 1px solid var(--surface); transition: background 0.12s; cursor: pointer; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg); }
+tbody tr.discontinued { background: rgba(0,0,0,0.02); }
+tbody tr.discontinued td { opacity: 0.6; }
+tbody tr.expanded { background: var(--surface); }
+
+tbody td { padding: 13px 14px; color: var(--muted); vertical-align: middle; }
+tbody td.c { text-align: center; }
+tbody td.r { text-align: right; }
+.td-name { font-weight: 600; color: var(--dark); }
+.td-name.struck { text-decoration: line-through; color: var(--muted); }
+.sku { font-family: 'DM Mono', monospace; font-size: 11px; color: var(--muted); background: var(--surface); padding: 2px 6px; border-radius: 4px; display: inline-block; }
+.price-val { font-family: 'DM Mono', monospace; font-size: 12px; }
+.margin-val { font-size: 12px; font-weight: 600; color: var(--mid); }
+
+/* Badges */
+.badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.b-activo    { background: rgba(34,197,94,0.10); color: #16a34a; }
+.b-disc      { background: rgba(0,0,0,0.06); color: var(--muted); }
+.b-promo     { background: var(--deep); color: var(--accent); }
+.b-rec       { background: rgba(29,78,216,0.09); color: #1d4ed8; }
+
+/* Action icons */
+.action-ico { width: 30px; height: 30px; border-radius: 7px; border: none; background: none; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; color: var(--muted); transition: background 0.15s, color 0.15s; }
+.action-ico:hover { background: var(--surface); color: var(--dark); }
+.action-ico.red:hover { background: #fef2f2; color: #dc2626; }
+
+/* Inline price edit */
+.price-edit-wrap { display: flex; align-items: center; gap: 4px; }
+.price-input { width: 80px; padding: 4px 8px; border: 1.5px solid var(--accent); border-radius: 6px; font-family: 'DM Mono', monospace; font-size: 12px; outline: none; }
+.price-confirm { width: 24px; height: 24px; border-radius: 5px; border: none; background: var(--accent); color: var(--deep); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+.price-cancel  { width: 24px; height: 24px; border-radius: 5px; border: none; background: #fef2f2; color: #dc2626; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; }
+
+/* Expanded row */
+.expanded-row { background: var(--surface); }
+.expanded-row td { padding: 0; }
+.expanded-content { padding: 16px 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; border-top: 1px solid var(--border); }
+.exp-section-title { font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.8px; text-transform: uppercase; margin-bottom: 10px; }
+.exp-client-chip { display: inline-flex; align-items: center; gap: 5px; background: white; border: 1px solid var(--border); border-radius: 6px; padding: 4px 10px; font-size: 12px; color: var(--dark); font-weight: 500; margin: 2px; cursor: pointer; transition: border-color 0.15s; }
+.exp-client-chip:hover { border-color: var(--accent); }
+.price-hist-row { display: flex; justify-content: space-between; font-size: 12px; padding: 5px 0; border-bottom: 1px solid var(--surface); }
+.price-hist-row:last-child { border-bottom: none; }
+
+/* Heredero section */
+.heredero-section { margin-top: 12px; padding: 12px; background: #fff7ed; border: 1px solid rgba(234,88,12,0.2); border-radius: 10px; }
+.heredero-title { font-size: 11px; font-weight: 700; color: var(--alert); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; }
+.heredero-input-wrap { position: relative; }
+.heredero-input { width: 100%; padding: 8px 12px; border: 1.5px solid rgba(234,88,12,0.3); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+.heredero-input:focus { border-color: var(--accent); }
+.heredero-results { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: white; border: 1px solid var(--border); border-radius: 8px; box-shadow: 0 8px 24px rgba(6,78,59,0.10); z-index: 100; }
+.heredero-result-item { padding: 9px 12px; font-size: 12.5px; cursor: pointer; transition: background 0.12s; display: flex; justify-content: space-between; }
+.heredero-result-item:hover { background: var(--surface); }
+.heredero-assigned { display: flex; align-items: center; gap: 8px; background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2); border-radius: 8px; padding: 8px 12px; }
+.heredero-assigned-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.btn-remove-heredero { background: none; border: none; color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; margin-left: auto; }
+.btn-remove-heredero:hover { color: var(--alert); }
+
+/* ══ DRAWER ══ */
+.drawer-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 500; backdrop-filter: blur(2px); }
+.drawer-overlay.open { display: block; }
+.drawer { position: fixed; right: 0; top: 0; bottom: 0; width: 560px; background: white; z-index: 600; display: flex; flex-direction: column; box-shadow: -8px 0 40px rgba(6,78,59,0.15); transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16,1,0.3,1); }
+.drawer.open { transform: translateX(0); }
+.drawer-header { padding: 24px; border-bottom: 1px solid var(--surface); display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
+.drawer-title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--dark); letter-spacing: -0.3px; }
+.drawer-step-indicator { display: flex; align-items: center; gap: 6px; }
+.step-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); transition: background 0.2s; }
+.step-dot.active { background: var(--accent); }
+.step-dot.done   { background: var(--mid); }
+.btn-close-drawer { width: 32px; height: 32px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--muted); display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.btn-close-drawer:hover { background: var(--surface); color: var(--dark); }
+.drawer-body { flex: 1; overflow-y: auto; padding: 20px 24px; }
+.drawer-body::-webkit-scrollbar { width: 4px; }
+.drawer-body::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+.drawer-footer { padding: 16px 24px; border-top: 1px solid var(--surface); display: flex; gap: 10px; flex-shrink: 0; }
+
+/* Drawer steps */
+.drawer-step { display: none; }
+.drawer-step.active { display: block; }
+.step-title { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+.step-sub   { font-size: 12.5px; color: var(--muted); margin-bottom: 16px; }
+
+/* Product checkbox list */
+.prod-check-list { display: flex; flex-direction: column; gap: 4px; max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 10px; padding: 6px; }
+.prod-check-item { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 7px; cursor: pointer; transition: background 0.12s; }
+.prod-check-item:hover { background: var(--surface); }
+.prod-check-item input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; flex-shrink: 0; }
+.prod-check-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.prod-check-sku  { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+.prod-check-price { margin-left: auto; font-family: 'DM Mono', monospace; font-size: 12px; color: var(--muted); }
+.select-all-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.select-all-label { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--dark); cursor: pointer; }
+.select-all-label input { width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer; }
+.selected-count { font-size: 12px; color: var(--mid); font-weight: 600; }
+
+/* Step 2: action config */
+.radio-group { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+.radio-item  { display: flex; align-items: center; gap: 8px; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 9px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.radio-item:has(input:checked) { border-color: var(--accent); background: var(--surface); }
+.radio-item input { accent-color: var(--accent); }
+.radio-label { font-size: 13px; font-weight: 600; color: var(--dark); }
+.radio-sub   { font-size: 11.5px; color: var(--muted); }
+.amount-row  { display: flex; gap: 10px; align-items: flex-end; margin-top: 12px; }
+.amount-input { flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: 9px; font-family: 'DM Mono', monospace; font-size: 16px; outline: none; transition: border-color 0.2s; }
+.amount-input:focus { border-color: var(--accent); }
+.amount-type-toggle { display: flex; border: 1.5px solid var(--border); border-radius: 9px; overflow: hidden; }
+.amount-type-btn { padding: 10px 14px; border: none; background: white; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: background 0.15s, color 0.15s; }
+.amount-type-btn.active { background: var(--deep); color: white; }
+
+/* Step 3: preview */
+.preview-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.preview-table thead th { padding: 8px 10px; text-align: left; font-size: 10.5px; font-weight: 700; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; border-bottom: 1px solid var(--surface); }
+.preview-table tbody td { padding: 9px 10px; border-bottom: 1px solid var(--surface); }
+.preview-table tbody tr:last-child td { border-bottom: none; }
+.price-old { color: var(--muted); text-decoration: line-through; font-family: 'DM Mono', monospace; font-size: 11px; }
+.price-new.up   { color: #16a34a; font-weight: 700; font-family: 'DM Mono', monospace; }
+.price-new.down { color: #dc2626; font-weight: 700; font-family: 'DM Mono', monospace; }
+.change-badge { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 999px; }
+.change-up   { background: rgba(34,197,94,0.10); color: #16a34a; }
+.change-down { background: rgba(220,38,38,0.10); color: #dc2626; }
+
+/* ══ UPLOAD MODAL ══ */
+.modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 700; align-items: center; justify-content: center; }
+.modal-overlay.open { display: flex; }
+.modal-box { background: white; border-radius: 20px; padding: 32px; width: 480px; max-width: 95vw; box-shadow: 0 24px 64px rgba(0,0,0,0.2); animation: modalIn 0.25s cubic-bezier(0.16,1,0.3,1) both; }
+@keyframes modalIn { from { opacity:0; transform:scale(0.96) translateY(10px); } to { opacity:1; transform:scale(1) translateY(0); } }
+.modal-title { font-size: 20px; font-weight: 600; color: var(--dark); margin-bottom: 4px; }
+.modal-sub   { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+.upload-zone { border: 2px dashed var(--border); border-radius: 12px; padding: 28px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+.upload-zone:hover, .upload-zone.over { border-color: var(--accent); background: var(--surface); }
+.upload-zone.done { border-color: var(--accent); background: rgba(34,197,94,0.06); }
+.upload-label { font-size: 13.5px; font-weight: 600; color: var(--dark); margin-top: 10px; }
+.upload-sub   { font-size: 12px; color: var(--muted); margin-top: 4px; }
+.upload-instruction { background: var(--surface); border-radius: 8px; padding: 10px 14px; font-size: 12px; color: var(--muted); margin-top: 12px; text-align: left; }
+.upload-instruction strong { color: var(--dark); }
+.preview-upload { margin-top: 12px; font-size: 12px; color: var(--muted); }
+.modal-footer { display: flex; gap: 10px; margin-top: 20px; }
+
+/* ══ TOAST ══ */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150; backdrop-filter: blur(2px); }
+.overlay.open { display: block; }
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none; }
+.toast { background: var(--deep); color: white; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 240px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); pointer-events: all; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { background: #991b1b; border-left: 3px solid #ef4444; }
+.toast-out { animation: toastOut 0.2s ease forwards; }
+
+@keyframes cardIn   { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes toastIn  { from { opacity:0; transform:translateX(16px); } to { opacity:1; transform:translateX(0); } }
+@keyframes toastOut { to   { opacity:0; transform:translateX(16px); } }
+
+@media (max-width: 768px) { .sidebar { position: fixed; left:0;top:0;bottom:0; transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .hamburger { display: flex !important; } .tb-name, .tb-role { display: none; } .content { padding: 16px; } .drawer { width: 100%; } .expanded-content { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ══ SIDEBAR (Admin) ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo"><div class="sb-logo-name">VendIA</div><div class="sb-logo-sub">Scarpatihnos.</div></div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>Home</button>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Clientes<span class="nl-badge">3</span></button>
+      <button class="nl active"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Productos</button>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>KPIs</button>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>Objetivos</button>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>Vendedores</button>
+      <button class="nl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>Promociones</button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div"></div>
+      <button class="nl" style="margin:4px 10px 8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>Configuración</button>
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user"><div class="sb-av">AS</div><div><div class="sb-uname">Admin Scarpati</div><span class="sb-role">Admin</span></div></div>
+      <button class="btn-logout"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>Cerrar sesión</button>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN ══ -->
+  <div class="main-col">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg></button>
+        <span class="tb-title">Productos</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg><span class="tb-notif">3</span></button>
+        <div class="tb-sep"></div>
+        <div class="tb-user"><div class="tb-av">AS</div><span class="tb-name">Admin Scarpati</span><span class="tb-role">Admin</span></div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Page header -->
+      <div class="page-header" style="animation:cardIn .35s ease both">
+        <div>
+          <div class="page-eyebrow">Catálogo</div>
+          <div class="page-title">Productos</div>
+          <div class="page-sub" id="prodCount">8 productos · 6 activos · 1 discontinuado · 2 en promo</div>
+        </div>
+        <div class="header-actions">
+          <button class="btn-secondary" onclick="openUploadModal()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" x2="12" y1="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+            Subir lista de precios
+          </button>
+          <button class="btn-primary" onclick="openDrawer()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+            Gestionar precios
+          </button>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <div class="search-wrap">
+          <svg class="search-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" class="search-input" id="searchInput" placeholder="Buscar por nombre o código SKU..." oninput="applyFilters()">
+        </div>
+        <select class="filter-select" id="filterFamilia" onchange="applyFilters()">
+          <option value="">Familia</option>
+          <option value="Cuchillería">Cuchillería</option>
+          <option value="Maquinaria">Maquinaria</option>
+          <option value="Herramientas">Herramientas</option>
+          <option value="Embalaje">Embalaje</option>
+        </select>
+        <select class="filter-select" id="filterEstado" onchange="applyFilters()">
+          <option value="">Estado</option>
+          <option value="activo">Activo</option>
+          <option value="discontinuado">Discontinuado</option>
+          <option value="promo">En Promo</option>
+        </select>
+        <label class="toggle-wrap">
+          <label class="toggle">
+            <input type="checkbox" id="toggleRec" onchange="applyFilters()">
+            <span class="toggle-slider"></span>
+          </label>
+          <span class="toggle-label">Solo recomendados</span>
+        </label>
+      </div>
+
+      <!-- Table -->
+      <div class="table-card" style="animation:cardIn .35s ease .08s both">
+        <table id="prodTable">
+          <thead>
+            <tr>
+              <th class="sortable" onclick="sortProd('sku')">SKU <span class="sort-ico">↕</span></th>
+              <th class="sortable" onclick="sortProd('nombre')">Producto <span class="sort-ico">↕</span></th>
+              <th>Familia</th>
+              <th class="r sortable" onclick="sortProd('precio')">Precio <span class="sort-ico">↕</span></th>
+              <th class="c sortable" onclick="sortProd('margen')">Margen <span class="sort-ico">↕</span></th>
+              <th class="c">Estado</th>
+              <th class="c sortable" onclick="sortProd('unidades')">Unid./mes <span class="sort-ico">↕</span></th>
+              <th class="c">En rec.</th>
+              <th class="c">Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="prodBody"></tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<!-- ══ DRAWER: GESTIONAR PRECIOS ══ -->
+<div class="drawer-overlay" id="drawerOverlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <div class="drawer-title" id="drawerTitle">Gestionar precios</div>
+      <div style="font-size:12px;color:var(--muted);margin-top:2px" id="drawerSubtitle">Paso 1 de 3 — Seleccioná los productos</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="drawer-step-indicator">
+        <div class="step-dot active" id="dot1"></div>
+        <div class="step-dot" id="dot2"></div>
+        <div class="step-dot" id="dot3"></div>
+      </div>
+      <button class="btn-close-drawer" onclick="closeDrawer()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="drawer-body">
+    <!-- STEP 1: Selección -->
+    <div class="drawer-step active" id="step1">
+      <div class="step-title">¿Qué productos querés modificar?</div>
+      <div class="step-sub">Seleccioná individualmente o por familia.</div>
+      <div class="select-all-row">
+        <label class="select-all-label">
+          <input type="checkbox" id="selectAll" onchange="toggleSelectAll(this)">
+          Seleccionar todos
+        </label>
+        <span class="selected-count" id="selectedCount">0 seleccionados</span>
+      </div>
+      <div class="prod-check-list" id="prodCheckList"></div>
+    </div>
+
+    <!-- STEP 2: Acción -->
+    <div class="drawer-step" id="step2">
+      <div class="step-title">¿Qué cambio querés aplicar?</div>
+      <div class="step-sub">Se aplicará a todos los productos seleccionados.</div>
+      <div class="radio-group">
+        <label class="radio-item"><input type="radio" name="accion" value="aumentar" checked><div><div class="radio-label">Aumentar precio</div><div class="radio-sub">Subir el precio por % o valor fijo</div></div></label>
+        <label class="radio-item"><input type="radio" name="accion" value="reducir"><div><div class="radio-label">Reducir precio</div><div class="radio-sub">Bajar el precio por % o valor fijo</div></div></label>
+        <label class="radio-item"><input type="radio" name="accion" value="fijo"><div><div class="radio-label">Precio fijo</div><div class="radio-sub">Establecer un precio exacto</div></div></label>
+      </div>
+      <div class="amount-row">
+        <input type="number" class="amount-input" id="amountInput" placeholder="0" min="0">
+        <div class="amount-type-toggle">
+          <button class="amount-type-btn active" id="btnPct" onclick="setAmountType('pct')">%</button>
+          <button class="amount-type-btn" id="btnAbs" onclick="setAmountType('abs')">$</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STEP 3: Preview -->
+    <div class="drawer-step" id="step3">
+      <div class="step-title">Confirmá los cambios</div>
+      <div class="step-sub">Revisá antes de aplicar. Esta acción no se puede deshacer.</div>
+      <table class="preview-table">
+        <thead><tr><th>Producto</th><th>Precio actual</th><th>Cambio</th><th>Precio nuevo</th></tr></thead>
+        <tbody id="previewBody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="drawer-footer">
+    <button class="btn-ghost" id="btnBack" style="display:none" onclick="drawerBack()">← Atrás</button>
+    <button class="btn-primary" id="btnNext" onclick="drawerNext()" style="margin-left:auto">Siguiente →</button>
+  </div>
+</div>
+
+<!-- ══ MODAL: SUBIR LISTA DE PRECIOS ══ -->
+<div class="modal-overlay" id="uploadModal" onclick="closeUploadModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-title">Subir lista de precios</div>
+    <div class="modal-sub">El archivo debe tener dos columnas: <strong>codigo</strong> y <strong>precio</strong></div>
+    <div class="upload-zone" id="uploadZone" onclick="document.getElementById('uploadFileInput').click()" ondragover="uploadOver(event)" ondragleave="uploadLeave()" ondrop="uploadDrop(event)">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="var(--border)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" x2="12" y1="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+      <div class="upload-label" id="uploadLabel">Arrastrá tu archivo aquí o hacé click</div>
+      <div class="upload-sub">XLSX · CSV</div>
+      <input type="file" id="uploadFileInput" accept=".xlsx,.csv" style="display:none" onchange="handleUpload(event)">
+    </div>
+    <div class="upload-instruction">
+      <strong>Formato esperado:</strong><br>
+      Columna A: <code>codigo</code> (ej: CAR22) · Columna B: <code>precio</code> (ej: 145.50)
+    </div>
+    <div class="preview-upload" id="uploadPreview" style="display:none"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="closeUploadModal()">Cancelar</button>
+      <button class="btn-primary" id="btnImportar" disabled onclick="importarPrecios()">Importar precios</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+let productos = [
+  { id:1, sku:'CAR22',  nombre:'Cuchillos blancos 22cm', familia:'Cuchillería', precio:142.00, margen:34, estado:'activo', promo:true,  unidades:240, recomendados:12, heredero:null,
+    histPrecios:[{fecha:'01/04/2026',v:142},{fecha:'01/01/2026',v:135},{fecha:'01/10/2025',v:128}],
+    clientes:['Astarita SH','Mauro Heikele','Fema Gastronomia','Distribuidora Blum'] },
+  { id:2, sku:'CAR467', nombre:'Chairas premium',         familia:'Cuchillería', precio:89.50,  margen:28, estado:'activo', promo:false, unidades:85,  recomendados:8, heredero:null,
+    histPrecios:[{fecha:'01/01/2026',v:89.50},{fecha:'01/07/2025',v:82}],
+    clientes:['Astarita SH','Carpintería Juan'] },
+  { id:3, sku:'ENV-99', nombre:'Embutidoras básicas',     familia:'Maquinaria',  precio:215.00, margen:41, estado:'activo', promo:true,  unidades:18,  recomendados:5, heredero:null,
+    histPrecios:[{fecha:'01/03/2026',v:215},{fecha:'01/12/2025',v:200}],
+    clientes:['Astarita SH','Cocinas del Sur'] },
+  { id:4, sku:'ENV-200',nombre:'Embutidoras industriales',familia:'Maquinaria',  precio:890.00, margen:38, estado:'activo', promo:false, unidades:6,   recomendados:0, heredero:null,
+    histPrecios:[{fecha:'01/01/2026',v:890}],
+    clientes:[] },
+  { id:5, sku:'GAL-01', nombre:'Ganchos para cuchillo v1',familia:'Cuchillería', precio:12.50,  margen:52, estado:'discontinuado', promo:false, unidades:0, recomendados:0, heredero:'GAL-02',
+    histPrecios:[{fecha:'01/01/2025',v:12.50}],
+    clientes:[] },
+  { id:6, sku:'GAL-02', nombre:'Ganchos premium v2',      familia:'Cuchillería', precio:15.00,  margen:48, estado:'activo', promo:false, unidades:34,  recomendados:3, heredero:null,
+    histPrecios:[{fecha:'01/01/2026',v:15}],
+    clientes:['Mauro Heikele','Herrajes Río'] },
+  { id:7, sku:'EMB-10', nombre:'Cinta de embalaje',       familia:'Embalaje',    precio:8.90,   margen:45, estado:'activo', promo:false, unidades:180, recomendados:6, heredero:null,
+    histPrecios:[{fecha:'01/02/2026',v:8.90},{fecha:'01/09/2025',v:7.50}],
+    clientes:['Herrajes Río','JPS Grupo Comercial'] },
+  { id:8, sku:'HER-05', nombre:'Kit mantenimiento',       familia:'Herramientas',precio:340.00, margen:55, estado:'activo', promo:false, unidades:12,  recomendados:4, heredero:null,
+    histPrecios:[{fecha:'01/01/2026',v:340}],
+    clientes:['Astarita SH','Cocinas del Sur','Fema Gastronomia'] },
+];
+
+let expandedRow = null;
+let sortKey = null;
+let sortAsc  = true;
+let editingPrice = null;
+
+// ══════════════════════════════════════════════
+// RENDER TABLE
+// ══════════════════════════════════════════════
+function getFiltered() {
+  const q    = document.getElementById('searchInput').value.toLowerCase();
+  const fam  = document.getElementById('filterFamilia').value;
+  const est  = document.getElementById('filterEstado').value;
+  const rec  = document.getElementById('toggleRec').checked;
+
+  return productos.filter(p => {
+    if (q && !p.nombre.toLowerCase().includes(q) && !p.sku.toLowerCase().includes(q)) return false;
+    if (fam && p.familia !== fam) return false;
+    if (est === 'activo'        && p.estado !== 'activo')        return false;
+    if (est === 'discontinuado' && p.estado !== 'discontinuado') return false;
+    if (est === 'promo'         && !p.promo)                     return false;
+    if (rec && p.recomendados === 0) return false;
+    return true;
+  });
+}
+
+function renderTable() {
+  const data = getFiltered();
+  if (sortKey) {
+    data.sort((a,b) => {
+      const va = a[sortKey], vb = b[sortKey];
+      return sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+    });
+  }
+
+  const tbody = document.getElementById('prodBody');
+  tbody.innerHTML = data.map(p => {
+    const isDisc = p.estado === 'discontinuado';
+    const estadoBadge = isDisc
+      ? `<span class="badge b-disc">DISCONTINUADO</span>`
+      : p.promo
+        ? `<span class="badge b-activo">ACTIVO</span> <span class="badge b-promo">EN PROMO</span>`
+        : `<span class="badge b-activo">ACTIVO</span>`;
+    const recBadge = p.recomendados > 0
+      ? `<span class="badge b-rec">${p.recomendados} clientes</span>`
+      : '<span style="color:var(--border);font-size:12px">—</span>';
+
+    return `
+    <tr id="row-${p.id}" class="${isDisc ? 'discontinued' : ''}" onclick="toggleExpand(${p.id}, event)">
+      <td><span class="sku">${p.sku}</span></td>
+      <td><span class="td-name ${isDisc ? 'struck' : ''}">${p.nombre}</span></td>
+      <td style="color:var(--muted);font-size:12.5px">${p.familia}</td>
+      <td class="r" id="price-cell-${p.id}">
+        <span class="price-val" id="price-display-${p.id}">$${p.precio.toFixed(2)}</span>
+      </td>
+      <td class="c"><span class="margin-val">${p.margen}%</span></td>
+      <td class="c">${estadoBadge}</td>
+      <td class="c" style="font-family:'DM Mono',monospace;font-size:12px">${p.unidades || '—'}</td>
+      <td class="c">${recBadge}</td>
+      <td class="c" onclick="event.stopPropagation()">
+        <div style="display:flex;align-items:center;justify-content:center;gap:2px">
+          <button class="action-ico" title="Editar precio" onclick="startEditPrice(${p.id})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+          </button>
+          <button class="action-ico ${isDisc ? '' : 'red'}" title="${isDisc ? 'Reactivar' : 'Discontinuar'}" onclick="toggleDiscontinued(${p.id})">
+            ${isDisc
+              ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>`
+              : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="4.93" x2="19.07" y1="4.93" y2="19.07"/></svg>`
+            }
+          </button>
+        </div>
+      </td>
+    </tr>
+    <tr class="expanded-row" id="exp-${p.id}" style="display:none">
+      <td colspan="9">${buildExpandedContent(p)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function buildExpandedContent(p) {
+  const clientes = p.clientes.length
+    ? p.clientes.map(c => `<div class="exp-client-chip"><svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${c}</div>`).join('')
+    : '<span style="font-size:12px;color:var(--muted)">Sin recomendaciones activas</span>';
+
+  const histPrecio = p.histPrecios.map(h => `
+    <div class="price-hist-row">
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${h.fecha}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:12px;font-weight:600;color:var(--dark)">$${h.v.toFixed(2)}</span>
+    </div>`).join('');
+
+  const herederoSection = p.estado === 'discontinuado' ? `
+    <div style="grid-column:1/-1">
+      <div class="heredero-section">
+        <div class="heredero-title">⚠ Producto discontinuado · Heredero</div>
+        ${p.heredero
+          ? `<div class="heredero-assigned">
+               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+               <span class="heredero-assigned-name">Heredero: ${p.heredero}</span>
+               <button class="btn-remove-heredero" onclick="removeHeredero(${p.id})" title="Quitar heredero">×</button>
+             </div>`
+          : `<div class="heredero-input-wrap">
+               <input type="text" class="heredero-input" id="heredero-input-${p.id}" placeholder="Buscar producto heredero por nombre o código..." oninput="searchHeredero(${p.id}, this.value)">
+               <div class="heredero-results" id="heredero-results-${p.id}" style="display:none"></div>
+             </div>`
+        }
+      </div>
+    </div>` : '';
+
+  return `
+  <div class="expanded-content">
+    <div>
+      <div class="exp-section-title">Clientes con recomendación activa</div>
+      <div style="display:flex;flex-wrap:wrap;gap:4px">${clientes}</div>
+    </div>
+    <div>
+      <div class="exp-section-title">Historial de precios</div>
+      ${histPrecio}
+    </div>
+    ${herederoSection}
+  </div>`;
+}
+
+// ══════════════════════════════════════════════
+// EXPAND ROW
+// ══════════════════════════════════════════════
+function toggleExpand(id, event) {
+  if (event && event.target.closest('.action-ico')) return;
+  if (event && event.target.closest('.price-edit-wrap')) return;
+
+  const expRow = document.getElementById('exp-' + id);
+  const row    = document.getElementById('row-' + id);
+  const isOpen = expRow.style.display !== 'none';
+
+  // close previous
+  if (expandedRow && expandedRow !== id) {
+    document.getElementById('exp-' + expandedRow).style.display = 'none';
+    document.getElementById('row-' + expandedRow).classList.remove('expanded');
+  }
+
+  expRow.style.display = isOpen ? 'none' : '';
+  row.classList.toggle('expanded', !isOpen);
+  expandedRow = isOpen ? null : id;
+}
+
+// ══════════════════════════════════════════════
+// INLINE PRICE EDIT
+// ══════════════════════════════════════════════
+function startEditPrice(id) {
+  const p    = productos.find(x => x.id === id);
+  const cell = document.getElementById('price-cell-' + id);
+  cell.innerHTML = `
+    <div class="price-edit-wrap">
+      <input class="price-input" type="number" value="${p.precio.toFixed(2)}" step="0.01" min="0" id="price-input-${id}" onclick="event.stopPropagation()">
+      <button class="price-confirm" onclick="confirmPrice(${id});event.stopPropagation()" title="Confirmar">✓</button>
+      <button class="price-cancel"  onclick="cancelPrice(${id});event.stopPropagation()"  title="Cancelar">✗</button>
+    </div>`;
+  setTimeout(() => document.getElementById('price-input-' + id)?.focus(), 50);
+  editingPrice = id;
+}
+
+function confirmPrice(id) {
+  const inp = document.getElementById('price-input-' + id);
+  const val = parseFloat(inp.value);
+  if (isNaN(val) || val <= 0) { inp.style.borderColor = 'var(--alert)'; return; }
+  productos.find(x => x.id === id).precio = val;
+  showToast(`✓ Precio actualizado: $${val.toFixed(2)}`, 'success');
+  renderTable();
+  editingPrice = null;
+}
+
+function cancelPrice(id) {
+  renderTable();
+  editingPrice = null;
+}
+
+// ══════════════════════════════════════════════
+// DISCONTINUAR / REACTIVAR
+// ══════════════════════════════════════════════
+function toggleDiscontinued(id) {
+  const p = productos.find(x => x.id === id);
+  if (p.estado !== 'discontinuado') {
+    if (!confirm(`¿Marcar "${p.nombre}" como discontinuado?\nLas recomendaciones activas de este producto se desactivarán.`)) return;
+    p.estado = 'discontinuado';
+    p.recomendados = 0;
+    showToast(`${p.nombre} marcado como discontinuado`, 'success');
+  } else {
+    if (!confirm(`¿Reactivar "${p.nombre}"?`)) return;
+    p.estado = 'activo';
+    showToast(`✓ ${p.nombre} reactivado`, 'success');
+  }
+  expandedRow = null;
+  renderTable();
+}
+
+// ══════════════════════════════════════════════
+// HEREDERO
+// ══════════════════════════════════════════════
+function searchHeredero(id, query) {
+  const results = document.getElementById('heredero-results-' + id);
+  if (!query.trim()) { results.style.display = 'none'; return; }
+  const matches = productos.filter(p => p.id !== id && p.estado !== 'discontinuado' && (p.nombre.toLowerCase().includes(query.toLowerCase()) || p.sku.toLowerCase().includes(query.toLowerCase())));
+  if (!matches.length) { results.style.display = 'none'; return; }
+  results.style.display = '';
+  results.innerHTML = matches.map(m => `
+    <div class="heredero-result-item" onclick="assignHeredero(${id}, '${m.sku} — ${m.nombre}')">
+      <span>${m.nombre}</span>
+      <span style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${m.sku}</span>
+    </div>`).join('');
+}
+
+function assignHeredero(id, label) {
+  const p = productos.find(x => x.id === id);
+  p.heredero = label;
+  expandedRow = id;
+  renderTable();
+  toggleExpand(id, null);
+  showToast(`✓ Heredero asignado. Las recomendaciones se redirigirán a ${label}`, 'success');
+}
+
+function removeHeredero(id) {
+  if (!confirm('¿Quitar el heredero asignado?')) return;
+  productos.find(x => x.id === id).heredero = null;
+  expandedRow = id;
+  renderTable();
+  toggleExpand(id, null);
+}
+
+// ══════════════════════════════════════════════
+// SORT & FILTERS
+// ══════════════════════════════════════════════
+function sortProd(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = true; }
+  document.querySelectorAll('thead th .sort-ico').forEach(ico => ico.textContent = '↕');
+  document.querySelectorAll('thead th').forEach(th => th.classList.remove('sort-active'));
+  const keyMap = { sku:0, nombre:1, precio:3, margen:4, unidades:6 };
+  const ths = document.querySelectorAll('#prodTable thead th');
+  if (keyMap[key] !== undefined) {
+    ths[keyMap[key]].classList.add('sort-active');
+    ths[keyMap[key]].querySelector('.sort-ico').textContent = sortAsc ? '↑' : '↓';
+  }
+  renderTable();
+}
+
+function applyFilters() {
+  ['filterFamilia','filterEstado'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active', !!el.value);
+  });
+  expandedRow = null;
+  renderTable();
+}
+
+// ══════════════════════════════════════════════
+// DRAWER — GESTIONAR PRECIOS
+// ══════════════════════════════════════════════
+let drawerStep = 1;
+let selectedIds = new Set();
+let amountType  = 'pct';
+
+function openDrawer() {
+  drawerStep = 1;
+  selectedIds.clear();
+  document.getElementById('drawerOverlay').classList.add('open');
+  document.getElementById('drawer').classList.add('open');
+  updateDrawerStep();
+  buildCheckList();
+}
+function closeDrawer() {
+  document.getElementById('drawerOverlay').classList.remove('open');
+  document.getElementById('drawer').classList.remove('open');
+}
+
+function buildCheckList() {
+  const list = document.getElementById('prodCheckList');
+  const active = productos.filter(p => p.estado !== 'discontinuado');
+  list.innerHTML = active.map(p => `
+    <label class="prod-check-item">
+      <input type="checkbox" value="${p.id}" onchange="updateSelectedCount()">
+      <div style="flex:1">
+        <div class="prod-check-name">${p.nombre}</div>
+        <div class="prod-check-sku">${p.sku} · ${p.familia}</div>
+      </div>
+      <span class="prod-check-price">$${p.precio.toFixed(2)}</span>
+    </label>`).join('');
+}
+
+function updateSelectedCount() {
+  const checked = document.querySelectorAll('#prodCheckList input:checked');
+  selectedIds = new Set([...checked].map(c => parseInt(c.value)));
+  document.getElementById('selectedCount').textContent = `${selectedIds.size} seleccionado${selectedIds.size !== 1 ? 's' : ''}`;
+  document.getElementById('selectAll').indeterminate = selectedIds.size > 0 && selectedIds.size < productos.filter(p => p.estado !== 'discontinuado').length;
+  document.getElementById('selectAll').checked = selectedIds.size === productos.filter(p => p.estado !== 'discontinuado').length;
+}
+
+function toggleSelectAll(cb) {
+  const checkboxes = document.querySelectorAll('#prodCheckList input');
+  checkboxes.forEach(c => { c.checked = cb.checked; });
+  updateSelectedCount();
+}
+
+function setAmountType(type) {
+  amountType = type;
+  document.getElementById('btnPct').classList.toggle('active', type === 'pct');
+  document.getElementById('btnAbs').classList.toggle('active', type === 'abs');
+}
+
+function updateDrawerStep() {
+  [1,2,3].forEach(i => {
+    document.getElementById('step' + i).classList.toggle('active', i === drawerStep);
+    document.getElementById('dot'  + i).className = 'step-dot' + (i === drawerStep ? ' active' : i < drawerStep ? ' done' : '');
+  });
+  const subtitles = ['Paso 1 de 3 — Seleccioná los productos','Paso 2 de 3 — Definí el cambio','Paso 3 de 3 — Confirmá los cambios'];
+  document.getElementById('drawerSubtitle').textContent = subtitles[drawerStep - 1];
+  document.getElementById('btnBack').style.display = drawerStep > 1 ? '' : 'none';
+  document.getElementById('btnNext').textContent = drawerStep === 3 ? 'Confirmar cambios' : 'Siguiente →';
+}
+
+function drawerNext() {
+  if (drawerStep === 1) {
+    if (selectedIds.size === 0) { showToast('Seleccioná al menos un producto', 'error'); return; }
+    drawerStep = 2;
+    updateDrawerStep();
+  } else if (drawerStep === 2) {
+    const amount = parseFloat(document.getElementById('amountInput').value);
+    if (isNaN(amount) || amount <= 0) { document.getElementById('amountInput').style.borderColor = 'var(--alert)'; return; }
+    buildPreview();
+    drawerStep = 3;
+    updateDrawerStep();
+  } else {
+    applyPriceChanges();
+    closeDrawer();
+  }
+}
+
+function drawerBack() {
+  if (drawerStep > 1) { drawerStep--; updateDrawerStep(); }
+}
+
+function buildPreview() {
+  const amount = parseFloat(document.getElementById('amountInput').value);
+  const accion = document.querySelector('input[name="accion"]:checked').value;
+  const body   = document.getElementById('previewBody');
+  const isUp   = accion === 'aumentar';
+
+  body.innerHTML = [...selectedIds].map(id => {
+    const p = productos.find(x => x.id === id);
+    let newPrice;
+    if (accion === 'fijo')     newPrice = amount;
+    else if (amountType === 'pct') newPrice = p.precio * (isUp ? 1 + amount/100 : 1 - amount/100);
+    else                           newPrice = isUp ? p.precio + amount : p.precio - amount;
+    newPrice = Math.max(0, newPrice);
+    const diff = ((newPrice - p.precio) / p.precio * 100).toFixed(1);
+    const cls  = isUp || accion === 'fijo' && newPrice >= p.precio ? 'up' : 'down';
+
+    return `
+    <tr>
+      <td><span style="font-weight:600;color:var(--dark);font-size:12.5px">${p.nombre}</span></td>
+      <td><span class="price-old">$${p.precio.toFixed(2)}</span></td>
+      <td><span class="change-badge ${cls === 'up' ? 'change-up' : 'change-down'}">${cls === 'up' ? '+' : ''}${diff}%</span></td>
+      <td><span class="price-new ${cls}">$${newPrice.toFixed(2)}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+function applyPriceChanges() {
+  const amount = parseFloat(document.getElementById('amountInput').value);
+  const accion = document.querySelector('input[name="accion"]:checked').value;
+  const isUp   = accion === 'aumentar';
+  selectedIds.forEach(id => {
+    const p = productos.find(x => x.id === id);
+    if (accion === 'fijo') p.precio = amount;
+    else if (amountType === 'pct') p.precio *= (isUp ? 1 + amount/100 : 1 - amount/100);
+    else p.precio = isUp ? p.precio + amount : Math.max(0, p.precio - amount);
+    p.precio = Math.round(p.precio * 100) / 100;
+  });
+  showToast(`✓ ${selectedIds.size} producto${selectedIds.size !== 1 ? 's' : ''} actualizado${selectedIds.size !== 1 ? 's' : ''} correctamente`, 'success');
+  renderTable();
+}
+
+// ══════════════════════════════════════════════
+// UPLOAD MODAL
+// ══════════════════════════════════════════════
+function openUploadModal() { document.getElementById('uploadModal').classList.add('open'); }
+function closeUploadModal(e) {
+  if (e && e.target !== document.getElementById('uploadModal')) return;
+  document.getElementById('uploadModal').classList.remove('open');
+  document.getElementById('uploadLabel').textContent = 'Arrastrá tu archivo aquí o hacé click';
+  document.getElementById('uploadPreview').style.display = 'none';
+  document.getElementById('btnImportar').disabled = true;
+  document.getElementById('uploadZone').classList.remove('done');
+}
+
+function uploadOver(e) { e.preventDefault(); document.getElementById('uploadZone').classList.add('over'); }
+function uploadLeave()  { document.getElementById('uploadZone').classList.remove('over'); }
+function uploadDrop(e)  { e.preventDefault(); uploadLeave(); handleUpload({ target: { files: e.dataTransfer.files } }); }
+
+function handleUpload(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const ok = file.name.endsWith('.xlsx') || file.name.endsWith('.csv');
+  if (!ok) { showToast('Formato inválido. Usá .xlsx o .csv', 'error'); return; }
+  document.getElementById('uploadLabel').textContent = '✓ ' + file.name;
+  document.getElementById('uploadZone').classList.add('done');
+  // simulated preview
+  const preview = document.getElementById('uploadPreview');
+  preview.style.display = '';
+  preview.innerHTML = `
+    <div style="font-size:11px;font-weight:700;color:var(--muted);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:6px">Preview — primeras 5 filas</div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr style="background:var(--surface)"><th style="padding:6px 10px;text-align:left">Código</th><th style="padding:6px 10px;text-align:right">Precio</th></tr></thead>
+      <tbody>
+        <tr><td style="padding:5px 10px;font-family:'DM Mono',monospace">CAR22</td><td style="padding:5px 10px;text-align:right;font-family:'DM Mono',monospace">$145.00</td></tr>
+        <tr style="background:var(--surface)"><td style="padding:5px 10px;font-family:'DM Mono',monospace">CAR467</td><td style="padding:5px 10px;text-align:right;font-family:'DM Mono',monospace">$92.00</td></tr>
+        <tr><td style="padding:5px 10px;font-family:'DM Mono',monospace">ENV-99</td><td style="padding:5px 10px;text-align:right;font-family:'DM Mono',monospace">$220.00</td></tr>
+        <tr style="background:var(--surface)"><td style="padding:5px 10px;font-family:'DM Mono',monospace">GAL-02</td><td style="padding:5px 10px;text-align:right;font-family:'DM Mono',monospace">$16.50</td></tr>
+        <tr><td style="padding:5px 10px;font-family:'DM Mono',monospace">HER-05</td><td style="padding:5px 10px;text-align:right;font-family:'DM Mono',monospace">$355.00</td></tr>
+      </tbody>
+    </table>`;
+  document.getElementById('btnImportar').disabled = false;
+}
+
+function importarPrecios() {
+  showToast('✓ Lista de precios importada correctamente', 'success');
+  closeUploadModal();
+}
+
+// ══════════════════════════════════════════════
+// SIDEBAR MOBILE
+// ══════════════════════════════════════════════
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el   = document.createElement('div');
+  el.className   = 'toast ' + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 220); }, 3500);
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+renderTable();
+</script>
+
+</body>
+</html>

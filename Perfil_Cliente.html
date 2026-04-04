@@ -1,0 +1,1874 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Astarita SH</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep:    #064e3b;
+  --mid:     #006c49;
+  --accent:  #22c55e;
+  --sage:    #d1fae5;
+  --surface: #ecfdf5;
+  --bg:      #f0fdf4;
+  --border:  #a7f3d0;
+  --muted:   #4b7c68;
+  --dark:    #191c1e;
+  --alert:   #ea580c;
+  --warning: #ca8a04;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); overflow: hidden; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ══════════════════ SIDEBAR ══════════════════ */
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--deep);
+  display: flex; flex-direction: column; height: 100vh;
+  z-index: 200; transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+}
+.sb-logo { padding: 24px 20px 16px; }
+.sb-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.sb-logo-sub  { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 3px; }
+.sb-div { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.sb-nav { flex: 1; display: flex; flex-direction: column; padding: 4px 0; overflow-y: auto; overflow-x: hidden; }
+.sb-nav::-webkit-scrollbar { width: 0; }
+.sb-lbl { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.25); letter-spacing: 1.8px; text-transform: uppercase; padding: 10px 20px 6px; }
+.nl {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px; margin: 1px 10px;
+  border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 13.5px;
+  font-weight: 500; border: none; background: none; width: calc(100% - 20px); text-align: left;
+  border-left: 3px solid transparent; transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.nl:hover  { background: rgba(255,255,255,0.08); color: white; }
+.nl.active { background: rgba(34,197,94,0.14); color: #22c55e; border-left-color: var(--accent); font-weight: 600; }
+.nl svg { flex-shrink: 0; width: 17px; height: 17px; }
+.nl-badge { margin-left: auto; background: var(--alert); color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.sb-bottom { padding: 8px 0 16px; }
+.sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 0 10px; }
+.sb-av   { width: 34px; height: 34px; border-radius: 50%; background: var(--mid); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sb-uname { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-role  { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); }
+.btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 16px; margin: 4px 10px 0; border-radius: 8px; border: none; background: none; cursor: pointer; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-size: 13px; width: calc(100% - 20px); transition: background 0.15s, color 0.15s; }
+.btn-logout:hover { background: rgba(234,88,12,0.12); color: var(--alert); }
+
+/* ══════════════════ MAIN ══════════════════ */
+.main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: 56px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.tb-left  { display: flex; align-items: center; gap: 8px; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+.hamburger { display: none; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--dark); align-items: center; justify-content: center; }
+.hamburger:hover { background: var(--surface); }
+.tb-right { display: flex; align-items: center; gap: 4px; }
+.tb-btn   { width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); position: relative; transition: background 0.15s, color 0.15s; }
+.tb-btn:hover { background: var(--surface); color: var(--deep); }
+.tb-notif { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; background: var(--alert); color: white; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.tb-sep  { width: 1px; height: 22px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+.tb-user { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.tb-user:hover { background: var(--surface); }
+.tb-av   { width: 32px; height: 32px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tb-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.tb-role { font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; background: var(--sage); color: var(--mid); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ══════════════════════════════════════
+   PERFIL CLIENTE
+══════════════════════════════════════ */
+
+/* Breadcrumb */
+.breadcrumb { display: flex; align-items: center; gap: 6px; font-size: 12.5px; color: var(--muted); margin-bottom: 16px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; font-weight: 500; transition: color 0.15s; }
+.breadcrumb a:hover { color: var(--mid); }
+.breadcrumb-sep { color: var(--border); font-size: 14px; }
+.breadcrumb-current { color: var(--dark); font-weight: 600; }
+
+/* Page header */
+.client-header { margin-bottom: 24px; }
+.client-title-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.client-title { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; line-height: 1; }
+.client-cod { font-family: 'DM Mono', monospace; font-size: 12px; font-weight: 500; background: var(--sage); color: var(--mid); border: 1px solid var(--border); padding: 3px 10px; border-radius: 6px; white-space: nowrap; }
+.client-meta { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.meta-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--muted); }
+.meta-item svg { flex-shrink: 0; color: var(--muted); opacity: 0.7; }
+.meta-sep { width: 3px; height: 3px; border-radius: 50%; background: var(--border); }
+
+.badge-estado { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+.badge-estado.activo { background: rgba(34,197,94,0.12); color: #16a34a; }
+.badge-estado-dot { width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+
+.salud-chip { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; }
+.salud-chip.green  { background: rgba(34,197,94,0.12); color: #16a34a; }
+.salud-chip.yellow { background: rgba(202,138,4,0.10); color: #b45309; }
+.salud-chip.red    { background: rgba(220,38,38,0.10); color: #dc2626; }
+.salud-label { font-size: 12px; color: var(--muted); }
+
+/* ══ Two-column layout ══ */
+.profile-grid { display: grid; grid-template-columns: 65fr 35fr; gap: 20px; align-items: start; }
+
+/* ══ Card base ══ */
+.card { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+.card + .card { margin-top: 16px; }
+.card-head { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--surface); }
+.card-head-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--dark); letter-spacing: -0.2px; }
+.card-head-meta { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: var(--muted); letter-spacing: 0.3px; }
+
+/* ══ OC table ══ */
+.oc-table-wrap { overflow-x: auto; }
+.oc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.oc-table thead tr { background: var(--sage); }
+.oc-table thead th { padding: 10px 16px; text-align: left; font-size: 10.5px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--mid); border-bottom: 1px solid var(--border); }
+.oc-table thead th.c { text-align: center; }
+.oc-table tbody tr { border-bottom: 1px solid var(--surface); transition: background 0.12s; }
+.oc-table tbody tr:last-child { border-bottom: none; }
+.oc-table tbody tr:nth-child(odd)  { background: white; }
+.oc-table tbody tr:nth-child(even) { background: var(--surface); }
+.oc-table tbody tr:hover { background: var(--bg) !important; }
+.oc-table tbody td { padding: 12px 16px; color: var(--dark); vertical-align: middle; }
+.oc-table tbody td.c { text-align: center; }
+.td-sku { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--muted); }
+.td-producto { font-size: 13px; font-weight: 500; color: var(--dark); }
+.td-cant { font-size: 13px; font-weight: 600; color: var(--dark); }
+.td-precio { font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--dark); }
+
+.sug-badge { display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; padding: 3px 10px; border-radius: 999px; letter-spacing: 0.3px; white-space: nowrap; transition: all 0.25s ease; }
+.sug-pendiente  { background: rgba(202,138,4,0.12);  color: #b45309; }
+.sug-realizado  { background: rgba(34,197,94,0.12);  color: #16a34a; }
+.sug-pospuesto  { background: rgba(29,78,216,0.10);  color: #1d4ed8; }
+.sug-descartado { background: rgba(0,0,0,0.06);      color: var(--muted); }
+
+/* ══ Right column placeholders ══ */
+.placeholder-card { background: white; border: 1px solid var(--border); border-radius: 16px; height: 300px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.placeholder-card + .placeholder-card { margin-top: 16px; }
+.placeholder-icon { width: 44px; height: 44px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--border); }
+.placeholder-text { font-size: 13px; font-weight: 500; color: var(--muted); }
+
+/* ══════════════════════════════════════
+   RECOMENDACIONES DEL MOTOR
+══════════════════════════════════════ */
+
+.rec-section-header {
+  display: flex; align-items: center; gap: 8px;
+  margin-top: 24px; margin-bottom: 12px;
+}
+.rec-section-title {
+  font-size: 16px; font-weight: 600; color: var(--dark);
+  display: flex; align-items: center; gap: 7px;
+}
+.rec-section-title svg { color: var(--accent); }
+
+/* Collapsible group */
+.rec-group { margin-bottom: 10px; }
+
+.rec-group-header {
+  display: flex; align-items: center; gap: 9px;
+  padding: 11px 14px; border-radius: 8px;
+  cursor: pointer; user-select: none;
+  border-left: 3px solid transparent;
+  transition: opacity 0.15s;
+}
+.rec-group-header:hover { opacity: 0.85; }
+.rec-group-header.declive { background: #fef2f2; border-left-color: var(--alert); }
+.rec-group-header.reorden { background: var(--bg);   border-left-color: var(--mid); }
+
+.rec-group-label { font-size: 14px; font-weight: 700; flex: 1; }
+.rec-group-header.declive .rec-group-label { color: var(--alert); }
+.rec-group-header.reorden .rec-group-label { color: var(--mid); }
+
+.rec-group-chevron { color: var(--muted); transition: transform 0.25s ease; flex-shrink: 0; }
+.rec-group-chevron.open { transform: rotate(90deg); }
+
+/* Collapsible body */
+.rec-group-body { overflow: hidden; max-height: 0; transition: max-height 0.32s cubic-bezier(0.4,0,0.2,1); }
+.rec-group-body.open { max-height: 2000px; }
+.rec-group-inner { padding: 10px 0 4px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Rec item */
+.rec-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  background: white; border: 1px solid var(--border);
+  border-left: 3px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  transition: box-shadow 0.15s, opacity 0.2s, transform 0.15s;
+  position: relative;
+}
+.rec-item.declive-item { border-left-color: var(--alert); }
+.rec-item.reorden-item { border-left-color: var(--mid); align-items: center; }
+.rec-item.dragging { opacity: 0.6; transform: scale(1.02); box-shadow: 0 12px 32px rgba(6,78,59,0.18); }
+
+/* Realizado state */
+.rec-item.estado-realizado {
+  background: rgba(34,197,94,0.04);
+  border-left-color: #16a34a;
+  border-color: rgba(34,197,94,0.22);
+}
+.rec-item.estado-realizado .rec-item-actions { display: none; }
+.rec-item.estado-realizado .realizado-badge { display: inline-flex; }
+
+/* Fade-out */
+@keyframes itemFadeOut {
+  to { opacity: 0; transform: translateY(-5px); max-height: 0; padding-top: 0; padding-bottom: 0; margin: 0; border-width: 0; overflow: hidden; }
+}
+.rec-item.fading {
+  animation: itemFadeOut 0.3s ease forwards;
+  pointer-events: none;
+}
+
+/* Drag handle */
+.drag-handle {
+  display: flex; align-items: flex-start; padding-top: 1px;
+  color: var(--border); cursor: grab; flex-shrink: 0;
+  font-size: 15px; letter-spacing: -1px; line-height: 1.2;
+  transition: color 0.15s; margin-right: 2px;
+}
+.drag-handle:hover { color: var(--muted); }
+.drag-handle:active { cursor: grabbing; }
+
+/* Item content */
+.rec-item-content { flex: 1; min-width: 0; }
+.rec-item-name { font-size: 14px; font-weight: 600; color: var(--dark); margin-bottom: 3px; }
+.rec-item-justif { font-size: 12px; color: var(--muted); line-height: 1.45; }
+.rec-item-delta { font-size: 12px; color: var(--muted); margin-top: 6px; display: flex; align-items: center; gap: 3px; flex-wrap: wrap; }
+.delta-alert { color: var(--alert); font-weight: 700; }
+.delta-arrow { color: var(--alert); font-weight: 700; }
+
+/* Reorden qty panel */
+.reorden-qty { text-align: center; flex-shrink: 0; padding-left: 20px; min-width: 90px; }
+.reorden-qty-num { font-family: 'Barlow Condensed', sans-serif; font-size: 36px; font-weight: 700; color: var(--accent); line-height: 1; }
+.reorden-qty-label { font-size: 10px; font-weight: 600; color: var(--muted); letter-spacing: 0.5px; text-transform: uppercase; margin-top: 2px; }
+
+/* Realizado inline badge */
+.realizado-badge {
+  display: none; align-items: center; gap: 5px;
+  font-size: 11px; font-weight: 700; color: #16a34a;
+  background: rgba(34,197,94,0.10); padding: 3px 10px; border-radius: 999px;
+  margin-top: 8px; width: fit-content;
+}
+
+/* Action buttons row */
+.rec-item-actions { display: flex; align-items: center; gap: 7px; margin-top: 12px; flex-wrap: wrap; }
+
+/* Small buttons */
+.btn-sm {
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600;
+  padding: 5px 11px; border-radius: 7px; border: none;
+  cursor: pointer; display: inline-flex; align-items: center; gap: 4px;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+  white-space: nowrap; line-height: 1;
+}
+.btn-sm-primary   { background: var(--mid); color: white; }
+.btn-sm-primary:hover { background: var(--deep); }
+.btn-sm-secondary { background: white; color: var(--mid); border: 1.5px solid var(--border); }
+.btn-sm-secondary:hover { border-color: var(--accent); background: var(--surface); }
+.btn-sm-danger    { background: rgba(220,38,38,0.08); color: #dc2626; border: 1.5px solid rgba(220,38,38,0.2); }
+.btn-sm-danger:hover { background: rgba(220,38,38,0.14); border-color: rgba(220,38,38,0.4); }
+.btn-sm-ghost     { background: none; color: var(--muted); border: 1.5px solid transparent; }
+.btn-sm-ghost:hover { background: var(--surface); color: var(--dark); border-color: var(--border); }
+
+/* Dropdown wrapper (inline, relative to button) */
+.dd-wrap { position: relative; display: inline-block; }
+
+.inline-dropdown {
+  display: none; position: absolute; top: calc(100% + 6px); left: 0;
+  background: white; border: 1px solid var(--border);
+  border-radius: 10px; box-shadow: 0 8px 24px rgba(6,78,59,0.14);
+  min-width: 210px; z-index: 300; padding: 4px;
+  animation: dropIn 0.14s ease;
+}
+.inline-dropdown.open { display: block; }
+@keyframes dropIn { from{opacity:0;transform:translateY(-4px)} to{opacity:1;transform:translateY(0)} }
+
+.dd-item {
+  padding: 8px 12px; border-radius: 7px; font-size: 13px;
+  color: var(--dark); cursor: pointer; transition: background 0.12s;
+}
+.dd-item:hover { background: var(--surface); }
+.dd-sep { height: 1px; background: var(--surface); margin: 3px 4px; }
+
+/* "Otro..." input inside dropdown */
+.dd-other-wrap { padding: 4px; }
+.dd-other-input {
+  width: 100%; padding: 7px 10px;
+  border: 1.5px solid var(--border); border-radius: 7px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark);
+  outline: none; transition: border-color 0.2s;
+}
+.dd-other-input:focus { border-color: var(--accent); }
+.dd-other-input.error { border-color: #dc2626; }
+.dd-other-error { font-size: 11px; color: #dc2626; padding: 3px 2px; display: none; }
+.dd-other-error.visible { display: block; }
+.dd-other-actions { display: flex; justify-content: flex-end; padding: 5px 0 2px; }
+
+/* Note section */
+.rec-note-section { overflow: hidden; max-height: 0; transition: max-height 0.22s ease, margin-top 0.22s ease; }
+.rec-note-section.open { max-height: 280px; margin-top: 10px; }
+.rec-note-textarea {
+  width: 100%; min-height: 70px; resize: vertical;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  padding: 9px 12px; font-family: 'DM Sans', sans-serif;
+  font-size: 13px; color: var(--dark); outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.rec-note-textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.08); }
+.rec-note-btns { display: flex; gap: 7px; margin-top: 7px; }
+
+.rec-saved-note {
+  display: none; font-size: 12.5px; color: var(--dark); line-height: 1.55;
+  background: var(--surface); border-radius: 8px; padding: 10px 12px;
+  margin-top: 10px;
+}
+.rec-saved-note.visible { display: block; }
+.note-meta { font-size: 11px; color: var(--muted); margin-top: 4px; }
+.note-edit-row { display: flex; gap: 6px; margin-top: 8px; }
+
+/* ══ Modal ══ */
+.modal-overlay {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,0.50); z-index: 600;
+  align-items: center; justify-content: center;
+  backdrop-filter: blur(3px);
+}
+.modal-overlay.open { display: flex; }
+.modal-card {
+  background: white; border-radius: 16px; padding: 32px;
+  width: 480px; max-width: calc(100vw - 32px);
+  box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+  animation: modalIn 0.22s cubic-bezier(0.16,1,0.3,1);
+}
+@keyframes modalIn { from{opacity:0;transform:scale(0.96)} to{opacity:1;transform:scale(1)} }
+.modal-title { font-size: 18px; font-weight: 700; color: var(--dark); margin-bottom: 14px; }
+.modal-product-badge { display: inline-block; background: var(--sage); color: var(--mid); font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 6px; margin-bottom: 20px; }
+.modal-ref { font-size: 12.5px; color: var(--muted); margin-bottom: 20px; padding: 10px 14px; background: var(--surface); border-radius: 8px; }
+.modal-ref-lbl { font-size: 10.5px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 3px; }
+.modal-ref-val { font-weight: 600; color: var(--dark); font-size: 13px; }
+.modal-field { margin-bottom: 14px; }
+.modal-label { font-size: 12px; font-weight: 600; color: var(--dark); margin-bottom: 5px; display: block; }
+.modal-input {
+  width: 100%; padding: 9px 12px;
+  border: 1.5px solid var(--border); border-radius: 8px;
+  font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--dark);
+  outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.modal-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.10); }
+.modal-input.error { border-color: #dc2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.08); }
+.modal-field-error { font-size: 11px; color: #dc2626; margin-top: 4px; display: none; }
+.modal-field-error.visible { display: block; }
+.modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 22px; }
+.btn-modal-primary { font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600; padding: 9px 20px; border-radius: 8px; border: none; background: var(--mid); color: white; cursor: pointer; transition: background 0.15s; }
+.btn-modal-primary:hover { background: var(--deep); }
+.btn-modal-ghost   { font-family: 'DM Sans', sans-serif; font-size: 13.5px; font-weight: 600; padding: 9px 16px; border-radius: 8px; border: 1.5px solid var(--border); background: white; color: var(--muted); cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.btn-modal-ghost:hover { border-color: var(--accent); background: var(--surface); color: var(--dark); }
+
+/* ══ Toast ══ */
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none; }
+.toast { background: var(--deep); color: white; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); pointer-events: all; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.info    { background: #1e3a5f; border-left: 3px solid #3b82f6; }
+.toast.grey    { background: #374151; border-left: 3px solid #9ca3af; }
+.toast-out { animation: toastOut 0.2s ease forwards; }
+@keyframes toastIn  { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateX(16px)} }
+
+/* ══ Right column sticky ══ */
+.right-col { position: sticky; top: 24px; align-self: start; }
+
+/* ══ Chart cards ══ */
+.chart-card { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; animation: cardIn 0.4s ease both; }
+.chart-card + .chart-card { margin-top: 16px; }
+
+/* Period buttons */
+.period-btn { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 5px; border: none; cursor: pointer; transition: background 0.15s, color 0.15s; }
+.period-btn.active          { background: var(--deep); color: white; }
+.period-btn:not(.active)    { background: var(--surface); color: var(--muted); }
+.period-btn:not(.active):hover { background: var(--sage); color: var(--mid); }
+
+/* Skeleton shimmer */
+.chart-skeleton { background: linear-gradient(90deg, var(--surface) 25%, #e8fdf2 50%, var(--surface) 75%); background-size: 200% 100%; animation: shimmer 1.2s infinite linear; border-radius: 8px; }
+@keyframes shimmer { to { background-position: -200% 0; } }
+
+/* Historial table */
+.hist-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.hist-table th { padding: 8px 10px; text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--border); cursor: pointer; user-select: none; white-space: nowrap; }
+.hist-table th:hover { color: var(--dark); }
+.hist-table tbody tr { transition: background 0.1s; }
+.hist-table td { padding: 8px 10px; color: var(--dark); border-bottom: 1px solid var(--surface); white-space: nowrap; vertical-align: middle; }
+.hist-table tbody tr:last-child td { border-bottom: none; }
+.hist-table tbody tr:hover td { background: var(--bg); }
+.hist-sku     { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); }
+.hist-importe { font-family: 'DM Mono', monospace; font-size: 11.5px; font-weight: 600; }
+.hist-pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; border-top: 1px solid var(--surface); font-size: 12px; color: var(--muted); }
+.hist-pg-btn { font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 4px 12px; border-radius: 6px; border: 1.5px solid var(--border); background: white; color: var(--muted); cursor: pointer; transition: border-color 0.15s, background 0.15s, color 0.15s; }
+.hist-pg-btn:hover:not([disabled]) { border-color: var(--accent); background: var(--surface); color: var(--dark); }
+.hist-pg-btn[disabled] { opacity: 0.38; cursor: not-allowed; }
+
+/* ══ Cross-sell & Up-sell group variants ══ */
+.rec-group-header.crosssell { background: #eff6ff; border-left-color: #1d4ed8; }
+.rec-group-header.crosssell .rec-group-label { color: #1d4ed8; }
+.rec-group-header.upsell    { background: #f5f3ff; border-left-color: #7c3aed; }
+.rec-group-header.upsell    .rec-group-label { color: #7c3aed; }
+
+/* ══ Sub-tabs ══ */
+.rec-subtabs {
+  display: flex; border-bottom: 2px solid var(--border); margin: 12px 0 0;
+}
+.rec-tab-btn {
+  padding: 8px 15px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+  color: var(--muted); background: none; border: none; cursor: pointer;
+  border-bottom: 2px solid transparent; margin-bottom: -2px;
+  transition: color 0.15s, border-color 0.15s; white-space: nowrap;
+}
+.rec-tab-btn.active { color: var(--deep); font-weight: 600; border-bottom-color: var(--accent); }
+.rec-tab-btn:hover:not(.active) { color: var(--dark); }
+.rec-tab-panel { display: none; padding-top: 10px; }
+.rec-tab-panel.active { display: block; }
+
+/* ══ Item header row ══ */
+.rec-item-header {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-bottom: 6px; flex-wrap: wrap;
+}
+.rec-item-header-left { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+
+/* ══ Typed badges ══ */
+.item-type-badge {
+  display: inline-flex; align-items: center; font-size: 9.5px; font-weight: 700;
+  padding: 2px 7px; border-radius: 999px; letter-spacing: 0.4px;
+  text-transform: uppercase; white-space: nowrap;
+}
+.badge-crosssell { background: #eff6ff; color: #1d4ed8; }
+.badge-historial { background: rgba(29,78,216,0.07); color: #1e40af; }
+.badge-upsell    { background: #f5f3ff; color: #7c3aed; }
+.badge-promo-tag { background: var(--deep); color: var(--accent); cursor: pointer; user-select: none; }
+.badge-roi       { background: rgba(124,58,237,0.10); color: #7c3aed; }
+
+.rec-item-ratio { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--muted); }
+.rec-item-ref   { font-family: 'DM Mono', monospace; font-size: 11px; font-weight: 500; color: var(--muted); }
+
+/* Gap accent */
+.gap-accent { color: var(--accent); font-weight: 700; }
+
+/* Satisfied state (gap = 0) */
+.satisfied-line { display: flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 600; color: #16a34a; margin-top: 5px; }
+.rec-item.satisfied .rec-item-actions { cursor: not-allowed; }
+.rec-item.satisfied .rec-item-actions .btn-sm { opacity: 0.38; pointer-events: none; }
+
+/* Item type border colors */
+.crosssell-item { border-left-color: #1d4ed8; }
+.upsell-item    { border-left-color: #7c3aed; }
+
+/* Promo tooltip */
+.promo-tooltip-wrap { position: relative; display: inline-block; }
+.promo-tooltip {
+  display: none; position: absolute; top: calc(100% + 8px); left: 0;
+  background: var(--deep); color: white; border-radius: 10px;
+  padding: 13px 16px; min-width: 230px; z-index: 500;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.24);
+  font-size: 12.5px; line-height: 1.55;
+  animation: dropIn 0.14s ease;
+}
+.promo-tooltip.open { display: block; }
+.promo-tooltip-name { font-weight: 700; font-size: 13px; color: var(--accent); margin-bottom: 6px; }
+.promo-tooltip-row  { color: rgba(255,255,255,0.75); margin-top: 2px; }
+.promo-tooltip-row strong { color: white; }
+.promo-tooltip::before {
+  content: ''; position: absolute; top: -5px; left: 16px;
+  width: 10px; height: 10px; background: var(--deep);
+  transform: rotate(45deg); border-radius: 2px;
+}
+
+/* ══ Responsive ══ */
+@media (max-width: 1100px) { .profile-grid { grid-template-columns: 1fr; } }
+@media (max-width: 768px)  {
+  .sidebar { position: fixed; left:0;top:0;bottom:0; transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .hamburger { display: flex !important; }
+  .tb-name,.tb-role { display: none; }
+  .content { padding: 16px; }
+}
+
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150; backdrop-filter: blur(2px); }
+.overlay.open { display: block; }
+
+@keyframes cardIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+.card { animation: cardIn 0.35s ease both; }
+</style>
+</head>
+<body>
+
+<!-- Sidebar overlay -->
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Modal — Marcar Hecho -->
+<div class="modal-overlay" id="modal-overlay" onclick="handleModalOverlayClick(event)">
+  <div class="modal-card" onclick="event.stopPropagation()">
+    <div class="modal-title">Registrar gestión</div>
+    <div class="modal-product-badge" id="modal-product-name"></div>
+    <div class="modal-ref">
+      <div class="modal-ref-lbl">Venta esperada</div>
+      <div class="modal-ref-val" id="modal-ref-value"></div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label" for="modal-units">Unidades vendidas (real) *</label>
+      <input class="modal-input" id="modal-units" type="number" min="1" placeholder="Ej: 150" oninput="clearModalError()">
+      <div class="modal-field-error" id="modal-units-error">Ingresá las unidades vendidas</div>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label" for="modal-value">Valor de venta ($) <span style="color:var(--muted);font-weight:400">(opcional)</span></label>
+      <input class="modal-input" id="modal-value" type="number" min="0" placeholder="Ej: 14200.00">
+    </div>
+    <div class="modal-actions">
+      <button class="btn-modal-ghost" onclick="closeModal()">Cancelar</button>
+      <button class="btn-modal-primary" onclick="registrarVenta()">Registrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<div class="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">VendIA</div>
+      <div class="sb-logo-sub">Scarpatihnos.</div>
+    </div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nl active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+        <span class="nl-badge">3</span>
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Productos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        KPIs
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Objetivos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        Vendedores
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+        Promociones
+      </button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div"></div>
+      <button class="nl" style="margin: 4px 10px 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Configuración
+      </button>
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user">
+        <div class="sb-av">LR</div>
+        <div>
+          <div class="sb-uname">Lucas Rodriguez</div>
+          <span class="sb-role">Vendedor</span>
+        </div>
+      </div>
+      <button class="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <span class="tb-title">Perfil de Cliente</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="tb-notif">3</span>
+        </button>
+        <div class="tb-sep"></div>
+        <div class="tb-user">
+          <div class="tb-av">LR</div>
+          <div>
+            <div class="tb-name">Lucas Rodriguez</div>
+            <div class="tb-role">Vendedor</div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Breadcrumb -->
+      <nav class="breadcrumb">
+        <a href="#">Clientes</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Astarita SH</span>
+      </nav>
+
+      <!-- Client Header -->
+      <div class="client-header">
+        <div class="client-title-row">
+          <h1 class="client-title">ASTARITA SH</h1>
+          <span class="client-cod">COD: 88219-X</span>
+        </div>
+        <div class="client-meta">
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Vendedor: <strong style="color:var(--dark); margin-left:2px;">Lucas Rodriguez</strong>
+          </div>
+          <span class="meta-sep"></span>
+          <div class="meta-item">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            Estado:
+            <span class="badge-estado activo" style="margin-left:4px;">
+              <span class="badge-estado-dot"></span>
+              Activo
+            </span>
+          </div>
+          <span class="meta-sep"></span>
+          <div class="meta-item">
+            <span class="salud-label">Salud:</span>
+            <span class="salud-chip yellow">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              68.4
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Two-column grid -->
+      <div class="profile-grid">
+
+        <!-- ══ LEFT COLUMN ══ -->
+        <div class="left-col">
+
+          <!-- Orden de Compra Usual -->
+          <div class="card">
+            <div class="card-head">
+              <span class="card-head-title">ORDEN DE COMPRA USUAL</span>
+              <span class="card-head-meta">FRECUENCIA: MENSUAL</span>
+            </div>
+            <div class="oc-table-wrap">
+              <table class="oc-table">
+                <thead>
+                  <tr>
+                    <th>SKU</th>
+                    <th>Producto</th>
+                    <th>Cant. Prom.</th>
+                    <th>Últ. Precio</th>
+                    <th class="c">Estado Sugerencia</th>
+                  </tr>
+                </thead>
+                <tbody id="ocTableBody">
+                  <tr>
+                    <td class="td-sku">CAR22</td>
+                    <td class="td-producto">Cuchillos blancos 22cm</td>
+                    <td class="td-cant">80</td>
+                    <td class="td-precio">$142.00</td>
+                    <td class="c"><span class="sug-badge sug-pendiente" data-sku="CAR22">PENDIENTE</span></td>
+                  </tr>
+                  <tr>
+                    <td class="td-sku">CAR467</td>
+                    <td class="td-producto">Chairas premium</td>
+                    <td class="td-cant">16</td>
+                    <td class="td-precio">$89.50</td>
+                    <td class="c"><span class="sug-badge sug-realizado" data-sku="CAR467">REALIZADO</span></td>
+                  </tr>
+                  <tr>
+                    <td class="td-sku">ENV-99</td>
+                    <td class="td-producto">Embutidoras básicas</td>
+                    <td class="td-cant">2</td>
+                    <td class="td-precio">$215.00</td>
+                    <td class="c"><span class="sug-badge sug-pospuesto" data-sku="ENV-99">POSPUESTO</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ══ RECOMENDACIONES DEL MOTOR ══ -->
+          <div class="rec-section-header" style="margin-top:28px;">
+            <div class="rec-section-title">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              RECOMENDACIONES DEL MOTOR VENDIA
+            </div>
+          </div>
+
+          <!-- DECLIVE -->
+          <div class="rec-group">
+            <div class="rec-group-header declive" data-group="declive" onclick="toggleGroup('declive')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" x2="12" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+              <span class="rec-group-label">DECLIVE — ATENCIÓN REQUERIDA</span>
+              <svg class="rec-group-chevron open" id="chevron-declive" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="rec-group-body open" id="body-declive">
+              <div class="rec-group-inner" id="inner-declive">
+
+                <!-- ITEM: Cintas de Embalaje -->
+                <div class="rec-item declive-item" id="item-cintas" draggable="true">
+                  <div class="drag-handle" title="Arrastrar">⠿</div>
+                  <div class="rec-item-content">
+                    <div class="rec-item-name">Cintas de Embalaje (Industrial)</div>
+                    <div class="rec-item-justif">Caída del 45% en volumen vs. promedio trimestral.</div>
+                    <div class="rec-item-delta">
+                      Compraba 200u/mes — este mes:
+                      <span class="delta-arrow">↓</span>
+                      <span class="delta-alert">110u</span>
+                    </div>
+                    <div class="realizado-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      Realizado
+                    </div>
+                    <div class="rec-item-actions">
+                      <button class="btn-sm btn-sm-primary" onclick="openModal('item-cintas','Cintas de Embalaje (Industrial)',200,null)">MARCAR HECHO</button>
+                      <div class="dd-wrap">
+                        <button class="btn-sm btn-sm-secondary" onclick="toggleDD('posponer-cintas', event)">POSPONER</button>
+                        <div class="inline-dropdown" id="posponer-cintas">
+                          <!-- JS fills months -->
+                        </div>
+                      </div>
+                      <div class="dd-wrap">
+                        <button class="btn-sm btn-sm-danger" onclick="toggleDD('descartar-cintas', event)">DESCARTAR</button>
+                        <div class="inline-dropdown" id="descartar-cintas">
+                          <div class="dd-item" onclick="descartarItem('item-cintas','Cliente no interesado')">Cliente no interesado</div>
+                          <div class="dd-item" onclick="descartarItem('item-cintas','Ya lo compra por otro canal')">Ya lo compra por otro canal</div>
+                          <div class="dd-item" onclick="descartarItem('item-cintas','Precio fuera de rango')">Precio fuera de rango</div>
+                          <div class="dd-item" onclick="descartarItem('item-cintas','Producto no disponible')">Producto no disponible</div>
+                          <div class="dd-sep"></div>
+                          <div class="dd-item" onclick="showOtroInput('descartar-cintas','item-cintas')">Otro...</div>
+                          <div class="dd-other-wrap" id="otro-cintas" style="display:none;">
+                            <input class="dd-other-input" id="otro-input-cintas" placeholder="Describí el motivo..." oninput="clearOtroError('cintas')">
+                            <div class="dd-other-error" id="otro-error-cintas">Describí el motivo</div>
+                            <div class="dd-other-actions">
+                              <button class="btn-sm btn-sm-primary" onclick="confirmarOtro('item-cintas','cintas')">Confirmar</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="btn-sm btn-sm-ghost" id="btn-nota-cintas" onclick="toggleNota('cintas')">+ NOTA</button>
+                    </div>
+                    <div class="rec-note-section" id="nota-section-cintas">
+                      <textarea class="rec-note-textarea" id="nota-textarea-cintas" placeholder="Escribí una nota sobre este cliente o producto..."></textarea>
+                      <div class="rec-note-btns">
+                        <button class="btn-sm btn-sm-primary" onclick="saveNota('cintas')">Guardar nota</button>
+                        <button class="btn-sm btn-sm-ghost" onclick="cancelNota('cintas')">Cancelar</button>
+                      </div>
+                    </div>
+                    <div class="rec-saved-note" id="nota-saved-cintas"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- REORDEN -->
+          <div class="rec-group">
+            <div class="rec-group-header reorden" data-group="reorden" onclick="toggleGroup('reorden')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+              <span class="rec-group-label">REORDEN — CICLO SUGERIDO</span>
+              <svg class="rec-group-chevron open" id="chevron-reorden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="rec-group-body open" id="body-reorden">
+              <div class="rec-group-inner" id="inner-reorden">
+
+                <!-- ITEM: Chairas premium -->
+                <div class="rec-item reorden-item" id="item-chairas" draggable="true" data-sku="CAR467">
+                  <div class="drag-handle" title="Arrastrar">⠿</div>
+                  <div class="rec-item-content">
+                    <div class="rec-item-name">Chairas premium (CAR467)</div>
+                    <div class="rec-item-justif">Ciclo mensual cumplido. Último pedido: 15/10.</div>
+                    <div class="realizado-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      Realizado
+                    </div>
+                    <div class="rec-item-actions">
+                      <button class="btn-sm btn-sm-primary" onclick="openModal('item-chairas','Chairas premium',30,'CAR467')">MARCAR HECHO</button>
+                      <div class="dd-wrap">
+                        <button class="btn-sm btn-sm-secondary" onclick="toggleDD('posponer-chairas', event)">POSPONER</button>
+                        <div class="inline-dropdown" id="posponer-chairas">
+                          <!-- JS fills months -->
+                        </div>
+                      </div>
+                      <button class="btn-sm btn-sm-ghost" id="btn-nota-chairas" onclick="toggleNota('chairas')">+ NOTA</button>
+                    </div>
+                    <div class="rec-note-section" id="nota-section-chairas">
+                      <textarea class="rec-note-textarea" id="nota-textarea-chairas" placeholder="Escribí una nota sobre este cliente o producto..."></textarea>
+                      <div class="rec-note-btns">
+                        <button class="btn-sm btn-sm-primary" onclick="saveNota('chairas')">Guardar nota</button>
+                        <button class="btn-sm btn-sm-ghost" onclick="cancelNota('chairas')">Cancelar</button>
+                      </div>
+                    </div>
+                    <div class="rec-saved-note" id="nota-saved-chairas"></div>
+                  </div>
+                  <div class="reorden-qty">
+                    <div class="reorden-qty-num">30</div>
+                    <div class="reorden-qty-label">Unidades sugeridas</div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- CROSS-SELL -->
+          <div class="rec-group">
+            <div class="rec-group-header crosssell" data-group="crosssell" onclick="toggleGroup('crosssell')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 12H3"/><path d="m11 18-6-6 6-6"/><path d="M7 12h14"/><path d="m13 6 6 6-6 6"/></svg>
+              <span class="rec-group-label">CROSS-SELL — OPORTUNIDADES</span>
+              <svg class="rec-group-chevron open" id="chevron-crosssell" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="rec-group-body open" id="body-crosssell">
+
+              <!-- Sub-tabs -->
+              <div class="rec-subtabs">
+                <button class="rec-tab-btn active" data-tab="receta" onclick="switchTab('crosssell','receta')">POR RECETA</button>
+                <button class="rec-tab-btn" data-tab="historial" onclick="switchTab('crosssell','historial')">POR HISTORIAL</button>
+              </div>
+
+              <!-- ── Tab: Por Receta ── -->
+              <div class="rec-tab-panel active" id="tab-crosssell-receta">
+                <div class="rec-group-inner" id="inner-cs-receta">
+
+                  <!-- Ítem 1: CAR22 con promo, gap 20 -->
+                  <div class="rec-item crosssell-item" id="item-cs-cuchillos" draggable="true" data-sku="CAR22">
+                    <div class="drag-handle" title="Arrastrar">⠿</div>
+                    <div class="rec-item-content">
+                      <div class="rec-item-header">
+                        <div class="rec-item-header-left">
+                          <span class="item-type-badge badge-crosssell">POR RECETA</span>
+                          <div class="promo-tooltip-wrap">
+                            <span class="item-type-badge badge-promo-tag" onclick="togglePromoTooltip(this, event)">EN PROMO</span>
+                            <div class="promo-tooltip">
+                              <div class="promo-tooltip-name">Promo Cuchillería Abril</div>
+                              <div class="promo-tooltip-row"><strong>Tipo:</strong> Descuento por volumen</div>
+                              <div class="promo-tooltip-row"><strong>Vigencia:</strong> Hasta 30/04/2026</div>
+                            </div>
+                          </div>
+                        </div>
+                        <span class="rec-item-ratio">Ratio: 1:1</span>
+                      </div>
+                      <div class="rec-item-name">Cuchillos blancos 22cm (CAR22)</div>
+                      <div class="rec-item-justif">
+                        Compró 80u de hojas — receta sugiere 100 cuchillos · Gap: <span class="gap-accent">20 unidades</span>
+                      </div>
+                      <div class="realizado-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Realizado
+                      </div>
+                      <div class="rec-item-actions">
+                        <button class="btn-sm btn-sm-primary" onclick="openModal('item-cs-cuchillos','Cuchillos blancos 22cm',20,'CAR22')">MARCAR HECHO</button>
+                        <div class="dd-wrap">
+                          <button class="btn-sm btn-sm-secondary" onclick="toggleDD('posponer-cs-cuchillos', event)">POSPONER</button>
+                          <div class="inline-dropdown" id="posponer-cs-cuchillos"></div>
+                        </div>
+                        <div class="dd-wrap">
+                          <button class="btn-sm btn-sm-danger" onclick="toggleDD('descartar-cs-cuchillos', event)">DESCARTAR</button>
+                          <div class="inline-dropdown" id="descartar-cs-cuchillos">
+                            <div class="dd-item" onclick="descartarItem('item-cs-cuchillos','Cliente no interesado')">Cliente no interesado</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-cuchillos','Ya lo compra por otro canal')">Ya lo compra por otro canal</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-cuchillos','Precio fuera de rango')">Precio fuera de rango</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-cuchillos','Producto no disponible')">Producto no disponible</div>
+                            <div class="dd-sep"></div>
+                            <div class="dd-item" onclick="showOtroInput('descartar-cs-cuchillos','item-cs-cuchillos')">Otro...</div>
+                            <div class="dd-other-wrap" id="otro-cs-cuchillos" style="display:none;">
+                              <input class="dd-other-input" id="otro-input-cs-cuchillos" placeholder="Describí el motivo..." oninput="clearOtroError('cs-cuchillos')">
+                              <div class="dd-other-error" id="otro-error-cs-cuchillos">Describí el motivo</div>
+                              <div class="dd-other-actions"><button class="btn-sm btn-sm-primary" onclick="confirmarOtro('item-cs-cuchillos','cs-cuchillos')">Confirmar</button></div>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="btn-sm btn-sm-ghost" id="btn-nota-cs-cuchillos" onclick="toggleNota('cs-cuchillos')">+ NOTA</button>
+                      </div>
+                      <div class="rec-note-section" id="nota-section-cs-cuchillos">
+                        <textarea class="rec-note-textarea" id="nota-textarea-cs-cuchillos" placeholder="Escribí una nota sobre este cliente o producto..."></textarea>
+                        <div class="rec-note-btns">
+                          <button class="btn-sm btn-sm-primary" onclick="saveNota('cs-cuchillos')">Guardar nota</button>
+                          <button class="btn-sm btn-sm-ghost" onclick="cancelNota('cs-cuchillos')">Cancelar</button>
+                        </div>
+                      </div>
+                      <div class="rec-saved-note" id="nota-saved-cs-cuchillos"></div>
+                    </div>
+                  </div>
+
+                  <!-- Ítem 2: CAR467 gap 0 — satisfied -->
+                  <div class="rec-item crosssell-item satisfied" id="item-cs-chairas" draggable="true">
+                    <div class="drag-handle" title="Arrastrar">⠿</div>
+                    <div class="rec-item-content">
+                      <div class="rec-item-header">
+                        <div class="rec-item-header-left">
+                          <span class="item-type-badge badge-crosssell">POR RECETA</span>
+                        </div>
+                        <span class="rec-item-ratio">Ratio: 5:1</span>
+                      </div>
+                      <div class="rec-item-name">Chairas premium (CAR467)</div>
+                      <div class="rec-item-justif">Compró 80 cuchillos — receta sugiere 16 chairas · Gap: 0 unidades</div>
+                      <div class="satisfied-line">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Receta cumplida
+                      </div>
+                      <div class="rec-item-actions" title="Esta receta ya está satisfecha este mes">
+                        <button class="btn-sm btn-sm-primary" disabled>MARCAR HECHO</button>
+                        <button class="btn-sm btn-sm-secondary" disabled>POSPONER</button>
+                        <button class="btn-sm btn-sm-danger" disabled>DESCARTAR</button>
+                        <button class="btn-sm btn-sm-ghost" disabled>+ NOTA</button>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- ── Tab: Por Historial ── -->
+              <div class="rec-tab-panel" id="tab-crosssell-historial">
+                <div class="rec-group-inner" id="inner-cs-historial">
+
+                  <!-- Ítem: ENV-99 con promo -->
+                  <div class="rec-item crosssell-item" id="item-cs-embutidoras" draggable="true" data-sku="ENV-99">
+                    <div class="drag-handle" title="Arrastrar">⠿</div>
+                    <div class="rec-item-content">
+                      <div class="rec-item-header">
+                        <div class="rec-item-header-left">
+                          <span class="item-type-badge badge-historial">POR HISTORIAL</span>
+                          <div class="promo-tooltip-wrap">
+                            <span class="item-type-badge badge-promo-tag" onclick="togglePromoTooltip(this, event)">EN PROMO</span>
+                            <div class="promo-tooltip">
+                              <div class="promo-tooltip-name">Promo Embutidoras Q2</div>
+                              <div class="promo-tooltip-row"><strong>Tipo:</strong> Precio especial por temporada</div>
+                              <div class="promo-tooltip-row"><strong>Vigencia:</strong> Hasta 30/04/2026</div>
+                            </div>
+                          </div>
+                        </div>
+                        <span class="rec-item-ref">Ref: 2024 · 2023</span>
+                      </div>
+                      <div class="rec-item-name">Embutidoras básicas (ENV-99)</div>
+                      <div class="rec-item-justif">Compró en Marzo 2024 (2u) y Marzo 2023 (3u) — este mes no compró</div>
+                      <div class="realizado-badge">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                        Realizado
+                      </div>
+                      <div class="rec-item-actions">
+                        <button class="btn-sm btn-sm-primary" onclick="openModal('item-cs-embutidoras','Embutidoras básicas',3,'ENV-99')">MARCAR HECHO</button>
+                        <div class="dd-wrap">
+                          <button class="btn-sm btn-sm-secondary" onclick="toggleDD('posponer-cs-embutidoras', event)">POSPONER</button>
+                          <div class="inline-dropdown" id="posponer-cs-embutidoras"></div>
+                        </div>
+                        <div class="dd-wrap">
+                          <button class="btn-sm btn-sm-danger" onclick="toggleDD('descartar-cs-embutidoras', event)">DESCARTAR</button>
+                          <div class="inline-dropdown" id="descartar-cs-embutidoras">
+                            <div class="dd-item" onclick="descartarItem('item-cs-embutidoras','Cliente no interesado')">Cliente no interesado</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-embutidoras','Ya lo compra por otro canal')">Ya lo compra por otro canal</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-embutidoras','Precio fuera de rango')">Precio fuera de rango</div>
+                            <div class="dd-item" onclick="descartarItem('item-cs-embutidoras','Producto no disponible')">Producto no disponible</div>
+                            <div class="dd-sep"></div>
+                            <div class="dd-item" onclick="showOtroInput('descartar-cs-embutidoras','item-cs-embutidoras')">Otro...</div>
+                            <div class="dd-other-wrap" id="otro-cs-embutidoras" style="display:none;">
+                              <input class="dd-other-input" id="otro-input-cs-embutidoras" placeholder="Describí el motivo..." oninput="clearOtroError('cs-embutidoras')">
+                              <div class="dd-other-error" id="otro-error-cs-embutidoras">Describí el motivo</div>
+                              <div class="dd-other-actions"><button class="btn-sm btn-sm-primary" onclick="confirmarOtro('item-cs-embutidoras','cs-embutidoras')">Confirmar</button></div>
+                            </div>
+                          </div>
+                        </div>
+                        <button class="btn-sm btn-sm-ghost" id="btn-nota-cs-embutidoras" onclick="toggleNota('cs-embutidoras')">+ NOTA</button>
+                      </div>
+                      <div class="rec-note-section" id="nota-section-cs-embutidoras">
+                        <textarea class="rec-note-textarea" id="nota-textarea-cs-embutidoras" placeholder="Escribí una nota sobre este cliente o producto..."></textarea>
+                        <div class="rec-note-btns">
+                          <button class="btn-sm btn-sm-primary" onclick="saveNota('cs-embutidoras')">Guardar nota</button>
+                          <button class="btn-sm btn-sm-ghost" onclick="cancelNota('cs-embutidoras')">Cancelar</button>
+                        </div>
+                      </div>
+                      <div class="rec-saved-note" id="nota-saved-cs-embutidoras"></div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+          <!-- UP-SELL -->
+          <div class="rec-group">
+            <div class="rec-group-header upsell" data-group="upsell" onclick="toggleGroup('upsell')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m18 15-6-6-6 6"/></svg>
+              <span class="rec-group-label">UP-SELL — MAYOR VALOR</span>
+              <svg class="rec-group-chevron open" id="chevron-upsell" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+            </div>
+            <div class="rec-group-body open" id="body-upsell">
+              <div class="rec-group-inner" id="inner-upsell">
+
+                <!-- Ítem: Pack Industrial -->
+                <div class="rec-item upsell-item" id="item-us-pack" draggable="true">
+                  <div class="drag-handle" title="Arrastrar">⠿</div>
+                  <div class="rec-item-content">
+                    <div class="rec-item-header">
+                      <div class="rec-item-header-left">
+                        <span class="item-type-badge badge-upsell">UP-SELL</span>
+                        <span class="item-type-badge badge-roi">+ ROI</span>
+                      </div>
+                    </div>
+                    <div class="rec-item-name">Pack Industrial Ahorro (50 → 200 unidades)</div>
+                    <div class="rec-item-justif">
+                      Cambiar compra de 50u a 200u — Ahorro del 12% por volumen. Historial: compraba este pack en 2023.
+                    </div>
+                    <div class="realizado-badge">
+                      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                      Realizado
+                    </div>
+                    <div class="rec-item-actions">
+                      <button class="btn-sm btn-sm-primary" onclick="openModal('item-us-pack','Pack Industrial Ahorro',200,null)">MARCAR HECHO</button>
+                      <div class="dd-wrap">
+                        <button class="btn-sm btn-sm-secondary" onclick="toggleDD('posponer-us-pack', event)">POSPONER</button>
+                        <div class="inline-dropdown" id="posponer-us-pack"></div>
+                      </div>
+                      <div class="dd-wrap">
+                        <button class="btn-sm btn-sm-danger" onclick="toggleDD('descartar-us-pack', event)">DESCARTAR</button>
+                        <div class="inline-dropdown" id="descartar-us-pack">
+                          <div class="dd-item" onclick="descartarItem('item-us-pack','Cliente no interesado')">Cliente no interesado</div>
+                          <div class="dd-item" onclick="descartarItem('item-us-pack','Ya lo compra por otro canal')">Ya lo compra por otro canal</div>
+                          <div class="dd-item" onclick="descartarItem('item-us-pack','Precio fuera de rango')">Precio fuera de rango</div>
+                          <div class="dd-item" onclick="descartarItem('item-us-pack','Producto no disponible')">Producto no disponible</div>
+                          <div class="dd-sep"></div>
+                          <div class="dd-item" onclick="showOtroInput('descartar-us-pack','item-us-pack')">Otro...</div>
+                          <div class="dd-other-wrap" id="otro-us-pack" style="display:none;">
+                            <input class="dd-other-input" id="otro-input-us-pack" placeholder="Describí el motivo..." oninput="clearOtroError('us-pack')">
+                            <div class="dd-other-error" id="otro-error-us-pack">Describí el motivo</div>
+                            <div class="dd-other-actions"><button class="btn-sm btn-sm-primary" onclick="confirmarOtro('item-us-pack','us-pack')">Confirmar</button></div>
+                          </div>
+                        </div>
+                      </div>
+                      <button class="btn-sm btn-sm-ghost" id="btn-nota-us-pack" onclick="toggleNota('us-pack')">+ NOTA</button>
+                    </div>
+                    <div class="rec-note-section" id="nota-section-us-pack">
+                      <textarea class="rec-note-textarea" id="nota-textarea-us-pack" placeholder="Escribí una nota sobre este cliente o producto..."></textarea>
+                      <div class="rec-note-btns">
+                        <button class="btn-sm btn-sm-primary" onclick="saveNota('us-pack')">Guardar nota</button>
+                        <button class="btn-sm btn-sm-ghost" onclick="cancelNota('us-pack')">Cancelar</button>
+                      </div>
+                    </div>
+                    <div class="rec-saved-note" id="nota-saved-us-pack"></div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+        </div><!-- /left-col -->
+
+        <!-- ══ RIGHT COLUMN ══ -->
+        <div class="right-col">
+
+          <!-- Card 1: Evolución por Familia -->
+          <div class="chart-card">
+            <div style="padding:14px 16px 16px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+                <span style="font-size:14px;font-weight:600;color:#191c1e;letter-spacing:.1px;">EVOLUCIÓN POR FAMILIA</span>
+                <div style="display:flex;gap:3px;">
+                  <button class="period-btn"        data-period="1M"    onclick="setPeriod(this)">1M</button>
+                  <button class="period-btn"        data-period="3M"    onclick="setPeriod(this)">3M</button>
+                  <button class="period-btn active" data-period="6M"    onclick="setPeriod(this)">6M</button>
+                  <button class="period-btn"        data-period="12M"   onclick="setPeriod(this)">12M</button>
+                  <button class="period-btn"        data-period="Hist." onclick="setPeriod(this)">Hist.</button>
+                </div>
+              </div>
+              <div id="evol-skeleton" class="chart-skeleton" style="height:200px;display:none;"></div>
+              <div id="evol-wrap" style="position:relative;height:200px;">
+                <canvas id="evol-canvas"></canvas>
+              </div>
+              <div id="evol-legend" style="display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:12px;"></div>
+            </div>
+          </div>
+
+          <!-- Card 2: Mix de Compras -->
+          <div class="chart-card" style="margin-top:16px;">
+            <div style="padding:14px 16px 16px;">
+              <div style="margin-bottom:12px;">
+                <span style="font-size:14px;font-weight:600;color:#191c1e;letter-spacing:.1px;">MIX DE COMPRAS</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="position:relative;width:170px;height:170px;flex-shrink:0;">
+                  <canvas id="mix-canvas" width="170" height="170"></canvas>
+                  <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;user-select:none;">
+                    <div style="font-size:18px;font-weight:700;color:#191c1e;line-height:1;">62%</div>
+                    <div style="font-size:10px;color:#4b7c68;margin-top:4px;letter-spacing:.5px;">FIDELIDAD</div>
+                  </div>
+                </div>
+                <div id="mix-legend" style="flex:1;display:flex;flex-direction:column;gap:9px;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3: Historial -->
+          <div class="chart-card" style="margin-top:16px;">
+            <div style="padding:14px 16px 10px;">
+              <span style="font-size:14px;font-weight:600;color:#191c1e;letter-spacing:.1px;">HISTORIAL DE COMPRAS</span>
+            </div>
+            <div style="overflow-x:auto;">
+              <table class="hist-table">
+                <thead id="hist-head"></thead>
+                <tbody id="hist-body"></tbody>
+              </table>
+            </div>
+            <div class="hist-pagination">
+              <button class="hist-pg-btn" id="hist-prev" onclick="histPageNav(-1)">Anterior</button>
+              <span id="hist-pg-label">Página 1 de 3</span>
+              <button class="hist-pg-btn" id="hist-next" onclick="histPageNav(1)">Siguiente</button>
+            </div>
+          </div>
+
+        </div>
+
+      </div><!-- /profile-grid -->
+    </main>
+  </div>
+</div>
+
+<script>
+'use strict';
+
+const CLIENT_ID = '88219X';
+const VENDEDOR  = 'Lucas Rodriguez';
+
+/* ── Sidebar ── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open'); document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+/* ══════════════════════════════════════
+   SHARED SUGGESTION STATE (OC table)
+══════════════════════════════════════ */
+const BADGE_CONFIG = {
+  pendiente:  { cls: 'sug-pendiente',  label: 'PENDIENTE'  },
+  realizado:  { cls: 'sug-realizado',  label: 'REALIZADO'  },
+  pospuesto:  { cls: 'sug-pospuesto',  label: 'POSPUESTO'  },
+  descartado: { cls: 'sug-descartado', label: 'DESCARTADO' },
+};
+
+function updateSuggestionState(sku, estado) {
+  if (!BADGE_CONFIG[estado]) return;
+  const badge = document.querySelector(`.sug-badge[data-sku="${sku}"]`);
+  if (!badge) return;
+  badge.className = `sug-badge ${BADGE_CONFIG[estado].cls}`;
+  badge.textContent = BADGE_CONFIG[estado].label;
+}
+window.updateSuggestionState = updateSuggestionState;
+
+/* ══════════════════════════════════════
+   COLLAPSIBLE GROUPS
+══════════════════════════════════════ */
+function toggleGroup(groupId) {
+  const body    = document.getElementById('body-' + groupId);
+  const chevron = document.getElementById('chevron-' + groupId);
+  const isOpen  = body.classList.toggle('open');
+  chevron.classList.toggle('open', isOpen);
+  try { localStorage.setItem('vendia_col_' + groupId + '_' + CLIENT_ID, isOpen ? '1' : '0'); } catch(e){}
+}
+
+function initCollapsibles() {
+  ['declive','reorden','crosssell','upsell'].forEach(gId => {
+    let saved;
+    try { saved = localStorage.getItem('vendia_col_' + gId + '_' + CLIENT_ID); } catch(e){}
+    if (saved === '0') {
+      document.getElementById('body-' + gId).classList.remove('open');
+      document.getElementById('chevron-' + gId).classList.remove('open');
+    }
+  });
+}
+
+/* ══════════════════════════════════════
+   DRAG AND DROP
+══════════════════════════════════════ */
+let dragSrc = null;
+
+function initDrag() {
+  document.querySelectorAll('.rec-item[draggable]').forEach(item => {
+    item.addEventListener('dragstart', e => {
+      dragSrc = item;
+      item.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    item.addEventListener('dragend', () => {
+      if (dragSrc) dragSrc.classList.remove('dragging');
+      dragSrc = null;
+    });
+    item.addEventListener('dragover', e => { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; });
+    item.addEventListener('drop', e => {
+      e.preventDefault();
+      const inner = item.closest('.rec-group-inner');
+      if (dragSrc && dragSrc !== item && dragSrc.closest('.rec-group-inner') === inner) {
+        const parent = item.parentNode;
+        const srcIdx = [...parent.children].indexOf(dragSrc);
+        const tgtIdx = [...parent.children].indexOf(item);
+        parent.insertBefore(dragSrc, srcIdx < tgtIdx ? item.nextSibling : item);
+        saveGroupOrder(inner);
+      }
+    });
+  });
+}
+
+/* ══════════════════════════════════════
+   DROPDOWN MANAGEMENT
+══════════════════════════════════════ */
+let activeDD = null;
+
+function toggleDD(ddId, e) {
+  e && e.stopPropagation();
+  const dd = document.getElementById(ddId);
+  if (!dd) return;
+  const isOpen = dd.classList.contains('open');
+  closeAllDD();
+  if (!isOpen) { dd.classList.add('open'); activeDD = dd; }
+}
+
+function closeAllDD() {
+  document.querySelectorAll('.inline-dropdown.open').forEach(d => d.classList.remove('open'));
+  activeDD = null;
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.dd-wrap')) closeAllDD();
+  if (!e.target.closest('.promo-tooltip-wrap')) closeAllPromoTooltips();
+});
+
+/* ══════════════════════════════════════
+   SUB-TABS
+══════════════════════════════════════ */
+function switchTab(groupId, tabId) {
+  const body = document.getElementById('body-' + groupId);
+  body.querySelectorAll('.rec-tab-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.tab === tabId);
+  });
+  body.querySelectorAll('.rec-tab-panel').forEach(panel => panel.classList.remove('active'));
+  document.getElementById('tab-' + groupId + '-' + tabId).classList.add('active');
+}
+
+/* ══════════════════════════════════════
+   PROMO TOOLTIP
+══════════════════════════════════════ */
+function togglePromoTooltip(el, event) {
+  event.stopPropagation();
+  const tooltip = el.nextElementSibling;
+  const isOpen  = tooltip.classList.toggle('open');
+  // close others
+  document.querySelectorAll('.promo-tooltip.open').forEach(t => {
+    if (t !== tooltip) t.classList.remove('open');
+  });
+}
+function closeAllPromoTooltips() {
+  document.querySelectorAll('.promo-tooltip.open').forEach(t => t.classList.remove('open'));
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') { closeAllDD(); closeModal(); }
+});
+
+/* ══════════════════════════════════════
+   POSPONER — populate month options
+══════════════════════════════════════ */
+const MESES = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+
+function getMonthLabel(offset) {
+  const d = new Date();
+  d.setMonth(d.getMonth() + offset);
+  return MESES[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function buildPosponerDD(ddId, itemId) {
+  const dd = document.getElementById(ddId);
+  if (!dd || dd.dataset.built) return;
+  const labels = [
+    `Próximo mes (${getMonthLabel(1)})`,
+    `En 2 meses (${getMonthLabel(2)})`,
+    `En 3 meses (${getMonthLabel(3)})`,
+  ];
+  dd.innerHTML = labels.map(lbl =>
+    `<div class="dd-item" onclick="posponerItem('${itemId}','${lbl}','${ddId}')">${lbl}</div>`
+  ).join('');
+  dd.dataset.built = '1';
+}
+
+function posponerItem(itemId, label, ddId) {
+  closeAllDD();
+  const item = document.getElementById(itemId);
+  if (!item) return;
+  item.classList.add('fading');
+  setTimeout(() => { item.style.display = 'none'; }, 300);
+  showToast('↩ Recomendación pospuesta — reaparece en ' + label, 'info');
+}
+
+/* ══════════════════════════════════════
+   DESCARTAR
+══════════════════════════════════════ */
+function descartarItem(itemId, motivo) {
+  closeAllDD();
+  const item = document.getElementById(itemId);
+  if (!item) return;
+  item.classList.add('fading');
+  setTimeout(() => { item.style.display = 'none'; }, 300);
+  const sku = item.dataset.sku;
+  if (sku) updateSuggestionState(sku, 'descartado');
+  showToast('✗ Recomendación descartada — ' + motivo, 'grey');
+}
+
+function showOtroInput(ddId, itemId) {
+  const dd = document.getElementById(ddId);
+  if (!dd) return;
+  const slug = ddId.replace('descartar-','');
+  const wrap = document.getElementById('otro-' + slug);
+  if (wrap) { wrap.style.display = 'block'; document.getElementById('otro-input-' + slug).focus(); }
+}
+
+function clearOtroError(slug) {
+  document.getElementById('otro-error-' + slug).classList.remove('visible');
+  document.getElementById('otro-input-' + slug).classList.remove('error');
+}
+
+function confirmarOtro(itemId, slug) {
+  const input = document.getElementById('otro-input-' + slug);
+  const error = document.getElementById('otro-error-' + slug);
+  const val = input.value.trim();
+  if (!val) {
+    error.classList.add('visible');
+    input.classList.add('error');
+    input.focus();
+    return;
+  }
+  descartarItem(itemId, val);
+}
+
+/* ══════════════════════════════════════
+   MODAL — MARCAR HECHO
+══════════════════════════════════════ */
+let _modalItemId = null;
+let _modalSku    = null;
+
+function openModal(itemId, productName, expectedUnits, sku) {
+  _modalItemId = itemId;
+  _modalSku    = sku || null;
+  document.getElementById('modal-product-name').textContent = productName;
+  document.getElementById('modal-ref-value').textContent = expectedUnits + ' unidades · $0.00';
+  document.getElementById('modal-units').value = '';
+  document.getElementById('modal-value').value = '';
+  clearModalError();
+  document.getElementById('modal-overlay').classList.add('open');
+  setTimeout(() => document.getElementById('modal-units').focus(), 80);
+}
+
+function handleModalOverlayClick(e) {
+  if (e.target === document.getElementById('modal-overlay')) closeModal();
+}
+
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+}
+
+function clearModalError() {
+  document.getElementById('modal-units-error').classList.remove('visible');
+  document.getElementById('modal-units').classList.remove('error');
+}
+
+function registrarVenta() {
+  const units = document.getElementById('modal-units').value.trim();
+  if (!units || Number(units) <= 0) {
+    document.getElementById('modal-units-error').classList.add('visible');
+    document.getElementById('modal-units').classList.add('error');
+    document.getElementById('modal-units').focus();
+    return;
+  }
+
+  const itemId      = _modalItemId;
+  const sku         = _modalSku;
+  const productName = document.getElementById('modal-product-name').textContent;
+
+  closeModal();
+
+  const item = document.getElementById(itemId);
+  if (item) item.classList.add('estado-realizado');
+  if (sku)  updateSuggestionState(sku, 'realizado');
+
+  showToast('✓ Venta registrada para ' + productName, 'success');
+}
+
+/* ══════════════════════════════════════
+   NOTA INLINE
+══════════════════════════════════════ */
+const notaState = {}; // slug → { saved: bool, text: '' }
+
+function toggleNota(slug) {
+  const state = notaState[slug] || { saved: false };
+  if (state.saved) return; // si ya hay nota, no hacer nada (ver nota ya la muestra)
+
+  const section  = document.getElementById('nota-section-' + slug);
+  const isOpen   = section.classList.toggle('open');
+  if (isOpen) setTimeout(() => document.getElementById('nota-textarea-' + slug).focus(), 220);
+}
+
+function cancelNota(slug) {
+  document.getElementById('nota-section-' + slug).classList.remove('open');
+  document.getElementById('nota-textarea-' + slug).value = '';
+}
+
+function saveNota(slug) {
+  const textarea = document.getElementById('nota-textarea-' + slug);
+  const text = textarea.value.trim();
+  if (!text) { textarea.focus(); return; }
+
+  const now = new Date();
+  const ts  = now.toLocaleDateString('es-AR') + ' ' + now.toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'});
+
+  // Hide textarea section
+  document.getElementById('nota-section-' + slug).classList.remove('open');
+
+  // Show saved note
+  const savedEl = document.getElementById('nota-saved-' + slug);
+  savedEl.innerHTML =
+    `<div>${escHtml(text)}</div>
+     <div class="note-meta">${ts} · ${escHtml(VENDEDOR)}</div>
+     <div class="note-edit-row">
+       <button class="btn-sm btn-sm-ghost" onclick="editNota('${slug}')">Editar</button>
+       <button class="btn-sm btn-sm-ghost" style="color:#dc2626" onclick="deleteNota('${slug}')">Eliminar</button>
+     </div>`;
+  savedEl.classList.add('visible');
+
+  // Update button
+  const btn = document.getElementById('btn-nota-' + slug);
+  if (btn) { btn.textContent = 'Ver nota'; btn.onclick = () => {}; }
+
+  notaState[slug] = { saved: true, text };
+  showToast('Nota guardada', 'success');
+}
+
+function editNota(slug) {
+  const state   = notaState[slug];
+  const section = document.getElementById('nota-section-' + slug);
+  const textarea = document.getElementById('nota-textarea-' + slug);
+
+  document.getElementById('nota-saved-' + slug).classList.remove('visible');
+  textarea.value = state.text;
+  section.classList.add('open');
+  setTimeout(() => textarea.focus(), 220);
+  notaState[slug] = { saved: false, text: state.text };
+
+  const btn = document.getElementById('btn-nota-' + slug);
+  if (btn) { btn.textContent = '+ NOTA'; btn.onclick = () => toggleNota(slug); }
+}
+
+function deleteNota(slug) {
+  document.getElementById('nota-saved-' + slug).classList.remove('visible');
+  document.getElementById('nota-textarea-' + slug).value = '';
+  notaState[slug] = { saved: false };
+
+  const btn = document.getElementById('btn-nota-' + slug);
+  if (btn) { btn.textContent = '+ NOTA'; btn.onclick = () => toggleNota(slug); }
+}
+
+function escHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ══════════════════════════════════════
+   TOAST
+══════════════════════════════════════ */
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toast-wrap');
+  const t = document.createElement('div');
+  t.className = 'toast ' + type;
+  t.textContent = msg;
+  wrap.appendChild(t);
+  setTimeout(() => {
+    t.classList.add('toast-out');
+    setTimeout(() => t.remove(), 200);
+  }, 3200);
+}
+
+/* ══════════════════════════════════════
+   INIT
+══════════════════════════════════════ */
+/* ══════════════════════════════════════
+   DRAG ORDER PERSISTENCE
+══════════════════════════════════════ */
+function saveGroupOrder(innerEl) {
+  const ids = [...innerEl.querySelectorAll(':scope > .rec-item')].map(el => el.id);
+  try { localStorage.setItem('vendia_order_' + innerEl.id + '_' + CLIENT_ID, JSON.stringify(ids)); } catch(e){}
+}
+
+function restoreGroupOrder(innerEl) {
+  try {
+    const raw = localStorage.getItem('vendia_order_' + innerEl.id + '_' + CLIENT_ID);
+    if (!raw) return;
+    JSON.parse(raw).forEach(id => {
+      const el = document.getElementById(id);
+      if (el && el.parentNode === innerEl) innerEl.appendChild(el);
+    });
+  } catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initCollapsibles();
+  // Restore drag order for all inner containers
+  document.querySelectorAll('.rec-group-inner').forEach(restoreGroupOrder);
+  initDrag();
+  // Build posponer dropdowns eagerly for all items
+  document.querySelectorAll('[id^="posponer-"]').forEach(dd => {
+    const slug   = dd.id.replace('posponer-','');
+    const itemId = 'item-' + slug;
+    buildPosponerDD(dd.id, itemId);
+  });
+});
+</script>
+
+<!-- React 18 + Recharts via CDN -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+/* ═══════════════════════════════════════════════════════
+   VENDIA — GRÁFICOS PANEL DERECHO
+═══════════════════════════════════════════════════════ */
+const { useState } = React;
+const {
+  LineChart, Line, XAxis, YAxis, CartesianGrid,
+  Tooltip, ResponsiveContainer,
+  PieChart, Pie, Cell
+} = Recharts;
+
+/* ── Colores por familia ── */
+const FAM_COLORS = {
+  'Cuchillería':  '#22c55e',
+  'Maquinaria':   '#1d4ed8',
+  'Herramientas': '#7c3aed',
+  'Insumos':      '#ea580c',
+};
+
+/* ══ EVOLUCIÓN — datos ══ */
+const ALL_MONTHS = ['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr'];
+const ALL_SERIES = {
+  'Cuchillería':  [72, 65, 78, 82, 75, 80, 95, 72, 88, 91, 80, 85],
+  'Maquinaria':   [15, 18, 20, 17, 16, 20, 18, 22, 15, 24, 20, 18],
+  'Herramientas': [30, 32, 35, 38, 33, 35, 40, 38, 42, 36, 39, 41],
+  'Insumos':      [50, 55, 48, 60, 58, 60, 55, 68, 52, 70, 65, 62],
+};
+const PERIOD_COUNT = { '1M': 1, '3M': 3, '6M': 7, '12M': 12, 'Hist.': 12 };
+
+/* ══ MIX — datos ══ */
+const PIE_DATA = [
+  { name: 'Cuchillería',  value: 45, color: '#22c55e', est: '$152.400' },
+  { name: 'Insumos',      value: 28, color: '#006c49', est: '$94.800'  },
+  { name: 'Herramientas', value: 18, color: '#a7f3d0', est: '$60.900'  },
+  { name: 'Maquinaria',   value:  9, color: '#064e3b', est: '$30.450'  },
+];
+
+/* ══ HISTORIAL — datos ══ */
+const HIST_ALL = [
+  { fecha:'15/03/2026', familia:'Cuchillería',  producto:'Cuchillos CAR22',   sku:'CAR22',  cant:80,  importe:'$11.360' },
+  { fecha:'10/03/2026', familia:'Maquinaria',   producto:'Embutidora ENV-99', sku:'ENV-99', cant:2,   importe:'$430'    },
+  { fecha:'02/03/2026', familia:'Herramientas', producto:'Chairas CAR467',    sku:'CAR467', cant:16,  importe:'$1.432'  },
+  { fecha:'18/02/2026', familia:'Cuchillería',  producto:'Cuchillos CAR22',   sku:'CAR22',  cant:75,  importe:'$10.650' },
+  { fecha:'05/02/2026', familia:'Insumos',      producto:'Cintas Industrial', sku:'CIN-01', cant:120, importe:'$3.840'  },
+  { fecha:'20/01/2026', familia:'Cuchillería',  producto:'Cuchillos CAR22',   sku:'CAR22',  cant:88,  importe:'$12.496' },
+  { fecha:'12/01/2026', familia:'Maquinaria',   producto:'Embutidora ENV-99', sku:'ENV-99', cant:2,   importe:'$430'    },
+  { fecha:'08/01/2026', familia:'Herramientas', producto:'Chairas CAR467',    sku:'CAR467', cant:16,  importe:'$1.432'  },
+  { fecha:'22/12/2025', familia:'Insumos',      producto:'Cintas Industrial', sku:'CIN-01', cant:110, importe:'$3.520'  },
+  { fecha:'10/12/2025', familia:'Cuchillería',  producto:'Cuchillos CAR22',   sku:'CAR22',  cant:72,  importe:'$10.224' },
+  { fecha:'01/12/2025', familia:'Herramientas', producto:'Chairas CAR467',    sku:'CAR467', cant:14,  importe:'$1.253'  },
+  { fecha:'18/11/2025', familia:'Maquinaria',   producto:'Embutidora ENV-99', sku:'ENV-99', cant:3,   importe:'$645'    },
+];
+
+/* ══════════════════════════════════════════════════
+   COMPONENTE 1 — EvolucionChart
+══════════════════════════════════════════════════ */
+function EvolucionChart() {
+  const [period,  setPeriod]  = useState('6M');
+  const [loading, setLoading] = useState(false);
+
+  function handlePeriod(p) {
+    if (p === period) return;
+    setLoading(true);
+    setTimeout(() => { setPeriod(p); setLoading(false); }, 500);
+  }
+
+  const count     = PERIOD_COUNT[period];
+  const months    = ALL_MONTHS.slice(-count);
+  const chartData = months.map((mes, i) => {
+    const idx = ALL_MONTHS.length - count + i;
+    return {
+      mes,
+      'Cuchillería':  ALL_SERIES['Cuchillería'][idx],
+      'Maquinaria':   ALL_SERIES['Maquinaria'][idx],
+      'Herramientas': ALL_SERIES['Herramientas'][idx],
+      'Insumos':      ALL_SERIES['Insumos'][idx],
+    };
+  });
+
+  const LineTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{background:'white',border:'1px solid #a7f3d0',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
+        <div style={{fontWeight:700,marginBottom:5,color:'#191c1e'}}>{label}</div>
+        {payload.map(p => (
+          <div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginTop:2}}>
+            <span style={{width:7,height:7,borderRadius:'50%',background:p.color,display:'inline-block',flexShrink:0}}/>
+            <span style={{color:'#4b7c68'}}>{p.dataKey}:</span>
+            <span style={{fontWeight:600,color:'#191c1e'}}>{p.value}u</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div style={{padding:'14px 16px 16px'}}>
+      {/* Header */}
+      <div style={{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:14}}>
+        <span style={{fontSize:14,fontWeight:600,color:'#191c1e',letterSpacing:'0.1px'}}>EVOLUCIÓN POR FAMILIA</span>
+        <div style={{display:'flex',gap:3}}>
+          {Object.keys(PERIOD_COUNT).map(p => (
+            <button key={p} className={'period-btn' + (period === p ? ' active' : '')} onClick={() => handlePeriod(p)}>{p}</button>
+          ))}
+        </div>
+      </div>
+
+      {/* Chart / Skeleton */}
+      {loading
+        ? <div className="chart-skeleton" style={{height:200}}/>
+        : (
+          <ResponsiveContainer width="100%" height={200}>
+            <LineChart data={chartData} margin={{top:4,right:4,left:-22,bottom:0}}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#ecfdf5" vertical={false}/>
+              <XAxis dataKey="mes" tick={{fontSize:10,fill:'#4b7c68'}} tickLine={false} axisLine={false}/>
+              <YAxis domain={[0,100]} ticks={[0,25,50,75,100]} tick={{fontSize:10,fill:'#4b7c68'}} tickLine={false} axisLine={false} tickFormatter={v => `${v}u`}/>
+              <Tooltip content={<LineTooltip/>}/>
+              {Object.keys(FAM_COLORS).map(fam => (
+                <Line key={fam} type="monotone" dataKey={fam} stroke={FAM_COLORS[fam]} strokeWidth={2} dot={false} activeDot={{r:4}}/>
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        )
+      }
+
+      {/* Leyenda */}
+      <div style={{display:'flex',flexWrap:'wrap',gap:'7px 14px',marginTop:12}}>
+        {Object.entries(FAM_COLORS).map(([name, color]) => (
+          <div key={name} style={{display:'flex',alignItems:'center',gap:5,fontSize:11,color:'#4b7c68'}}>
+            <span style={{width:8,height:8,borderRadius:'50%',background:color,display:'inline-block',flexShrink:0}}/>
+            {name}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   COMPONENTE 2 — MixChart
+══════════════════════════════════════════════════ */
+function MixChart() {
+  const [hidden, setHidden] = useState(new Set());
+
+  function toggle(name) {
+    setHidden(prev => {
+      const next = new Set(prev);
+      next.has(name) ? next.delete(name) : next.add(name);
+      return next;
+    });
+  }
+
+  const visible = PIE_DATA.filter(d => !hidden.has(d.name));
+
+  const PieTooltip = ({ active, payload }) => {
+    if (!active || !payload?.[0]) return null;
+    const d = payload[0].payload;
+    return (
+      <div style={{background:'white',border:'1px solid #a7f3d0',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
+        <div style={{fontWeight:700,color:'#191c1e',marginBottom:3}}>{d.name}</div>
+        <div style={{color:'#4b7c68'}}>{d.value}%</div>
+        <div style={{color:'#4b7c68',marginTop:2}}>Est. {d.est}</div>
+      </div>
+    );
+  };
+
+  return (
+    <div style={{padding:'14px 16px 16px'}}>
+      <div style={{marginBottom:12}}>
+        <span style={{fontSize:14,fontWeight:600,color:'#191c1e',letterSpacing:'0.1px'}}>MIX DE COMPRAS</span>
+      </div>
+      <div style={{display:'flex',alignItems:'center',gap:12}}>
+
+        {/* Donut + center label */}
+        <div style={{position:'relative',flexShrink:0,width:170,height:170}}>
+          <PieChart width={170} height={170}>
+            <Pie data={visible} cx="50%" cy="50%" innerRadius={50} outerRadius={78} paddingAngle={visible.length > 1 ? 2 : 0} dataKey="value" animationBegin={0} animationDuration={350}>
+              {visible.map((entry, i) => <Cell key={entry.name} fill={entry.color}/>)}
+            </Pie>
+            <Tooltip content={<PieTooltip/>}/>
+          </PieChart>
+          {/* Center text */}
+          <div style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',textAlign:'center',pointerEvents:'none',userSelect:'none'}}>
+            <div style={{fontSize:18,fontWeight:700,color:'#191c1e',lineHeight:1}}>62%</div>
+            <div style={{fontSize:10,color:'#4b7c68',marginTop:4,letterSpacing:'0.5px'}}>FIDELIDAD</div>
+          </div>
+        </div>
+
+        {/* Leyenda derecha */}
+        <div style={{flex:1,display:'flex',flexDirection:'column',gap:9}}>
+          {PIE_DATA.map(d => (
+            <div key={d.name} onClick={() => toggle(d.name)}
+              style={{display:'flex',alignItems:'center',gap:8,cursor:'pointer',opacity:hidden.has(d.name) ? 0.35 : 1,transition:'opacity 0.2s'}}>
+              <span style={{width:10,height:10,borderRadius:'50%',background:d.color,flexShrink:0,display:'inline-block'}}/>
+              <span style={{fontSize:12,color:'#191c1e',flex:1}}>{d.name}</span>
+              <span style={{fontSize:11,fontWeight:600,color:'#4b7c68',fontFamily:'DM Mono, monospace'}}>{d.value}%</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  );
+}
+
+/* ══════════════════════════════════════════════════
+   COMPONENTE 3 — HistorialTable
+══════════════════════════════════════════════════ */
+const PAGE_SIZE = 4;
+
+function HistorialTable() {
+  const [page,    setPage]    = useState(1);
+  const [sortKey, setSortKey] = useState('fecha');
+  const [sortDir, setSortDir] = useState('desc');
+
+  function handleSort(key) {
+    if (sortKey === key) setSortDir(d => d === 'asc' ? 'desc' : 'asc');
+    else { setSortKey(key); setSortDir('asc'); }
+    setPage(1);
+  }
+
+  const sorted = [...HIST_ALL].sort((a, b) => {
+    let va = a[sortKey], vb = b[sortKey];
+    if (sortKey === 'fecha') {
+      va = va.split('/').reverse().join('');
+      vb = vb.split('/').reverse().join('');
+    }
+    if (sortKey === 'cant') return sortDir === 'asc' ? va - vb : vb - va;
+    if (sortKey === 'importe') {
+      va = parseFloat(va.replace(/[$\.]/g,'').replace(',','.'));
+      vb = parseFloat(vb.replace(/[$\.]/g,'').replace(',','.'));
+      return sortDir === 'asc' ? va - vb : vb - va;
+    }
+    return sortDir === 'asc' ? String(va).localeCompare(String(vb)) : String(vb).localeCompare(String(va));
+  });
+
+  const totalPages = Math.ceil(sorted.length / PAGE_SIZE);
+  const rows = sorted.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  const COLS = [
+    { key:'fecha',    label:'Fecha'   },
+    { key:'familia',  label:'Familia' },
+    { key:'producto', label:'Producto'},
+    { key:'sku',      label:'SKU'     },
+    { key:'cant',     label:'Cant.'   },
+    { key:'importe',  label:'Importe' },
+  ];
+
+  const SortIco = ({ col }) => {
+    if (sortKey !== col) return <span style={{opacity:.3,marginLeft:3}}>↕</span>;
+    return <span style={{marginLeft:3,opacity:.8}}>{sortDir === 'asc' ? '↑' : '↓'}</span>;
+  };
+
+  return (
+    <div>
+      <div style={{padding:'14px 16px 10px'}}>
+        <span style={{fontSize:14,fontWeight:600,color:'#191c1e',letterSpacing:'0.1px'}}>HISTORIAL DE COMPRAS</span>
+      </div>
+
+      <div style={{overflowX:'auto'}}>
+        <table className="hist-table">
+          <thead>
+            <tr>
+              {COLS.map(c => (
+                <th key={c.key} onClick={() => handleSort(c.key)}>
+                  {c.label}<SortIco col={c.key}/>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((r, i) => (
+              <tr key={i}>
+                <td style={{color:'#4b7c68'}}>{r.fecha}</td>
+                <td>
+                  <span style={{display:'inline-flex',alignItems:'center',gap:5}}>
+                    <span style={{width:7,height:7,borderRadius:'50%',background:FAM_COLORS[r.familia]||'#ccc',flexShrink:0,display:'inline-block'}}/>
+                    <span style={{fontSize:11.5}}>{r.familia}</span>
+                  </span>
+                </td>
+                <td style={{maxWidth:110,overflow:'hidden',textOverflow:'ellipsis'}}>{r.producto}</td>
+                <td className="hist-sku">{r.sku}</td>
+                <td style={{fontWeight:600,textAlign:'right'}}>{r.cant}</td>
+                <td className="hist-importe" style={{textAlign:'right'}}>{r.importe}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div className="hist-pagination">
+        <button className="hist-pg-btn" onClick={() => setPage(p => p - 1)} disabled={page === 1}>Anterior</button>
+        <span>Página {page} de {totalPages}</span>
+        <button className="hist-pg-btn" onClick={() => setPage(p => p + 1)} disabled={page === totalPages}>Siguiente</button>
+      </div>
+    </div>
+  );
+}
+
+/* ── Mount ── */
+function mountChart(id, Component) {
+  const el = document.getElementById(id);
+  if (!el) { console.warn('VendIA: mount target not found:', id); return; }
+  try { ReactDOM.createRoot(el).render(<Component/>); }
+  catch(err) { console.error('VendIA: error mounting', id, err); }
+}
+
+function mountAll() {
+  mountChart('evolucion-root', EvolucionChart);
+  mountChart('mix-root',       MixChart);
+  mountChart('historial-root', HistorialTable);
+}
+
+// Babel standalone ejecuta esto tras transformar — DOM ya está listo
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', mountAll);
+} else {
+  mountAll();
+}
+</script>
+
+</body>
+</html>

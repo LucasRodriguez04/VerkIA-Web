@@ -1,0 +1,418 @@
+═══════════════════════════════════════════════════════════════════════
+  VendIA — ANÁLISIS COMPLETO DE PENDIENTES Y ESTADO ACTUAL
+  Scarpati Hnos. · Generado: 02/04/2026 · Última actualización: 02/04/2026
+  Para continuar con: VendIA_App.html (archivo principal unificado)
+═══════════════════════════════════════════════════════════════════════
+
+CONTEXTO
+─────────────────────────────────────────────────────────────────────
+- Archivo principal: VendIA_App.html (~2.800 líneas)
+- Stack: HTML + CSS + JS vanilla + React 18 + Recharts 2.12.7 (CDN)
+- Módulos: Login, Home, Clientes, Productos, KPIs, Objetivos,
+           Vendedores, Promociones, Configuración, Perfil Cliente
+- Roles: admin (acceso total) / vendedor (vista restringida)
+- Datos: inventados, consistentes con negocio Scarpati Hnos.
+         (cuchillería industrial, maquinaria frigorífica, insumos)
+
+
+═══════════════════════════════════════════════════════════════════════
+  ESTADO AL 02/04/2026 — LO QUE YA FUNCIONA
+═══════════════════════════════════════════════════════════════════════
+
+✅ LOGIN
+   - Pantalla de inicio con email/contraseña
+   - Botones de demo rápido: Admin / Vendedor
+   - Logout funcional con confirmación
+   - applyLogin() setea nombre y rol en topbar y sidebar
+
+✅ ROLES BÁSICOS
+   - Sidebar oculta "Vendedores" y "Configuración" para vendedor
+   - applyRolePage() redirige vendedor si intenta acceder a esas páginas
+   - Home tiene vista diferenciada: admin (tabla equipo) / vendedor (resumen personal)
+   - KPIs: vista admin (tabla + gráficos) / vendedor (su card de ranking)
+   - Objetivos: admin (editable) / vendedor (progress view)
+   - Promociones: admin (cards + modal) / vendedor (banner + lista)
+
+✅ CLIENTES
+   - Admin ve todos los clientes (9)
+   - Vendedor (Lucas R.) ve solo sus 3 clientes
+   - Click abre Perfil de Cliente
+
+✅ PERFIL DE CLIENTE (9 clientes completos)
+   - Stats row (4 KPIs por cliente)
+   - Timeline de actividad
+   - Oportunidades detectadas por el motor
+   - Recomendaciones con score
+   - Gráfico de evolución de compras (línea)
+   - Gráfico de mix de productos (donut)
+   - Acciones: Llamar / Registrar visita
+
+✅ PRODUCTOS (20 productos)
+   - 5 categorías: Cuchillería, Maquinaria, Herramientas, Insumos, Embalaje
+   - Filtros por categoría (pills) + búsqueda
+   - Cards con SKU, precio, margen, stock, tendencia
+   - Gráfico: Ventas por categoría (barras apiladas 6 meses)
+   - Gráfico: Top 5 productos por volumen (barras horizontales)
+
+✅ KPIs
+   - Cards: oportunidades, conversión, ticket promedio
+   - Selector de período (1m, 3m, 6m, 12m, histórico)
+   - Gráfico de barras ventas por familia (6 meses)
+   - Gráfico donut estados de clientes
+   - Tabla de performance por vendedor (admin)
+   - Card de ranking propio (vendedor)
+
+✅ OBJETIVOS
+   - Admin: tabla editable de objetivos por vendedor con publicación
+   - Vendedor: progress bar, porcentaje, grid por familia de productos
+   - Gráfico de línea real vs objetivo (3m)
+
+✅ VENDEDORES (admin-only)
+   - Grid de cards por vendedor con ring SVG de % objetivo
+   - Click abre detalle con 4 tabs: Cartera, Performance, Alertas, Objetivos
+   - Cartera: grid de clientes con filtro/búsqueda
+   - Performance: gráfico de barras + donut de estados
+   - Alertas: feed filtrable
+   - Objetivos: progress bars + grid de familias
+
+✅ PROMOCIONES
+   - Admin: cards con expand/colapso de detalle, modal Nueva/Editar promo
+   - Vendedor: banner horizontal de activas + lista read-only
+   - Confirmación al desactivar
+
+✅ CONFIGURACIÓN (admin-only)
+   - Recetas de cross-sell: tabla editable inline con autocomplete
+   - Criterios de priorización: drag & drop con pesos
+   - Gestión de usuarios: tabla con activate/deactivate, modal nuevo usuario
+
+✅ INFRAESTRUCTURA
+   - Toast system (4 tipos, hover-pause, max 3)
+   - Confirm dialog reutilizable
+   - Hash router (#home, #clientes, etc.)
+   - Lazy init de charts (chartsInited object)
+   - Stagger animations en cards
+   - Responsive básico
+
+
+═══════════════════════════════════════════════════════════════════════
+  PENDIENTES — PRIORIDAD ALTA (funcionalidad clave)
+═══════════════════════════════════════════════════════════════════════
+
+🔴 P1 — KPI VENDEDOR: card de ranking incompleta
+   Archivo: VendIA_App.html → id="kpiVendorSection"
+   Problema: La vista vendedor en KPIs solo muestra un card de ranking
+             básico sin gráficos propios de su performance.
+   Fix: Agregar gráfico de barras con sus ventas por familia (últimos 6m)
+        y donut con sus estados de clientes (solo los suyos).
+        Usar escalado: factor = v.objPct / 78 para derivar los números.
+
+🔴 P2 — PERFIL CLIENTE: no recuerda al volver desde otra página
+   Archivo: función openCliente() + navigate()
+   Problema: Si el usuario abre cliente 1, navega a otra página, y vuelve
+             a Clientes, el perfil está vacío (currentClienteId persiste
+             pero pg-cliente no re-renderiza si chartsInited['cliente']
+             ya está marcado como true).
+   Fix: No marcar chartsInited['cliente'] = true nunca (siempre re-init).
+        En la función initPage, si page === 'cliente', no bloquear.
+
+🔴 P3 — CLIENTES: el "Vendedor" del vendedor demo es "Lucas R." hardcodeado
+   Archivo: CLIENTES_DATA + initClientes()
+   Problema: La identificación del vendedor logueado está hardcodeada
+             como 'Lucas R.' Lo correcto sería tener una variable
+             currentVendedorNombre que se setee en applyLogin().
+   Fix:
+     - En applyLogin(), detectar si el email es vendedor y setear
+       window.currentVendedorNombre = 'Lucas R.' (o el que corresponda).
+     - En initClientes() y applyRolePage(), filtrar por esa variable.
+
+🔴 P4 — HOME vendedor: heroTitle y heroSub se cambian con query DOM
+   Archivo: función applyRolePage()
+   Problema: Se cambia el hero title/sub buscando '.hero-title' en el DOM.
+             Esto es frágil si hay múltiples elementos con esa clase.
+   Fix: Dar IDs explícitos a esos elementos (#heroTitle, #heroSub)
+        y cambiarlos por getElementById.
+
+🔴 P5 — PRODUCTOS: click en card abre toast en lugar de detalle real
+   Archivo: renderProdGrid() → onclick
+   Problema: El click en producto muestra toast con nombre/SKU pero
+             no abre ningún modal/detalle con descripción, historial
+             de ventas, clientes que lo compraron, etc.
+   Fix: Crear modal de detalle de producto con:
+        - Descripción larga (desc ya está en PRODUCTOS_DATA)
+        - Gráfico de ventas del producto (últimos 6 meses)
+        - Lista de clientes que lo compraron
+        - Botón "Ver clientes que no lo compran" (oportunidad cross-sell)
+
+
+═══════════════════════════════════════════════════════════════════════
+  PENDIENTES — PRIORIDAD MEDIA (UX / datos)
+═══════════════════════════════════════════════════════════════════════
+
+🟡 M1 — CLIENTES: página count no se actualiza al filtrar por rol
+   Archivo: renderClientes() → id="clientCount"
+   Problema: El count dice "9 clientes" siempre. Cuando el vendedor
+             ve solo 3, sigue diciendo 9.
+   Status: renderClientes() ya lo actualiza, pero el HTML inicial
+           tiene hardcodeado "9 clientes" en el DOM.
+
+✅ RESUELTO 02/04 — HOME vendedor: los KPI cards del admin (Clientes activos, Tasa
+   de conversión, Cumplimiento objetivo, Alertas activas) aparecían también en la
+   vista vendedor. Fix: se movieron dentro de homeAdminSection, así solo el admin
+   los ve. El vendedor solo ve "Mi resumen del mes".
+
+🟡 M2 — HOME admin: KPI cards con números del equipo no concuerdan con tabla
+   Archivo: pg-home → .kpi-grid
+   Problema: Los 4 KPI cards del admin muestran números de Lucas R.
+             (9 clientes activos de 12) pero deberían mostrar totales
+             del equipo completo.
+   Fix: Calcular totales desde VENDEDORES_DATA:
+        - Clientes: suma de v.clientes = 75 (total equipo)
+        - Conversión: promedio de v.conversion = ~62%
+        - Objetivo: promedio ponderado de v.objPct = ~75%
+        - Alertas: suma de v.alertas = 22
+
+🟡 M3 — GRÁFICOS: chart roots no se limpian al hacer logout
+   Archivo: doLogout()
+   Problema: window._chartRoots persiste entre sesiones de demo.
+             Al loguear de nuevo como otro rol, los gráficos
+             pueden tener datos del rol anterior.
+   Fix: En doLogout() agregar: window._chartRoots = {};
+
+🟡 M4 — PERFIL CLIENTE: solo 3 clientes tienen datos reales en CLIENT_DETAILS
+   Status: RESUELTO en sesión 02/04 — ahora 9 clientes tienen datos.
+   Verificar: Clientes 4–9 tienen stats, timeline, ops, recs, charts.
+
+🟡 M5 — CONFIGURACIÓN: el modal de nuevo usuario no hace nada visible al admin
+   Archivo: función createUser()
+   Problema: Se agrega al array usuarios[] pero si la config está
+             en la tab Usuarios, hay que llamar renderUsuarios().
+   Status: renderUsuarios() SÍ se llama en createUser(). OK.
+
+🟡 M6 — PROMO MODAL: los multiselect de productos y vendedores no funcionan
+   Archivo: pg-promociones → modal → multiselect de productos/clientes
+   Problema: El modal tiene campos de texto simples (nombre, fechas, notas).
+             La spec original pedía multiselect de productos y vendedores.
+             Actualmente no hay chips ni dropdown de selección en el modal.
+   Fix: Agregar msState (ya existía en Promociones.html original) y
+        los controles de multiselect de productos y asignación de vendedores.
+
+🟡 M7 — NAVBAR BADGE "3" en Clientes está hardcodeado
+   Archivo: sidebar → .nl-badge
+   Problema: El badge siempre dice "3" independientemente del rol.
+             Para admin debería ser el total de alertas urgentes (ej: 5).
+             Para vendedor debería ser sus alertas (ej: 2).
+   Fix: En applyRolePage() actualizar el badge con datos reales.
+
+🟡 M8 — VENDEDORES: el vendedor logueado debería ver "Mi perfil" en el sidebar
+   Actualmente: La sección Vendedores está oculta para el rol vendedor.
+   Mejora: Cambiar el botón de Vendedores por "Mi perfil" para vendedor,
+           que abra directamente el detalle de Lucas Rodríguez (id=1).
+
+🟡 M9 — OBJETIVOS admin: los cambios en la tabla no persisten entre navegaciones
+   Archivo: OBJ_DATA + initObjetivos()
+   Problema: OBJ_DATA es un const. Si admin edita un objetivo y navega,
+             al volver los datos se regeneran desde el original.
+   Status: OBJ_DATA se edita in-place (mutación del objeto), debería
+           persistir dentro de la misma sesión. Verificar en browser.
+
+🟡 M10 — PRODUCTOS: margen no tiene unidad visible en mobile
+   Archivo: CSS .prod-margin
+   Problema: En pantallas < 768px, el texto "Margen 42%" puede quedar
+             cortado o superpuesto con el precio.
+   Fix: Ajustar el layout del prod-stats-row para mobile.
+
+
+═══════════════════════════════════════════════════════════════════════
+  PENDIENTES — PRIORIDAD BAJA (polish / nice-to-have)
+═══════════════════════════════════════════════════════════════════════
+
+🟢 L1 — HOME: animaciones count-up en los KPI numbers
+   Usar VendIA.countUp (ya existe en vendIA-global.js) o implementar
+   inline en initHome(). Los números deberían animar desde 0 al cargar.
+
+🟢 L2 — PERFIL CLIENTE: botón "Llamar" debería abrir modal de registro de llamada
+   Actualmente muestra toast. Mejorar con modal simple:
+   - Fecha/hora (auto)
+   - Resultado (Contactado / Sin respuesta / Volvió a llamar)
+   - Notas libres
+   - Guardar agrega item al timeline del cliente
+
+🟢 L3 — PERFIL CLIENTE: botón "Registrar visita" igual que L2
+
+🟢 L4 — CLIENTES: empty state cuando vendedor no tiene clientes asignados
+   Actualmente si filterClientes devuelve array vacío se muestra
+   el empty state genérico. Personalizar mensaje para el caso vendedor.
+
+🟢 L5 — PRODUCTOS: contador de resultados filtrados
+   Al filtrar por categoría o buscar, mostrar "X productos" resultado.
+
+🟢 L6 — PRODUCTOS: ordenar por precio / margen / ventas / tendencia
+   Agregar headers clickeables en las cards o un select de ordenamiento.
+
+🟢 L7 — KPIs: selector de período debería cambiar también el gráfico de barras
+   Actualmente el gráfico de barras siempre muestra 6 meses (BASE_6M).
+   Cuando el usuario elige "1m" debería mostrar solo 1 barra, etc.
+   Fix: En changeKPIPeriod() pasar el period a mountKPICharts() y
+        en KPIBarApp usar getSalesData(period) en lugar de BASE_6M.
+
+🟢 L8 — VENDEDORES: cartera del vendedor debería filtrar desde CLIENTES_DATA
+   Actualmente usa CLIENTES_DATA.filter((_,i) => i < currentVend.clientes)
+   que simplemente toma los primeros N clientes, no los reales del vendedor.
+   Fix: Asignar ids de clientes a cada vendedor en VENDEDORES_DATA
+        y filtrar por vendedor.nombre en CLIENTES_DATA.
+
+🟢 L9 — TOAST: el demo-toggle button ("Vista: Admin") no actualiza el sidebar inmediatamente
+   Actualmente toggleRole() llama applyRolePage(currentPage) que aplica
+   reglas de visibilidad. Pero si el usuario hace toggle rápido, pueden
+   quedar estados intermedios inconsistentes.
+
+🟢 L10 — CONFIGURACIÓN: criterios — validación de suma de pesos = 100%
+   Al guardar criterios, verificar que la suma de pesos de criterios
+   activos sea exactamente 100. Si no, mostrar warning.
+
+🟢 L11 — LOGIN: transición más suave al entrar al app
+   Actualmente: login fade-out (0.5s) → navigate('home') inmediato.
+   Mejora: Agregar un pequeño delay adicional + animación de entrada
+           en el layout principal del app.
+
+🟢 L12 — RESPONSIVE: bottom tab bar para mobile
+   El vendIA-global.css original tenía .vd-bottom-bar para mobile.
+   En VendIA_App.html no se implementó el bottom tab bar mobile.
+   Agregar una tab bar fija en la parte inferior para pantallas < 768px
+   con los 4-5 ítems principales del rol activo.
+
+
+═══════════════════════════════════════════════════════════════════════
+  BUGS CONOCIDOS
+═══════════════════════════════════════════════════════════════════════
+
+🐛 B1 — RESUELTO: critDirty nombre duplicado (función y variable)
+   Causaba SyntaxError que rompía todo el JS.
+   Fix: Renombrar función a markCritDirty().
+
+🐛 B2 — RESUELTO: navigate('home') en DOMContentLoaded salía inmediato
+   porque currentPage === 'home'. Fix: currentPage = ''.
+
+🐛 B3 — PENDIENTE: clienteTrend y cliDonut chart roots no se eliminan
+   al navegar entre distintos clientes.
+   Status: Parcialmente resuelto — se borran _chartRoots.cliTrend y
+           cliDonut en openCliente() antes de montar nuevos charts.
+   Verificar: Que no haya memory leaks al abrir muchos clientes.
+
+🐛 B4 — PENDIENTE: filterAc() en recetas referencia PROD_OPTS
+   pero si PROD_OPTS cambia, el autocomplete no se actualiza.
+   Status: OK para demo, PROD_OPTS es constante.
+
+🐛 B5 — PENDIENTE: en mobile, el sidebar overlay no cierra al hacer
+   tap fuera en algunos navegadores iOS.
+   Fix: Agregar touchstart listener además de onclick en sidebarOverlay.
+
+🐛 B6 — CDN DEPENDENCY: Si el usuario abre el archivo sin internet,
+   React, Recharts y Babel no cargan. Los gráficos no se renderizan.
+   El resto del app funciona sin gráficos (sin errores JS gracias a
+   los guards 'if (window.mountXxx)').
+   Fix para producción: Bundlear o incluir scripts localmente.
+
+
+═══════════════════════════════════════════════════════════════════════
+  DATOS INVENTADOS — COHERENCIA DEL MODELO
+═══════════════════════════════════════════════════════════════════════
+
+Empresa: Scarpati Hnos. — distribuidor mayorista de equipamiento
+         frigorífico e insumos para industria cárnica (Argentina)
+
+Productos (20 SKUs):
+  Cuchillería (5): CAR-22, CAR-467, CAR-88, CAR-901, CHA-44
+  Maquinaria (4):  ENV-99, ENV-202, ENV-55, MOL-10
+  Herramientas (4): HER-11, HER-22, HER-33, HER-44
+  Insumos (4):     INS-01, INS-02, INS-03, INS-04
+  Embalaje (3):    EMB-01, EMB-02, EMB-03
+
+Vendedores (7):
+  Lucas Rodríguez  — Zona Norte,    12 cli, conv 64%, obj 78%
+  Valentina Torres — Zona Sur,       9 cli, conv 74%, obj 90%
+  Marcos Heredia   — Zona Oeste,    11 cli, conv 42%, obj 55% (⚠ behind)
+  Sol Ferreyra     — Zona Este,     13 cli, conv 71%, obj 92%
+  Diego Castillo   — CABA Centro,    8 cli, conv 73%, obj 85%
+  Camila Nunes     — GBA Sur,       15 cli, conv 60%, obj 69%
+  Ramiro Blanco    — Interior,       7 cli, conv 50%, obj 53% (⚠ behind)
+
+Clientes (9):
+  1. Mercado Central SA   — Lucas R.   — alta prioridad, cross+declive
+  2. El Gaucho SRL        — Lucas R.   — media, cross+reorden
+  3. Distribuidora Sur    — Valentina  — baja, declive
+  4. Frigorífico Norte    — Marcos H.  — media, upsell+cross
+  5. Carnes & Co.         — Sol F.     — alta, declive (riesgo)
+  6. Chacinados Rosario   — Diego C.   — media, cross+promo
+  7. La Pampa Foods       — Camila N.  — media, cross+upsell
+  8. Norte Carnes         — Ramiro B.  — alta, atrasado (riesgo crítico)
+  9. Del Campo SRL        — Lucas R.   — baja, reorden
+
+Nota: vendedor demo = Lucas Rodríguez → ve solo clientes 1, 2, 9
+
+
+═══════════════════════════════════════════════════════════════════════
+  PRÓXIMAS FUNCIONALIDADES PARA VERSIÓN 2
+═══════════════════════════════════════════════════════════════════════
+
+▶ DETALLE DE PRODUCTO (modal)
+  - Al clickear un producto en Catálogo: descripción, gráfico ventas 6m,
+    lista de clientes compradores, clientes potenciales (cross-sell gap).
+
+▶ BÚSQUEDA GLOBAL
+  - Barra de búsqueda en el topbar que busca en clientes, productos,
+    vendedores y muestra resultados con deep-link a la sección correcta.
+
+▶ NOTIFICACIONES PANEL
+  - El botón de campana del topbar debería abrir un panel lateral
+    con las 4 alertas marcadas (actualmente solo tiene el badge "4").
+
+▶ MODO OSCURO
+  - Toggle light/dark mode en el topbar o configuración de usuario.
+
+▶ EXPORTACIÓN REAL
+  - Los botones "Exportar CSV" deberían generar un archivo real
+    usando Blob + URL.createObjectURL en el browser.
+
+▶ PERSISTENCIA LOCAL
+  - Guardar estado de configuración (criterios, objetivos editados)
+    en localStorage para que sobreviva al F5.
+
+▶ ONBOARDING FLOW
+  - Primera vez que un vendedor entra, mostrar un tour guiado de 3-4 pasos
+    destacando las secciones clave y cómo usar el motor.
+
+▶ MÓDULO REPORTES
+  - Página nueva con reportes descargables:
+    - Resumen mensual por vendedor (PDF)
+    - Análisis de oportunidades perdidas
+    - Evolución de cross-sell ratio
+
+▶ INTEGRACIÓN ERP/WMS
+  - Pantalla de importación real (el dropzone de Home ya está listo)
+  - Mapeo de columnas del CSV a campos del modelo
+  - Preview de datos antes de confirmar importación
+
+
+═══════════════════════════════════════════════════════════════════════
+  INSTRUCCIONES PARA CONTINUAR EN NUEVA SESIÓN
+═══════════════════════════════════════════════════════════════════════
+
+1. Abrir nueva sesión con Claude Code (claude.ai/code o CLI)
+2. Abrir el archivo: c:\Users\lucas\OneDrive\Escritorio\VerkIA\VendIA_App.html
+3. Compartir este documento al inicio de la sesión
+4. Mencionar qué prioridades trabajar primero (P1, P2... o M1, M2...)
+
+Comandos útiles para diagnóstico rápido:
+  grep -n "function initHome\|function applyRolePage" VendIA_App.html
+  grep -n "id=\"pg-" VendIA_App.html
+  wc -l VendIA_App.html
+
+Recordar:
+  - El archivo NO usa node/webpack — es vanilla HTML puro
+  - Los charts usan React 18 + Recharts vía CDN (requiere internet)
+  - El script type="text/babel" es el bloque de los charts React
+  - La variable critDirty fue renombrada a markCritDirty() (bug crítico ya resuelto)
+  - currentPage = '' (vacío al inicio, se inicializa con el login)
+
+═══════════════════════════════════════════════════════════════════════

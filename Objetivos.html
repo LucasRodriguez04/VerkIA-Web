@@ -1,0 +1,1230 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Objetivos · Abril 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="vendIA-global.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/prop-types@15.8.1/prop-types.min.js"></script>
+<script src="https://unpkg.com/recharts@2.12.7/umd/Recharts.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep:    #064e3b;
+  --mid:     #006c49;
+  --accent:  #22c55e;
+  --sage:    #d1fae5;
+  --surface: #ecfdf5;
+  --bg:      #f0fdf4;
+  --border:  #a7f3d0;
+  --muted:   #4b7c68;
+  --dark:    #191c1e;
+  --alert:   #ea580c;
+  --warning: #ca8a04;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); overflow: hidden; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ══════════ SIDEBAR ══════════ */
+.sidebar { width: 220px; flex-shrink: 0; background: var(--deep); display: flex; flex-direction: column; height: 100vh; z-index: 200; transition: transform 0.28s cubic-bezier(0.16,1,0.3,1); }
+.sb-logo { padding: 24px 20px 16px; }
+.sb-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.sb-logo-sub  { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 3px; }
+.sb-div { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.sb-nav { flex: 1; display: flex; flex-direction: column; padding: 4px 0; overflow-y: auto; overflow-x: hidden; }
+.sb-nav::-webkit-scrollbar { width: 0; }
+.sb-lbl { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.25); letter-spacing: 1.8px; text-transform: uppercase; padding: 10px 20px 6px; }
+.nl { display: flex; align-items: center; gap: 10px; padding: 9px 14px; margin: 1px 10px; border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 13.5px; font-weight: 500; border: none; background: none; width: calc(100% - 20px); text-align: left; border-left: 3px solid transparent; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+.nl:hover  { background: rgba(255,255,255,0.08); color: white; }
+.nl.active { background: rgba(34,197,94,0.14); color: #22c55e; border-left-color: var(--accent); font-weight: 600; }
+.nl svg    { flex-shrink: 0; width: 17px; height: 17px; }
+.nl-badge  { margin-left: auto; background: var(--alert); color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.sb-bottom { padding: 8px 0 16px; }
+.sb-user   { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 0 10px; }
+.sb-av     { width: 34px; height: 34px; border-radius: 50%; background: var(--mid); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sb-uname  { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-role   { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; }
+.sb-role.admin    { background: rgba(34,197,94,0.18); color: var(--accent); }
+.sb-role.vendedor { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); }
+.btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 16px; margin: 4px 10px 0; border-radius: 8px; border: none; background: none; cursor: pointer; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-size: 13px; width: calc(100% - 20px); transition: background 0.15s, color 0.15s; }
+.btn-logout:hover { background: rgba(234,88,12,0.12); color: var(--alert); }
+
+/* ══════════ TOPBAR ══════════ */
+.main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: 56px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.tb-left  { display: flex; align-items: center; gap: 8px; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+.hamburger { display: none; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--dark); align-items: center; justify-content: center; }
+.hamburger:hover { background: var(--surface); }
+.tb-right { display: flex; align-items: center; gap: 4px; }
+.tb-btn   { width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); position: relative; transition: background 0.15s, color 0.15s; }
+.tb-btn:hover { background: var(--surface); color: var(--deep); }
+.tb-notif { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; background: var(--alert); color: white; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.tb-sep   { width: 1px; height: 22px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+.tb-user  { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.tb-user:hover { background: var(--surface); }
+.tb-av   { width: 32px; height: 32px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; }
+.tb-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.tb-role { font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; letter-spacing: 0.4px; }
+.tb-role.admin    { background: rgba(6,78,59,0.08); color: var(--deep); }
+.tb-role.vendedor { background: var(--sage); color: var(--mid); }
+.demo-toggle { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 8px; border: 1.5px solid var(--border); background: var(--surface); font-size: 11.5px; font-weight: 600; color: var(--muted); cursor: pointer; transition: border-color 0.15s; }
+.demo-toggle:hover { border-color: var(--accent); color: var(--deep); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ══════════ SHARED ══════════ */
+.page-header-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 24px; animation: fadeUp 0.35s ease both; }
+.page-header { }
+.breadcrumb  { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+.breadcrumb a { color: var(--muted); text-decoration: none; }
+.breadcrumb a:hover { color: var(--mid); }
+.breadcrumb-sep { color: var(--border); }
+.page-title { font-family: 'Barlow Condensed', sans-serif; font-size: 32px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; line-height: 1; }
+.page-sub { font-size: 13.5px; color: var(--muted); margin-top: 4px; }
+
+.card { background: white; border: 1px solid var(--border); border-radius: 16px; }
+.sec-title { font-family: 'Barlow Condensed', sans-serif; font-size: 18px; font-weight: 700; color: var(--dark); letter-spacing: -0.3px; }
+.sec-sub { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+
+/* Buttons */
+.btn-primary {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--deep);
+  border: none; border-radius: 10px; padding: 9px 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  box-shadow: 0 4px 12px rgba(34,197,94,0.25); white-space: nowrap;
+}
+.btn-primary:hover { background: #16a34a; transform: translateY(-1px); box-shadow: 0 6px 18px rgba(34,197,94,0.35); }
+.btn-primary:active { transform: translateY(0); }
+.btn-primary:disabled { opacity: 0.7; cursor: not-allowed; transform: none; box-shadow: none; }
+.btn-primary.published { background: #16a34a; color: white; cursor: default; }
+.btn-secondary {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.85);
+  border: 1px solid rgba(255,255,255,0.18); border-radius: 9px; padding: 8px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-secondary:hover { background: rgba(255,255,255,0.15); }
+.btn-outline { display: inline-flex; align-items: center; gap: 6px; background: white; color: var(--mid); border: 1.5px solid var(--border); border-radius: 9px; padding: 7px 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.btn-outline:hover { border-color: var(--accent); background: var(--surface); }
+
+/* Status badges */
+.st { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.st-track  { background: rgba(34,197,94,0.10);  color: #16a34a; }
+.st-risk   { background: rgba(202,138,4,0.10);  color: #b45309; }
+.st-behind { background: rgba(220,38,38,0.10);  color: #dc2626; }
+
+/* ══════════════════════════════════════════
+   ADMIN VIEW
+══════════════════════════════════════════ */
+
+/* Objetivo Global Card */
+.global-card { padding: 24px 28px; margin-bottom: 22px; animation: cardIn 0.4s ease 0.05s both; }
+.global-card-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+
+.field-group { display: flex; flex-direction: column; gap: 8px; }
+.field-label { font-size: 11px; font-weight: 700; letter-spacing: 0.6px; text-transform: uppercase; color: var(--muted); }
+.field-input-wrap { position: relative; }
+.field-prefix { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); font-size: 15px; font-weight: 600; color: var(--muted); pointer-events: none; }
+.field-input {
+  width: 100%; padding: 11px 14px 11px 26px;
+  border: 1.5px solid var(--border); border-radius: 10px;
+  font-family: 'DM Mono', monospace; font-size: 16px; font-weight: 600; color: var(--dark);
+  background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.12); }
+.field-readonly { background: var(--surface); color: var(--muted); cursor: default; }
+.field-hint { font-size: 12px; color: var(--muted); margin-top: 4px; line-height: 1.5; }
+.field-hint strong { color: var(--mid); font-weight: 600; }
+
+/* Toggle radio */
+.toggle-radio { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 3px; width: fit-content; margin-bottom: 12px; }
+.toggle-opt { padding: 6px 16px; border-radius: 7px; cursor: pointer; font-size: 12.5px; font-weight: 500; color: var(--muted); border: none; background: none; transition: background 0.15s, color 0.15s, font-weight 0.1s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+.toggle-opt.active { background: white; color: var(--deep); font-weight: 700; box-shadow: 0 1px 4px rgba(6,78,59,0.12); }
+
+/* Table */
+.table-section { margin-bottom: 20px; animation: cardIn 0.4s ease 0.1s both; }
+.table-section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.table-wrap { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--deep); }
+thead th { padding: 12px 16px; text-align: left; font-weight: 600; font-size: 10.5px; letter-spacing: 0.7px; text-transform: uppercase; color: rgba(255,255,255,0.7); white-space: nowrap; }
+thead th.c { text-align: center; }
+tbody tr { border-bottom: 1px solid var(--surface); transition: background 0.15s; }
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg) !important; }
+tbody tr.behind { background: rgba(234,88,12,0.04); }
+tbody tr.risk   { background: rgba(202,138,4,0.04); }
+tbody td { padding: 11px 16px; color: var(--muted); vertical-align: middle; white-space: nowrap; }
+tbody td.c { text-align: center; }
+
+.row-av { width: 30px; height: 30px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.row-name-cell { display: flex; align-items: center; gap: 10px; }
+.row-name { font-weight: 600; color: var(--dark); font-size: 13px; }
+
+.baseline-val { font-family: 'DM Mono', monospace; font-size: 12.5px; color: var(--muted); }
+
+/* Inline editable cells */
+.editable-cell { cursor: pointer; position: relative; }
+.editable-cell:hover .cell-display { background: var(--surface); border-color: var(--accent); }
+.cell-display {
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--dark);
+  border: 1.5px solid transparent; border-radius: 7px; padding: 5px 8px;
+  transition: background 0.15s, border-color 0.15s; display: inline-block; min-width: 90px;
+}
+.cell-display.dirty { border-color: rgba(34,197,94,0.4); background: rgba(34,197,94,0.04); }
+.inline-edit-input {
+  font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 600; color: var(--dark);
+  border: 1.5px solid var(--accent); border-radius: 7px; padding: 5px 8px;
+  width: 100px; outline: none; box-shadow: 0 0 0 3px rgba(34,197,94,0.12);
+  background: white;
+}
+
+/* Save icon button */
+.save-btn {
+  width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: white; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  color: var(--border); transition: border-color 0.2s, color 0.2s, background 0.2s;
+  margin: 0 auto;
+}
+.save-btn:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }
+.save-btn.dirty { border-color: var(--accent); color: var(--accent); background: rgba(34,197,94,0.06); }
+.save-btn.saved { border-color: #16a34a; color: white; background: #16a34a; animation: savePop 0.3s ease; }
+@keyframes savePop { 0%{transform:scale(0.8)} 60%{transform:scale(1.15)} 100%{transform:scale(1)} }
+
+/* Guardar todos */
+.table-footer { display: flex; align-items: center; justify-content: space-between; padding: 16px 0 0; }
+.dirty-hint { font-size: 12.5px; color: var(--warning); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+
+/* ══════════════════════════════════════════
+   VENDOR VIEW
+══════════════════════════════════════════ */
+
+/* KPI Hero */
+.kpi-hero {
+  background: var(--deep); border-radius: 16px; padding: 32px;
+  margin-bottom: 18px; position: relative; overflow: hidden;
+  animation: cardIn 0.4s ease 0.05s both;
+}
+.kpi-hero::before { content:''; position:absolute; width:300px; height:300px; border-radius:50%; background:rgba(34,197,94,0.06); top:-80px; right:-40px; pointer-events:none; }
+.kpi-hero::after  { content:''; position:absolute; width:150px; height:150px; border-radius:50%; background:rgba(34,197,94,0.04); bottom:-40px; right:160px; pointer-events:none; }
+.hero-label { font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.6); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.hero-val   { font-family: 'Barlow Condensed', sans-serif; font-size: 64px; font-weight: 700; color: var(--accent); line-height: 1; margin-bottom: 6px; }
+.hero-sub   { font-size: 14px; color: rgba(255,255,255,0.7); }
+
+/* Progress card */
+.progress-card { padding: 24px 28px; margin-bottom: 18px; animation: cardIn 0.4s ease 0.10s both; }
+.progress-title { font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 20px; letter-spacing: 0.2px; }
+.progress-outer { position: relative; padding-top: 28px; padding-bottom: 28px; }
+
+/* Labels above the bar */
+.bar-labels { position: relative; height: 24px; margin-bottom: 6px; }
+.bar-label  { position: absolute; transform: translateX(-50%); font-size: 10.5px; font-weight: 600; white-space: nowrap; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+.bar-label-line { width: 1px; height: 10px; }
+.bar-label-text { font-size: 10px; color: var(--muted); font-weight: 600; }
+
+/* The bar itself */
+.bar-track {
+  height: 24px; border-radius: 999px; background: var(--border);
+  position: relative; overflow: visible;
+}
+.bar-fill-real {
+  position: absolute; left: 0; top: 0; height: 100%; border-radius: 999px;
+  background: var(--accent);
+  width: 0; transition: width 0.7s cubic-bezier(0.4,0,0.2,1);
+  z-index: 2;
+}
+.bar-fill-motor {
+  position: absolute; left: 0; top: 0; height: 100%; border-radius: 999px;
+  background: var(--mid); opacity: 0.45;
+  width: 0; transition: width 0.9s cubic-bezier(0.4,0,0.2,1) 0.1s;
+  z-index: 1;
+}
+.bar-marker {
+  position: absolute; top: -6px; bottom: -6px; width: 2px;
+  border-left: 2px dashed var(--muted); z-index: 3;
+}
+.bar-marker-label {
+  position: absolute; bottom: -22px; left: 50%; transform: translateX(-50%);
+  font-size: 10px; color: var(--muted); font-weight: 600; white-space: nowrap;
+}
+
+/* Below bar labels */
+.bar-sublabels { display: flex; justify-content: space-between; margin-top: 30px; flex-wrap: wrap; gap: 8px; }
+.bar-sublabel  { display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+.bar-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+.bar-sublabel strong { color: var(--dark); font-weight: 600; }
+
+.progress-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--surface); }
+.progress-footer-left { font-size: 12.5px; color: var(--muted); }
+.progress-footer-left strong { color: var(--dark); }
+
+/* Motor card */
+.motor-card {
+  background: var(--deep); border-radius: 12px; padding: 22px 24px;
+  margin-bottom: 18px; display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  animation: cardIn 0.4s ease 0.15s both;
+}
+.motor-left { flex: 1; min-width: 200px; }
+.motor-body { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 8px; }
+.motor-result { font-size: 18px; font-weight: 700; color: var(--accent); }
+.motor-right { flex-shrink: 0; }
+
+/* Line chart card */
+.chart-card { padding: 22px 24px; margin-bottom: 18px; animation: cardIn 0.4s ease 0.20s both; }
+.chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+.chart-title  { font-size: 15px; font-weight: 600; color: var(--dark); }
+.period-pills { display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 3px; gap: 0; }
+.pill-btn { padding: 4px 12px; border-radius: 5px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500; color: var(--muted); cursor: pointer; transition: background 0.15s, color 0.15s; }
+.pill-btn:hover { background: white; color: var(--dark); }
+.pill-btn.active { background: white; color: var(--deep); font-weight: 700; box-shadow: 0 1px 4px rgba(6,78,59,0.10); }
+
+/* Family breakdown grid */
+.family-section { animation: cardIn 0.4s ease 0.25s both; }
+.family-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.family-card {
+  background: white; border: 1px solid var(--border); border-radius: 14px; padding: 16px 18px;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.family-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,78,59,0.10); }
+.family-name  { font-size: 12px; font-weight: 700; color: var(--dark); letter-spacing: 0.2px; margin-bottom: 10px; }
+.family-bar   { height: 6px; border-radius: 999px; background: var(--border); margin-bottom: 8px; overflow: hidden; }
+.family-bar-fill { height: 100%; border-radius: 999px; transition: width 0.8s ease; }
+.family-vals  { font-size: 11px; color: var(--muted); margin-bottom: 6px; line-height: 1.5; }
+.family-vals strong { color: var(--dark); }
+
+/* ══════════ CONFIRM DIALOG ══════════ */
+.dialog-backdrop {
+  display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5);
+  z-index: 500; backdrop-filter: blur(4px); align-items: center; justify-content: center;
+}
+.dialog-backdrop.open { display: flex; }
+.dialog {
+  background: white; border-radius: 20px; padding: 36px 32px; width: 440px; max-width: 90vw;
+  animation: dialogIn 0.3s cubic-bezier(0.16,1,0.3,1) both;
+  box-shadow: 0 24px 64px rgba(0,0,0,0.25);
+}
+@keyframes dialogIn { from{opacity:0;transform:scale(0.92)translateY(10px)} to{opacity:1;transform:scale(1)translateY(0)} }
+.dialog-icon { width: 52px; height: 52px; border-radius: 14px; background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2); display: flex; align-items: center; justify-content: center; color: var(--accent); margin-bottom: 20px; }
+.dialog-title { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--dark); margin-bottom: 8px; }
+.dialog-body  { font-size: 14px; color: var(--muted); line-height: 1.6; margin-bottom: 28px; }
+.dialog-body strong { color: var(--dark); }
+.dialog-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.btn-cancel { padding: 9px 18px; border-radius: 9px; border: 1.5px solid var(--border); background: white; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: var(--muted); cursor: pointer; transition: border-color 0.15s; }
+.btn-cancel:hover { border-color: var(--muted); }
+.btn-confirm { padding: 9px 20px; border-radius: 9px; border: none; background: var(--accent); color: var(--deep); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: background 0.15s; }
+.btn-confirm:hover { background: #16a34a; }
+
+/* ══════════ OVERLAY + TOAST ══════════ */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150; backdrop-filter: blur(2px); }
+.overlay.open { display: block; }
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none; }
+.toast { background: var(--deep); color: white; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); pointer-events: all; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { background: #991b1b; border-left: 3px solid #ef4444; }
+.toast-out { animation: toastOut 0.2s ease forwards; }
+
+/* ══════════ ANIMATIONS ══════════ */
+@keyframes fadeUp  { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:translateY(0)} }
+@keyframes cardIn  { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes toastIn { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut{ to{opacity:0;transform:translateX(16px)} }
+
+/* ══════════ RESPONSIVE ══════════ */
+@media (max-width: 900px) {
+  .global-card-inner { grid-template-columns: 1fr; }
+  .family-grid { grid-template-columns: repeat(2,1fr); }
+}
+@media (max-width: 768px) {
+  .sidebar { position: fixed; left:0;top:0;bottom:0; transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .hamburger { display: flex !important; }
+  .tb-name,.tb-role { display: none; }
+  .content { padding: 16px; }
+  .table-wrap { overflow-x: auto; }
+  .family-grid { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<!-- Confirm Dialog -->
+<div class="dialog-backdrop" id="publishDialog">
+  <div class="dialog">
+    <div class="dialog-icon">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>
+    </div>
+    <div class="dialog-title">Publicar objetivos</div>
+    <div class="dialog-body">
+      ¿Publicar los objetivos de <strong>Abril 2026</strong>?<br>
+      Los vendedores podrán verlos en su panel inmediatamente.
+    </div>
+    <div class="dialog-actions">
+      <button class="btn-cancel" onclick="closeDialog()">Cancelar</button>
+      <button class="btn-confirm" onclick="confirmPublish()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Publicar
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">VendIA</div>
+      <div class="sb-logo-sub">Scarpati Hnos.</div>
+    </div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+        <span class="nl-badge">3</span>
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Productos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        KPIs
+      </button>
+      <button class="nl active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Objetivos
+      </button>
+      <button class="nl" id="sb-vendedores">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        Vendedores
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+        Promociones
+      </button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div"></div>
+      <button class="nl" style="margin:4px 10px 8px">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Configuración
+      </button>
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user">
+        <div class="sb-av" id="sb-av">AS</div>
+        <div>
+          <div class="sb-uname" id="sb-uname">Admin Scarpati</div>
+          <span class="sb-role admin" id="sb-role-badge">Admin</span>
+        </div>
+      </div>
+      <button class="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main-col">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <span class="tb-title" id="tb-title">Objetivos</span>
+      </div>
+      <div class="tb-right">
+        <button class="demo-toggle" onclick="toggleRole()">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+          Vista: <strong id="demoRoleLabel">Admin</strong>
+        </button>
+        <div class="tb-sep"></div>
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="tb-notif">3</span>
+        </button>
+        <div class="tb-sep"></div>
+        <div class="tb-user">
+          <div class="tb-av" id="tb-av">AS</div>
+          <span class="tb-name" id="tb-name">Admin Scarpati</span>
+          <span class="tb-role admin" id="tb-role">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- ════════════════════════════
+           VISTA ADMIN
+      ════════════════════════════ -->
+      <div id="view-admin">
+
+        <!-- Header row -->
+        <div class="page-header-row">
+          <div class="page-header">
+            <div class="breadcrumb">
+              <a href="#">Inicio</a><span class="breadcrumb-sep">›</span>
+              <span>Objetivos</span>
+            </div>
+            <div class="page-title">OBJETIVOS · ABRIL 2026</div>
+            <div class="page-sub">Configurá y publicá las metas del equipo comercial para este mes.</div>
+          </div>
+          <button class="btn-primary" id="publishBtn" onclick="openDialog()" style="align-self:flex-end">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2 15 22 11 13 2 9l20-7z"/></svg>
+            Publicar objetivos del mes
+          </button>
+        </div>
+
+        <!-- Objetivo Global -->
+        <div class="card global-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
+            <div>
+              <div class="sec-title">Objetivo Global</div>
+              <div class="sec-sub">Meta total del equipo para Abril 2026</div>
+            </div>
+            <span class="st st-track" style="font-size:12px;padding:4px 12px">Configurado</span>
+          </div>
+          <div class="global-card-inner">
+            <div>
+              <div style="margin-bottom:14px">
+                <div class="toggle-radio">
+                  <button class="toggle-opt active" id="opt-absoluto" onclick="setGlobalMode('absoluto')">$ absoluto</button>
+                  <button class="toggle-opt" id="opt-pct" onclick="setGlobalMode('pct')">% de crecimiento</button>
+                </div>
+              </div>
+              <!-- $ mode -->
+              <div id="input-absoluto">
+                <div class="field-group">
+                  <div class="field-label">$ Objetivo del mes</div>
+                  <div class="field-input-wrap">
+                    <span class="field-prefix">$</span>
+                    <input type="number" class="field-input" id="globalObjetivo" value="2800000"
+                      oninput="recalcGlobal()" style="padding-left:26px">
+                  </div>
+                </div>
+              </div>
+              <!-- % mode -->
+              <div id="input-pct" style="display:none">
+                <div class="field-group">
+                  <div class="field-label">% de crecimiento sobre baseline</div>
+                  <div class="field-input-wrap">
+                    <span class="field-prefix">%</span>
+                    <input type="number" class="field-input" id="globalPct" value="14.3"
+                      oninput="recalcGlobalFromPct()" step="0.1" style="padding-left:26px">
+                  </div>
+                </div>
+                <div class="field-group" style="margin-top:12px">
+                  <div class="field-label">Equivalente en $</div>
+                  <div class="field-input-wrap">
+                    <span class="field-prefix">$</span>
+                    <input type="text" class="field-input field-readonly" id="globalEquiv" value="2.800.715" readonly style="padding-left:26px">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div>
+              <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:16px 18px">
+                <div style="font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Referencia histórica</div>
+                <div style="display:flex;flex-direction:column;gap:8px">
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:13px;color:var(--muted)">Baseline histórico Abril</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--dark)">$2.450.000</span>
+                  </div>
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:13px;color:var(--muted)">Objetivo configurado</span>
+                    <span style="font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--accent)" id="globalResumen">$2.800.000</span>
+                  </div>
+                  <div style="height:1px;background:var(--border);margin:4px 0"></div>
+                  <div style="display:flex;justify-content:space-between;align-items:center">
+                    <span style="font-size:13px;color:var(--muted)">Crecimiento implícito</span>
+                    <span style="font-size:13px;font-weight:700;color:var(--mid)" id="globalGrowth">▲ +14.3%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Table section -->
+        <div class="table-section">
+          <div class="table-section-header">
+            <div>
+              <div class="sec-title">Objetivos por Vendedor</div>
+              <div class="sec-sub">Click en las celdas resaltadas para editar · Los cambios no se guardan hasta confirmar</div>
+            </div>
+            <div style="display:flex;gap:8px">
+              <button class="btn-outline" onclick="distribuirIgual()">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="8" x2="21" y1="6" y2="6"/><line x1="8" x2="21" y1="12" y2="12"/><line x1="8" x2="21" y1="18" y2="18"/><line x1="3" x2="3.01" y1="6" y2="6"/><line x1="3" x2="3.01" y1="12" y2="12"/><line x1="3" x2="3.01" y1="18" y2="18"/></svg>
+                Distribuir igual
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table id="objTable">
+              <thead>
+                <tr>
+                  <th>Vendedor</th>
+                  <th>Baseline Histórico</th>
+                  <th>Objetivo $</th>
+                  <th>Objetivo %</th>
+                  <th>Previsto Vendedor</th>
+                  <th class="c">Estado</th>
+                  <th class="c">Guardar</th>
+                </tr>
+              </thead>
+              <tbody id="objTbody"></tbody>
+            </table>
+          </div>
+
+          <div class="table-footer">
+            <div class="dirty-hint" id="dirtyHint" style="display:none">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+              <span id="dirtyCount">0</span> cambio(s) sin guardar
+            </div>
+            <div style="margin-left:auto">
+              <button class="btn-primary" onclick="saveAll()" id="btnSaveAll" style="opacity:0.5;pointer-events:none">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                Guardar todos
+              </button>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /view-admin -->
+
+
+      <!-- ════════════════════════════
+           VISTA VENDEDOR
+      ════════════════════════════ -->
+      <div id="view-vendor" style="display:none">
+
+        <!-- Header -->
+        <div class="page-header-row" style="margin-bottom:20px">
+          <div class="page-header">
+            <div class="breadcrumb">
+              <a href="#">Inicio</a><span class="breadcrumb-sep">›</span>
+              <span>Mis Objetivos</span>
+            </div>
+            <div class="page-title">MIS OBJETIVOS · ABRIL 2026</div>
+            <div class="page-sub">Tu meta personal y progreso en tiempo real.</div>
+          </div>
+        </div>
+
+        <!-- KPI Hero -->
+        <div class="kpi-hero">
+          <div style="display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px;position:relative;z-index:1">
+            <div>
+              <div class="hero-label">Objetivo del mes</div>
+              <div class="hero-val">$420.000</div>
+              <div class="hero-sub">Previsto por vos: $410.000</div>
+            </div>
+            <div style="text-align:right">
+              <div style="font-size:11px;font-weight:600;color:rgba(255,255,255,0.5);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px">Progreso actual</div>
+              <div style="font-family:'Barlow Condensed',sans-serif;font-size:48px;font-weight:700;color:white;line-height:1">42.9%</div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:2px">$180.000 de $420.000</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Progress bar card -->
+        <div class="card progress-card">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+            <div class="progress-title" style="margin:0">Progreso hacia el objetivo</div>
+            <span class="st st-track" style="font-size:12px;padding:4px 12px">ON TRACK</span>
+          </div>
+
+          <div class="progress-outer">
+            <!-- Labels above -->
+            <div class="bar-labels" style="margin-bottom:8px">
+              <div class="bar-label" style="left:42.86%">
+                <div style="font-size:10.5px;font-weight:700;color:var(--accent)">$180.000</div>
+                <div style="font-size:10px;color:var(--muted)">Vendido</div>
+              </div>
+              <div class="bar-label" style="left:92.86%">
+                <div style="font-size:10.5px;font-weight:700;color:var(--mid)">$390.000</div>
+                <div style="font-size:10px;color:var(--muted)">Con motor</div>
+              </div>
+            </div>
+
+            <!-- Bar track -->
+            <div class="bar-track">
+              <div class="bar-fill-motor" id="barMotor" style="width:0%"></div>
+              <div class="bar-fill-real"  id="barReal"  style="width:0%"></div>
+              <!-- Previsto marker -->
+              <div class="bar-marker" style="left:97.62%">
+                <div class="bar-marker-label">Previsto $410k</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="bar-sublabels">
+            <div class="bar-sublabel">
+              <div class="bar-dot" style="background:var(--accent)"></div>
+              <span>Vendido hasta hoy: <strong>$180.000</strong></span>
+            </div>
+            <div class="bar-sublabel">
+              <div class="bar-dot" style="background:var(--mid);opacity:0.6"></div>
+              <span>Detectado por el motor: <strong>+$210.000</strong></span>
+            </div>
+            <div class="bar-sublabel">
+              <div style="width:10px;height:10px;border-left:2px dashed var(--muted);flex-shrink:0"></div>
+              <span>Previsto por vos: <strong>$410.000</strong></span>
+            </div>
+            <div class="bar-sublabel">
+              <div class="bar-dot" style="background:var(--border)"></div>
+              <span>Objetivo: <strong>$420.000</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motor contribution card -->
+        <div class="motor-card">
+          <div class="motor-left">
+            <div class="motor-body">Si concretás tus recomendaciones activas este mes:</div>
+            <div class="motor-result">alcanzás el 92% de tu objetivo</div>
+          </div>
+          <div class="motor-right">
+            <button class="btn-secondary" onclick="showToast('Redirigiendo a clientes con acciones pendientes…','success')">
+              Ver recomendaciones →
+            </button>
+          </div>
+        </div>
+
+        <!-- Line chart card -->
+        <div class="card chart-card">
+          <div class="chart-header">
+            <div class="chart-title">Avance del mes</div>
+            <div class="period-pills">
+              <button class="pill-btn active" data-period="1m" onclick="setChartPeriod('1m',this)">1M</button>
+              <button class="pill-btn" data-period="3m" onclick="setChartPeriod('3m',this)">3M</button>
+              <button class="pill-btn" data-period="6m" onclick="setChartPeriod('6m',this)">6M</button>
+              <button class="pill-btn" data-period="12m" onclick="setChartPeriod('12m',this)">12M</button>
+            </div>
+          </div>
+          <div id="chart-avance-root" style="width:100%;height:280px"></div>
+        </div>
+
+        <!-- Family breakdown grid -->
+        <div class="family-section">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
+            <div>
+              <div class="sec-title" style="font-size:18px">Breakdown por Familia</div>
+              <div class="sec-sub">Ordenadas de mayor a menor brecha respecto al objetivo</div>
+            </div>
+          </div>
+          <div class="family-grid" id="familyGrid"></div>
+        </div>
+
+      </div><!-- /view-vendor -->
+
+    </main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ══════════════════════════════════════
+     RECHARTS — Line chart
+══════════════════════════════════════ -->
+<script type="text/babel">
+const { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, ResponsiveContainer } = Recharts;
+
+const LINE_DATA = {
+  '1m': [
+    { label:'1',  real:8000,   obj:14000  },
+    { label:'5',  real:45000,  obj:70000  },
+    { label:'10', real:98000,  obj:140000 },
+    { label:'15', real:180000, obj:210000 },
+    { label:'20', real:null,   obj:280000 },
+    { label:'25', real:null,   obj:350000 },
+    { label:'30', real:null,   obj:420000 },
+  ],
+  '3m': [
+    { label:'Sem 1', real:32000,  obj:38000  },
+    { label:'Sem 2', real:74000,  obj:80000  },
+    { label:'Sem 3', real:128000, obj:120000 },
+    { label:'Sem 4', real:175000, obj:160000 },
+    { label:'Sem 5', real:228000, obj:210000 },
+    { label:'Sem 6', real:295000, obj:265000 },
+    { label:'Sem 7', real:360000, obj:320000 },
+    { label:'Sem 8', real:412000, obj:380000 },
+    { label:'Sem 9', real:440000, obj:420000 },
+    { label:'Sem 10', real:null,  obj:460000 },
+    { label:'Sem 11', real:null,  obj:500000 },
+    { label:'Sem 12', real:null,  obj:540000 },
+  ],
+  '6m': [
+    { label:'Nov', real:285000, obj:310000 },
+    { label:'Dic', real:198000, obj:280000 },
+    { label:'Ene', real:322000, obj:360000 },
+    { label:'Feb', real:275000, obj:310000 },
+    { label:'Mar', real:310000, obj:340000 },
+    { label:'Abr', real:180000, obj:420000 },
+  ],
+  '12m': [
+    { label:'May', real:255000, obj:270000 },
+    { label:'Jun', real:230000, obj:260000 },
+    { label:'Jul', real:278000, obj:290000 },
+    { label:'Ago', real:260000, obj:280000 },
+    { label:'Sep', real:295000, obj:310000 },
+    { label:'Oct', real:248000, obj:300000 },
+    { label:'Nov', real:285000, obj:310000 },
+    { label:'Dic', real:198000, obj:280000 },
+    { label:'Ene', real:322000, obj:360000 },
+    { label:'Feb', real:275000, obj:310000 },
+    { label:'Mar', real:310000, obj:340000 },
+    { label:'Abr', real:180000, obj:420000 },
+  ],
+};
+
+function fmtPeso(v) {
+  if (v === null || v === undefined) return '—';
+  return '$' + v.toLocaleString('es-AR');
+}
+
+function AvanceChart({ period }) {
+  const data = LINE_DATA[period] || LINE_DATA['1m'];
+
+  const CustomTooltip = ({ active, payload, label }) => {
+    if (!active || !payload?.length) return null;
+    return (
+      <div style={{background:'#064e3b',border:'none',borderRadius:10,color:'white',fontSize:12,fontFamily:'DM Sans',padding:'10px 14px',boxShadow:'0 8px 24px rgba(0,0,0,0.2)'}}>
+        <div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>
+        {payload.map(p => p.value !== null && (
+          <div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
+            <div style={{width:8,height:8,borderRadius:'50%',background:p.color,flexShrink:0}}></div>
+            <span style={{color:'rgba(255,255,255,0.7)'}}>{p.dataKey === 'real' ? 'Real' : 'Objetivo'}:</span>
+            <span style={{fontWeight:700,color:'white'}}>{fmtPeso(p.value)}</span>
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <ResponsiveContainer width="100%" height="100%">
+      <LineChart data={data} margin={{top:4,right:16,left:8,bottom:0}}>
+        <CartesianGrid strokeDasharray="3 3" stroke="#d1fae5" vertical={false} />
+        <XAxis dataKey="label" tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false} />
+        <YAxis tick={{fontSize:11,fill:'#4b7c68',fontFamily:'DM Sans'}} axisLine={false} tickLine={false}
+          tickFormatter={v => '$' + (v >= 1000 ? (v/1000).toFixed(0)+'k' : v)} />
+        <Tooltip content={<CustomTooltip />} cursor={{stroke:'rgba(34,197,94,0.15)',strokeWidth:1}} />
+        <Legend
+          formatter={(val) => (
+            <span style={{fontSize:11.5,color:'#4b7c68',fontFamily:'DM Sans',fontWeight:500}}>
+              {val === 'real' ? 'Ventas reales' : 'Curva objetivo'}
+            </span>
+          )}
+        />
+        <Line
+          type="monotone" dataKey="obj" name="obj"
+          stroke="#006c49" strokeWidth={2} strokeDasharray="6 4"
+          dot={false} activeDot={{r:4,fill:'#006c49'}}
+          connectNulls={true} animationDuration={600}
+        />
+        <Line
+          type="monotone" dataKey="real" name="real"
+          stroke="#22c55e" strokeWidth={2.5}
+          dot={false} activeDot={{r:5,fill:'#22c55e'}}
+          connectNulls={false} animationDuration={600}
+        />
+      </LineChart>
+    </ResponsiveContainer>
+  );
+}
+
+window._avanceRoot = null;
+window.mountAvanceChart = function(period) {
+  const el = document.getElementById('chart-avance-root');
+  if (!el) return;
+  if (!window._avanceRoot) window._avanceRoot = ReactDOM.createRoot(el);
+  window._avanceRoot.render(React.createElement(AvanceChart, { period }));
+};
+</script>
+
+<!-- ══════════════════════════════════════
+     VANILLA JS
+══════════════════════════════════════ -->
+<script>
+/* ── VENDEDOR DATA ── */
+const VENDEDORES = [
+  { id:1, initials:'LR', nombre:'Lucas Rodriguez', baseline:380000, objetivo:420000, previsto:410000, estado:'track' },
+  { id:2, initials:'CL', nombre:'Carlos López',    baseline:310000, objetivo:360000, previsto:380000, estado:'track' },
+  { id:3, initials:'AM', nombre:'Ana Martínez',    baseline:420000, objetivo:480000, previsto:350000, estado:'behind' },
+  { id:4, initials:'MG', nombre:'María García',    baseline:280000, objetivo:320000, previsto:300000, estado:'track' },
+  { id:5, initials:'RS', nombre:'Roberto Silva',   baseline:350000, objetivo:400000, previsto:420000, estado:'track' },
+  { id:6, initials:'JP', nombre:'Juan Pérez',      baseline:295000, objetivo:340000, previsto:280000, estado:'risk'  },
+  { id:7, initials:'PT', nombre:'Patricia Torres', baseline:240000, objetivo:280000, previsto:310000, estado:'track' },
+];
+
+/* ── STATE ── */
+let currentRole  = 'admin';
+let globalMode   = 'absoluto';
+const BASELINE   = 2450000;
+const dirtyRows  = new Set();
+let published    = false;
+
+/* ── FORMAT ── */
+function fmtCurrency(n) { return '$' + Number(n).toLocaleString('es-AR'); }
+function pctOf(obj, base) { return (((obj - base) / base) * 100).toFixed(1); }
+
+/* ── GLOBAL OBJETIVO LOGIC ── */
+function setGlobalMode(mode) {
+  globalMode = mode;
+  document.getElementById('opt-absoluto').classList.toggle('active', mode === 'absoluto');
+  document.getElementById('opt-pct').classList.toggle('active', mode === 'pct');
+  document.getElementById('input-absoluto').style.display = mode === 'absoluto' ? '' : 'none';
+  document.getElementById('input-pct').style.display      = mode === 'pct'      ? '' : 'none';
+}
+
+function recalcGlobal() {
+  const val = parseInt(document.getElementById('globalObjetivo').value) || 0;
+  const pct = pctOf(val, BASELINE);
+  document.getElementById('globalResumen').textContent = fmtCurrency(val);
+  document.getElementById('globalGrowth').textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct + '%';
+  document.getElementById('globalGrowth').style.color = pct >= 0 ? 'var(--mid)' : 'var(--alert)';
+}
+
+function recalcGlobalFromPct() {
+  const pct = parseFloat(document.getElementById('globalPct').value) || 0;
+  const equiv = Math.round(BASELINE * (1 + pct / 100));
+  document.getElementById('globalEquiv').value = equiv.toLocaleString('es-AR');
+  document.getElementById('globalResumen').textContent = fmtCurrency(equiv);
+  document.getElementById('globalGrowth').textContent = (pct >= 0 ? '▲ +' : '▼ ') + pct.toFixed(1) + '%';
+  document.getElementById('globalGrowth').style.color = pct >= 0 ? 'var(--mid)' : 'var(--alert)';
+}
+
+/* ── TABLE RENDER ── */
+function renderTable() {
+  const stLabel = { track:'ON TRACK', risk:'AT RISK', behind:'BEHIND' };
+  const stClass = { track:'st-track', risk:'st-risk', behind:'st-behind' };
+  const rowClass = { track:'', risk:'risk', behind:'behind' };
+
+  const tbody = document.getElementById('objTbody');
+  tbody.innerHTML = VENDEDORES.map((v,i) => {
+    const pct = pctOf(v.objetivo, v.baseline);
+    const isDirty = dirtyRows.has(v.id);
+    return `
+      <tr class="${rowClass[v.estado]}" data-id="${v.id}">
+        <td>
+          <div class="row-name-cell">
+            <div class="row-av">${v.initials}</div>
+            <span class="row-name">${v.nombre}</span>
+          </div>
+        </td>
+        <td><span class="baseline-val">${fmtCurrency(v.baseline)}</span></td>
+        <td class="editable-cell" data-row="${i}" data-type="obj" onclick="startEdit(this,${i},'obj')">
+          <span class="cell-display${isDirty?' dirty':''}" id="disp-obj-${i}">${fmtCurrency(v.objetivo)}</span>
+        </td>
+        <td class="editable-cell" data-row="${i}" data-type="pct" onclick="startEdit(this,${i},'pct')">
+          <span class="cell-display${isDirty?' dirty':''}" id="disp-pct-${i}">${pct}%</span>
+        </td>
+        <td><span class="baseline-val">${fmtCurrency(v.previsto)}</span></td>
+        <td class="c"><span class="st ${stClass[v.estado]}">${stLabel[v.estado]}</span></td>
+        <td class="c">
+          <button class="save-btn${isDirty?' dirty':''}" id="save-btn-${i}" onclick="saveRow(event,${i})">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+function startEdit(cell, rowIdx, type) {
+  // If already has an input, skip
+  if (cell.querySelector('input')) return;
+
+  const v = VENDEDORES[rowIdx];
+  const currentVal = type === 'obj' ? v.objetivo : parseFloat(pctOf(v.objetivo, v.baseline));
+  const display = cell.querySelector('.cell-display');
+  display.style.display = 'none';
+
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.className = 'inline-edit-input';
+  input.value = currentVal;
+  if (type === 'pct') { input.step = '0.1'; input.min = '-100'; input.max = '1000'; }
+  cell.appendChild(input);
+  input.focus();
+  input.select();
+
+  input.addEventListener('input', () => {
+    const newVal = parseFloat(input.value) || 0;
+    if (type === 'obj') {
+      const newPct = pctOf(newVal, v.baseline);
+      const otherDisp = document.getElementById(`disp-pct-${rowIdx}`);
+      if (otherDisp) otherDisp.textContent = newPct + '%';
+    } else {
+      const newObj = Math.round(v.baseline * (1 + newVal / 100));
+      const otherDisp = document.getElementById(`disp-obj-${rowIdx}`);
+      if (otherDisp) otherDisp.textContent = fmtCurrency(newObj);
+    }
+  });
+
+  input.addEventListener('blur', () => {
+    const newVal = parseFloat(input.value) || 0;
+    if (type === 'obj') {
+      VENDEDORES[rowIdx].objetivo = Math.round(newVal);
+    } else {
+      VENDEDORES[rowIdx].objetivo = Math.round(v.baseline * (1 + newVal / 100));
+    }
+    markDirty(rowIdx);
+    input.remove();
+    display.style.display = '';
+    display.textContent = type === 'obj'
+      ? fmtCurrency(VENDEDORES[rowIdx].objetivo)
+      : pctOf(VENDEDORES[rowIdx].objetivo, v.baseline) + '%';
+    display.classList.add('dirty');
+  });
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') input.blur();
+    if (e.key === 'Escape') { VENDEDORES[rowIdx].objetivo = v.objetivo; input.remove(); display.style.display = ''; }
+  });
+}
+
+function markDirty(rowIdx) {
+  const v = VENDEDORES[rowIdx];
+  dirtyRows.add(v.id);
+  const btn = document.getElementById(`save-btn-${rowIdx}`);
+  if (btn) btn.classList.add('dirty');
+  updateDirtyUI();
+}
+
+function updateDirtyUI() {
+  const hint = document.getElementById('dirtyHint');
+  const saveAll = document.getElementById('btnSaveAll');
+  const count = dirtyRows.size;
+  if (count > 0) {
+    hint.style.display = 'flex';
+    document.getElementById('dirtyCount').textContent = count;
+    saveAll.style.opacity = '1';
+    saveAll.style.pointerEvents = 'auto';
+  } else {
+    hint.style.display = 'none';
+    saveAll.style.opacity = '0.5';
+    saveAll.style.pointerEvents = 'none';
+  }
+}
+
+function saveRow(e, rowIdx) {
+  e.stopPropagation();
+  const v = VENDEDORES[rowIdx];
+  dirtyRows.delete(v.id);
+  const btn = document.getElementById(`save-btn-${rowIdx}`);
+  if (btn) {
+    btn.classList.remove('dirty');
+    btn.classList.add('saved');
+    setTimeout(() => btn.classList.remove('saved'), 1200);
+  }
+  document.getElementById(`disp-obj-${rowIdx}`)?.classList.remove('dirty');
+  document.getElementById(`disp-pct-${rowIdx}`)?.classList.remove('dirty');
+  updateDirtyUI();
+  showToast(`✓ Objetivo actualizado para ${v.nombre}`, 'success');
+}
+
+function saveAll() {
+  const names = [...dirtyRows].map(id => VENDEDORES.find(v => v.id === id)?.nombre).filter(Boolean);
+  dirtyRows.clear();
+  document.querySelectorAll('.save-btn').forEach(btn => {
+    btn.classList.remove('dirty');
+    btn.classList.add('saved');
+    setTimeout(() => btn.classList.remove('saved'), 1200);
+  });
+  document.querySelectorAll('.cell-display').forEach(el => el.classList.remove('dirty'));
+  updateDirtyUI();
+  showToast(`✓ ${names.length} objetivo(s) guardado(s)`, 'success');
+}
+
+function distribuirIgual() {
+  const totalObj = parseInt(document.getElementById('globalObjetivo')?.value) || 2800000;
+  const perVendedor = Math.round(totalObj / VENDEDORES.length);
+  VENDEDORES.forEach((v, i) => {
+    v.objetivo = perVendedor;
+    dirtyRows.add(v.id);
+  });
+  renderTable();
+  updateDirtyUI();
+  showToast(`Objetivos distribuidos: ${fmtCurrency(perVendedor)} por vendedor`, 'success');
+}
+
+/* ── PUBLISH DIALOG ── */
+function openDialog() {
+  if (published) return;
+  document.getElementById('publishDialog').classList.add('open');
+}
+function closeDialog() {
+  document.getElementById('publishDialog').classList.remove('open');
+}
+function confirmPublish() {
+  closeDialog();
+  published = true;
+  const btn = document.getElementById('publishBtn');
+  btn.innerHTML = `
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    Objetivos publicados
+  `;
+  btn.classList.add('published');
+  btn.disabled = true;
+  showToast('✓ Objetivos publicados para Abril 2026', 'success');
+}
+
+/* ── FAMILY BREAKDOWN ── */
+const FAMILIES = [
+  { name:'Cuchillería', real:145000, obj:180000, color:'#22c55e' },
+  { name:'Maquinaria',  real:28000,  obj:60000,  color:'#1d4ed8' },
+  { name:'Herramientas',real:42000,  obj:45000,  color:'#7c3aed' },
+  { name:'Insumos',     real:38000,  obj:80000,  color:'#ea580c' },
+  { name:'Embalaje',    real:15000,  obj:55000,  color:'#ca8a04' },
+];
+
+function getFamilyStatus(pct) {
+  if (pct >= 75) return { label:'ON TRACK', cls:'st-track' };
+  if (pct >= 45) return { label:'AT RISK',  cls:'st-risk'  };
+  return               { label:'BEHIND',    cls:'st-behind' };
+}
+
+function renderFamilies() {
+  const sorted = [...FAMILIES].sort((a, b) => (a.real/a.obj) - (b.real/b.obj));
+  const grid = document.getElementById('familyGrid');
+  grid.innerHTML = sorted.map(f => {
+    const pct = Math.round((f.real / f.obj) * 100);
+    const st = getFamilyStatus(pct);
+    return `
+      <div class="family-card" onclick="showToast('Filtrando clientes por ${f.name}…','success')">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:10px;height:10px;border-radius:3px;background:${f.color};flex-shrink:0"></div>
+            <span class="family-name" style="margin:0">${f.name}</span>
+          </div>
+          <span class="st ${st.cls}" style="font-size:10px">${st.label}</span>
+        </div>
+        <div class="family-bar">
+          <div class="family-bar-fill" style="width:0%;background:${f.color}" data-pct="${pct}"></div>
+        </div>
+        <div class="family-vals">
+          Real: <strong>$${(f.real/1000).toFixed(0)}k</strong> · Objetivo: <strong>$${(f.obj/1000).toFixed(0)}k</strong>
+        </div>
+        <div style="font-size:13px;font-weight:700;color:${f.color}">${pct}%</div>
+      </div>
+    `;
+  }).join('');
+
+  // Animate bars after render
+  setTimeout(() => {
+    grid.querySelectorAll('.family-bar-fill').forEach(el => {
+      el.style.width = el.dataset.pct + '%';
+    });
+  }, 80);
+}
+
+/* ── PROGRESS BAR ANIMATION ── */
+function animateProgressBars() {
+  setTimeout(() => {
+    document.getElementById('barReal').style.width  = '42.86%';
+    document.getElementById('barMotor').style.width = '92.86%';
+  }, 150);
+}
+
+/* ── CHART PERIOD ── */
+function setChartPeriod(period, btn) {
+  document.querySelectorAll('.pill-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  if (window.mountAvanceChart) window.mountAvanceChart(period);
+}
+
+/* ── ROLE TOGGLE ── */
+const ROLES = {
+  admin: {
+    name:'Admin Scarpati', initials:'AS',
+    tbRoleClass:'admin', tbRoleLabel:'Admin',
+    sbRoleClass:'admin', sbRoleLabel:'Admin',
+    showVendedores: true,
+  },
+  vendedor: {
+    name:'Lucas Rodriguez', initials:'LR',
+    tbRoleClass:'vendedor', tbRoleLabel:'Vendedor',
+    sbRoleClass:'vendedor', sbRoleLabel:'Vendedor',
+    showVendedores: false,
+  },
+};
+
+function applyRole(role) {
+  const r = ROLES[role];
+  document.getElementById('tb-av').textContent    = r.initials;
+  document.getElementById('tb-name').textContent  = r.name;
+  document.getElementById('tb-role').textContent  = r.tbRoleLabel;
+  document.getElementById('tb-role').className    = 'tb-role ' + r.tbRoleClass;
+  document.getElementById('sb-av').textContent    = r.initials;
+  document.getElementById('sb-uname').textContent = r.name;
+  document.getElementById('sb-role-badge').textContent = r.sbRoleLabel;
+  document.getElementById('sb-role-badge').className   = 'sb-role ' + r.sbRoleClass;
+  document.getElementById('sb-vendedores').style.display = r.showVendedores ? '' : 'none';
+  document.getElementById('demoRoleLabel').textContent = r.tbRoleLabel;
+  document.getElementById('view-admin').style.display  = role === 'admin'    ? '' : 'none';
+  document.getElementById('view-vendor').style.display = role === 'vendedor' ? '' : 'none';
+  document.getElementById('tb-title').textContent = role === 'admin' ? 'Objetivos' : 'Mis Objetivos';
+
+  if (role === 'vendedor') {
+    setTimeout(() => {
+      if (window.mountAvanceChart) window.mountAvanceChart('1m');
+      animateProgressBars();
+      renderFamilies();
+    }, 60);
+  }
+}
+
+function toggleRole() {
+  currentRole = currentRole === 'admin' ? 'vendedor' : 'admin';
+  applyRole(currentRole);
+  showToast(currentRole === 'admin' ? 'Vista Admin activada' : 'Vista Vendedor activada', 'success');
+}
+
+/* ── SIDEBAR ── */
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+/* ── TOAST ── */
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+    ${msg}
+  `;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 200); }, 3000);
+}
+
+/* ── INIT ── */
+renderTable();
+updateDirtyUI();
+applyRole('admin');
+</script>
+<script src="vendIA-global.js"></script>
+</body>
+</html>

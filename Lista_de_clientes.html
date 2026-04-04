@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Clientes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="vendIA-global.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep:    #064e3b;
+  --mid:     #006c49;
+  --accent:  #22c55e;
+  --sage:    #d1fae5;
+  --surface: #ecfdf5;
+  --bg:      #f0fdf4;
+  --border:  #a7f3d0;
+  --muted:   #4b7c68;
+  --dark:    #191c1e;
+  --alert:   #ea580c;
+  --warning: #ca8a04;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); overflow: hidden; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ══════════════════ SIDEBAR ══════════════════ */
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--deep);
+  display: flex; flex-direction: column; height: 100vh;
+  z-index: 200; transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+}
+.sb-logo { padding: 24px 20px 16px; }
+.sb-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.sb-logo-sub  { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 3px; }
+.sb-div { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.sb-nav { flex: 1; display: flex; flex-direction: column; padding: 4px 0; overflow-y: auto; overflow-x: hidden; }
+.sb-nav::-webkit-scrollbar { width: 0; }
+.sb-lbl { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.25); letter-spacing: 1.8px; text-transform: uppercase; padding: 10px 20px 6px; }
+.nl {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px; margin: 1px 10px;
+  border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 13.5px;
+  font-weight: 500; border: none; background: none; width: calc(100% - 20px); text-align: left;
+  border-left: 3px solid transparent; transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.nl:hover  { background: rgba(255,255,255,0.08); color: white; }
+.nl.active { background: rgba(34,197,94,0.14); color: #22c55e; border-left-color: var(--accent); font-weight: 600; }
+.nl svg { flex-shrink: 0; width: 17px; height: 17px; }
+.nl-badge { margin-left: auto; background: var(--alert); color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.sb-bottom { padding: 8px 0 16px; }
+.sb-user { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 0 10px; }
+.sb-av   { width: 34px; height: 34px; border-radius: 50%; background: var(--mid); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sb-uname { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-role  { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.55); }
+.btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 16px; margin: 4px 10px 0; border-radius: 8px; border: none; background: none; cursor: pointer; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-size: 13px; width: calc(100% - 20px); transition: background 0.15s, color 0.15s; }
+.btn-logout:hover { background: rgba(234,88,12,0.12); color: var(--alert); }
+
+/* ══════════════════ MAIN ══════════════════ */
+.main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: 56px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.tb-left  { display: flex; align-items: center; gap: 8px; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+.hamburger { display: none; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--dark); align-items: center; justify-content: center; }
+.hamburger:hover { background: var(--surface); }
+.tb-right { display: flex; align-items: center; gap: 4px; }
+.tb-btn   { width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); position: relative; transition: background 0.15s, color 0.15s; }
+.tb-btn:hover { background: var(--surface); color: var(--deep); }
+.tb-notif { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; background: var(--alert); color: white; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.tb-sep  { width: 1px; height: 22px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+.tb-user { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.tb-user:hover { background: var(--surface); }
+.tb-av   { width: 32px; height: 32px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tb-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.tb-role { font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; background: var(--sage); color: var(--mid); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ══════════════════════════════════════
+   CLIENTES
+══════════════════════════════════════ */
+
+/* Page header */
+.page-header {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  margin-bottom: 20px;
+}
+.page-title-wrap {}
+.page-eyebrow {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px;
+}
+.page-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 32px; font-weight: 700; color: var(--dark); letter-spacing: -0.5px; line-height: 1;
+}
+.page-count {
+  font-size: 14px; color: var(--muted); margin-top: 4px;
+  transition: all 0.2s;
+}
+.page-count strong { color: var(--dark); }
+
+/* Toolbar */
+.toolbar {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 16px; flex-wrap: wrap;
+}
+
+/* Search */
+.search-wrap {
+  position: relative; flex: 1; min-width: 200px;
+}
+.search-ico {
+  position: absolute; left: 11px; top: 50%; transform: translateY(-50%);
+  color: var(--muted); pointer-events: none;
+}
+.search-input {
+  width: 100%; padding: 9px 36px 9px 36px;
+  border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: 'DM Sans', sans-serif; font-size: 13.5px; color: var(--dark);
+  background: white; outline: none; transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input::placeholder { color: #b3c9c0; }
+.search-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.10); }
+.search-clear {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  width: 18px; height: 18px; border-radius: 50%; border: none;
+  background: var(--border); color: var(--muted); cursor: pointer;
+  display: none; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; transition: background 0.15s;
+}
+.search-clear.visible { display: flex; }
+.search-clear:hover { background: var(--accent); color: white; }
+
+/* Filter selects */
+.filter-select {
+  padding: 9px 12px; border: 1.5px solid var(--border); border-radius: 9px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--dark);
+  background: white; outline: none; cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%234b7c68' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 30px;
+}
+.filter-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(34,197,94,0.10); }
+.filter-select.active { border-color: var(--accent); color: var(--mid); background-color: var(--surface); }
+
+/* Results count */
+.results-count {
+  font-size: 12.5px; color: var(--muted); padding: 0 4px;
+  white-space: nowrap;
+}
+
+/* ── Client Grid ── */
+.client-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+/* Client Card */
+.client-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 20px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  animation: cardIn 0.35s ease both;
+  text-decoration: none;
+}
+.client-card:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 28px rgba(6,78,59,0.10);
+}
+/* atrasado card */
+.client-card.has-atrasado {
+  border-color: rgba(234,88,12,0.30);
+}
+.client-card.has-atrasado:hover {
+  border-color: var(--alert);
+  box-shadow: 0 10px 28px rgba(234,88,12,0.10);
+}
+
+@keyframes cardIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Card header */
+.card-header {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 8px;
+}
+.card-name {
+  font-size: 15px; font-weight: 600; color: var(--dark); line-height: 1.2;
+}
+.status-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; margin-top: 3px;
+  position: relative;
+}
+.status-dot.green  { background: var(--accent); box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+.status-dot.yellow { background: var(--warning); box-shadow: 0 0 0 2px rgba(202,138,4,0.2); }
+.status-dot.red    { background: var(--alert);   box-shadow: 0 0 0 2px rgba(234,88,12,0.2); }
+
+/* Vendedor */
+.card-vendor {
+  display: flex; align-items: center; gap: 5px;
+  font-size: 12px; color: var(--muted);
+}
+
+/* Badges row */
+.card-badges { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.badge { font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; display: inline-block; white-space: nowrap; }
+.b-declive  { background: #fff7ed; color: var(--alert); }
+.b-reorden  { background: var(--surface); color: var(--mid); }
+.b-cross    { background: #eff6ff; color: #1d4ed8; }
+.b-upsell   { background: #f5f3ff; color: #7c3aed; }
+.b-atrasado { background: #fef2f2; color: #dc2626; }
+.b-promo    { background: var(--deep); color: var(--accent); }
+
+/* Est. value */
+.card-value {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 26px; font-weight: 700; color: var(--accent); line-height: 1;
+}
+.card-value-label { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+/* Progress */
+.card-progress-label {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 11px; color: var(--muted); margin-bottom: 4px;
+}
+.card-progress-label span:last-child { font-weight: 600; color: var(--dark); }
+.progress-bg { height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.progress-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--mid), var(--accent)); transition: width 0.7s ease; }
+.progress-fill.warn   { background: linear-gradient(90deg, #ca8a04, #fbbf24); }
+.progress-fill.behind { background: linear-gradient(90deg, #dc2626, #f87171); }
+
+/* Card footer */
+.card-footer {
+  display: flex; align-items: center; justify-content: flex-end;
+  padding-top: 10px; border-top: 1px solid var(--surface);
+}
+.btn-ver {
+  display: flex; align-items: center; gap: 4px;
+  font-size: 12.5px; font-weight: 600; color: var(--mid);
+  border: none; background: none; cursor: pointer; padding: 0;
+  transition: color 0.15s;
+}
+.btn-ver:hover { color: var(--deep); }
+
+/* ── Empty state ── */
+.empty-state {
+  display: none;
+  flex-direction: column; align-items: center; justify-content: center;
+  min-height: 50vh; gap: 14px; text-align: center;
+}
+.empty-state.visible { display: flex; }
+.empty-ico { width: 72px; height: 72px; border-radius: 20px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--border); }
+.empty-title { font-family: 'Barlow Condensed', sans-serif; font-size: 24px; font-weight: 700; color: var(--deep); }
+.empty-sub   { font-size: 14px; color: var(--muted); }
+.btn-clear {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; font-weight: 600; color: var(--mid);
+  padding: 8px 18px; border-radius: 9px; border: 1.5px solid var(--border);
+  background: white; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.btn-clear:hover { border-color: var(--accent); background: var(--surface); }
+
+/* ── Overlay + Toast ── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150; backdrop-filter: blur(2px); }
+.overlay.open { display: block; }
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none; }
+.toast { background: var(--deep); color: white; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 240px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); pointer-events: all; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { background: #991b1b; border-left: 3px solid #ef4444; }
+.toast-out { animation: toastOut 0.2s ease forwards; }
+@keyframes toastIn  { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateX(16px)} }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) { .client-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 768px)  {
+  .sidebar { position: fixed; left:0;top:0;bottom:0; transform: translateX(-100%); }
+  .sidebar.open { transform: translateX(0); }
+  .hamburger { display: flex !important; }
+  .tb-name,.tb-role { display: none; }
+  .content { padding: 16px; }
+  .client-grid { grid-template-columns: 1fr; }
+  .toolbar { flex-wrap: wrap; }
+  .search-wrap { min-width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">VendIA</div>
+      <div class="sb-logo-sub">Scarpatihnos.</div>
+    </div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nl active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+        <span class="nl-badge" id="sidebarBadge">3</span>
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Productos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        KPIs
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Objetivos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+        Promociones
+      </button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user">
+        <div class="sb-av">LR</div>
+        <div>
+          <div class="sb-uname">Lucas Rodriguez</div>
+          <span class="sb-role">Vendedor</span>
+        </div>
+      </div>
+      <button class="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main-col">
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <span class="tb-title">Clientes</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="tb-notif">3</span>
+        </button>
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+        <div class="tb-sep"></div>
+        <div class="tb-user">
+          <div class="tb-av">LR</div>
+          <span class="tb-name">Lucas Rodriguez</span>
+          <span class="tb-role">Vendedor</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- Page header -->
+      <div class="page-header">
+        <div class="page-title-wrap">
+          <div class="page-eyebrow">Mi Cartera</div>
+          <div class="page-title">Clientes</div>
+          <div class="page-count" id="pageCount"><strong>9</strong> clientes activos</div>
+        </div>
+      </div>
+
+      <!-- Toolbar -->
+      <div class="toolbar">
+        <!-- Search -->
+        <div class="search-wrap">
+          <svg class="search-ico" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input
+            type="text"
+            class="search-input"
+            id="searchInput"
+            placeholder="Buscar cliente por nombre o código..."
+          >
+          <button class="search-clear" id="searchClear" onclick="clearSearch()">✕</button>
+        </div>
+
+        <!-- Filters -->
+        <select class="filter-select" id="filterTipo" onchange="applyFilters()">
+          <option value="">Tipo de alerta</option>
+          <option value="declive">Declive</option>
+          <option value="reorden">Reorden</option>
+          <option value="crosssell">Cross-sell</option>
+          <option value="upsell">Up-sell</option>
+          <option value="atrasado">Atrasado</option>
+        </select>
+
+        <select class="filter-select" id="filterPrioridad" onchange="applyFilters()">
+          <option value="">Prioridad</option>
+          <option value="alta">Alta</option>
+          <option value="media">Media</option>
+          <option value="baja">Baja</option>
+        </select>
+
+        <select class="filter-select" id="filterEstado" onchange="applyFilters()">
+          <option value="">Estado</option>
+          <option value="pendiente">Con acciones pendientes</option>
+          <option value="sin">Sin acciones pendientes</option>
+        </select>
+
+        <span class="results-count" id="resultsCount">Mostrando 9 de 9</span>
+      </div>
+
+      <!-- Grid -->
+      <div class="client-grid" id="clientGrid">
+        <!-- Generado por JS -->
+      </div>
+
+      <!-- Empty state -->
+      <div class="empty-state" id="emptyState">
+        <div class="empty-ico">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        </div>
+        <div class="empty-title">Sin resultados</div>
+        <div class="empty-sub">No encontramos clientes con esos filtros.</div>
+        <button class="btn-clear" onclick="resetFilters()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/></svg>
+          Limpiar filtros
+        </button>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+const clientes = [
+  {
+    id: 'astarita-sh',
+    nombre: 'Astarita SH',
+    codigo: 'CLI-001',
+    vendedor: 'Lucas Rodriguez',
+    dot: 'red',
+    alertas: ['declive','reorden','crosssell'],
+    prioridad: 'alta',
+    hasAtrasado: false,
+    estimado: '$42.150',
+    objetivo: 68,
+    pendiente: true,
+  },
+  {
+    id: 'mauro-heikele',
+    nombre: 'Mauro Heikele',
+    codigo: 'CLI-002',
+    vendedor: 'Lucas Rodriguez',
+    dot: 'yellow',
+    alertas: ['reorden','upsell'],
+    prioridad: 'alta',
+    hasAtrasado: false,
+    estimado: '$28.886',
+    objetivo: 45,
+    pendiente: true,
+  },
+  {
+    id: 'fema-gastronomia',
+    nombre: 'Fema Gastronomia',
+    codigo: 'CLI-003',
+    vendedor: 'Carlos Pérez',
+    dot: 'red',
+    alertas: ['declive','declive','crosssell'],
+    prioridad: 'alta',
+    hasAtrasado: false,
+    estimado: '$13.056',
+    objetivo: 71,
+    pendiente: true,
+  },
+  {
+    id: 'jps-grupo',
+    nombre: 'JPS Grupo Comercial',
+    codigo: 'CLI-004',
+    vendedor: 'Ana Martínez',
+    dot: 'green',
+    alertas: ['crosssell','upsell'],
+    prioridad: 'media',
+    hasAtrasado: false,
+    estimado: '$6.755',
+    objetivo: 33,
+    pendiente: true,
+  },
+  {
+    id: 'carpinteria-juan',
+    nombre: 'Carpintería Juan',
+    codigo: 'CLI-005',
+    vendedor: 'Lucas Rodriguez',
+    dot: 'green',
+    alertas: ['reorden'],
+    prioridad: 'media',
+    hasAtrasado: false,
+    estimado: '$5.553',
+    objetivo: 55,
+    pendiente: true,
+  },
+  {
+    id: 'estudio-modulo',
+    nombre: 'Estudio Modulo',
+    codigo: 'CLI-006',
+    vendedor: 'Carlos Pérez',
+    dot: 'green',
+    alertas: ['upsell'],
+    prioridad: 'baja',
+    hasAtrasado: false,
+    estimado: '$3.200',
+    objetivo: 80,
+    pendiente: true,
+  },
+  {
+    id: 'distribuidora-blum',
+    nombre: 'Distribuidora Blum',
+    codigo: 'CLI-007',
+    vendedor: 'Jorge Blanco',
+    dot: 'yellow',
+    alertas: ['declive','reorden'],
+    prioridad: 'alta',
+    hasAtrasado: false,
+    estimado: '$18.400',
+    objetivo: 29,
+    pendiente: true,
+  },
+  {
+    id: 'cocinas-del-sur',
+    nombre: 'Cocinas del Sur',
+    codigo: 'CLI-008',
+    vendedor: 'María Torres',
+    dot: 'green',
+    alertas: ['crosssell'],
+    prioridad: 'media',
+    hasAtrasado: false,
+    estimado: '$9.800',
+    objetivo: 62,
+    pendiente: false,
+  },
+  {
+    id: 'herrajes-rio',
+    nombre: 'Herrajes Río',
+    codigo: 'CLI-009',
+    vendedor: 'Pedro Gómez',
+    dot: 'red',
+    alertas: ['declive','atrasado'],
+    prioridad: 'alta',
+    hasAtrasado: true,
+    estimado: '$7.200',
+    objetivo: 15,
+    pendiente: true,
+  },
+];
+
+// badge config
+const BADGE_CFG = {
+  declive:  { cls: 'b-declive', label: 'DECLIVE' },
+  reorden:  { cls: 'b-reorden', label: 'REORDEN' },
+  crosssell:{ cls: 'b-cross',   label: 'CROSS-SELL' },
+  upsell:   { cls: 'b-upsell',  label: 'UP-SELL' },
+  atrasado: { cls: 'b-atrasado',label: 'ATRASADO' },
+};
+
+// ══════════════════════════════════════════════
+// RENDER
+// ══════════════════════════════════════════════
+function barClass(pct) {
+  if (pct < 35) return 'behind';
+  if (pct < 60) return 'warn';
+  return '';
+}
+
+function buildCard(c, delay) {
+  // deduplicate alert badges
+  const seen = {};
+  const badges = c.alertas.map(a => {
+    if (seen[a]) return '';
+    seen[a] = true;
+    const cfg = BADGE_CFG[a];
+    return cfg ? `<span class="badge ${cfg.cls}">${cfg.label}</span>` : '';
+  }).join('');
+
+  const bClass = barClass(c.objetivo);
+
+  return `
+  <div class="client-card${c.hasAtrasado ? ' has-atrasado' : ''}"
+       style="animation-delay:${delay}ms"
+       onclick="goToClient('${c.id}', '${c.nombre}')">
+
+    <div class="card-header">
+      <div class="card-name">${c.nombre}</div>
+      <div class="status-dot ${c.dot}" title="${c.dot === 'green' ? 'Activo' : c.dot === 'yellow' ? 'En riesgo' : 'Atrasado / Crítico'}"></div>
+    </div>
+
+    <div class="card-vendor">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      ${c.vendedor}
+      <span style="color:var(--border);margin:0 2px">·</span>
+      <span style="font-family:'DM Mono',monospace;font-size:10px">${c.codigo}</span>
+    </div>
+
+    <div class="card-badges">${badges}</div>
+
+    <div>
+      <div class="card-value">${c.estimado}</div>
+      <div class="card-value-label">est. este mes</div>
+    </div>
+
+    <div>
+      <div class="card-progress-label">
+        <span>Objetivo del mes</span>
+        <span>${c.objetivo}%</span>
+      </div>
+      <div class="progress-bg">
+        <div class="progress-fill ${bClass}" data-w="${c.objetivo}" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="card-footer">
+      <button class="btn-ver">
+        Ver cliente
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </div>
+
+  </div>`;
+}
+
+function renderGrid(data) {
+  const grid  = document.getElementById('clientGrid');
+  const empty = document.getElementById('emptyState');
+  const count = document.getElementById('resultsCount');
+  const pageCount = document.getElementById('pageCount');
+
+  if (data.length === 0) {
+    grid.innerHTML  = '';
+    grid.style.display = 'none';
+    empty.classList.add('visible');
+  } else {
+    grid.style.display = '';
+    empty.classList.remove('visible');
+    grid.innerHTML = data.map((c, i) => buildCard(c, i * 55)).join('');
+    // animate progress bars
+    requestAnimationFrame(() => {
+      document.querySelectorAll('.progress-fill').forEach(bar => {
+        setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 150 + parseInt(bar.closest('.client-card').style.animationDelay || '0'));
+      });
+    });
+  }
+
+  count.textContent = `Mostrando ${data.length} de ${clientes.length}`;
+  pageCount.innerHTML = `<strong>${data.length}</strong> cliente${data.length !== 1 ? 's' : ''} ${data.length === clientes.length ? 'activos' : 'encontrados'}`;
+}
+
+// ══════════════════════════════════════════════
+// FILTERS
+// ══════════════════════════════════════════════
+let searchTerm   = '';
+let filterTipo   = '';
+let filterPrior  = '';
+let filterEstado = '';
+
+function applyFilters() {
+  filterTipo   = document.getElementById('filterTipo').value;
+  filterPrior  = document.getElementById('filterPrioridad').value;
+  filterEstado = document.getElementById('filterEstado').value;
+
+  // toggle active class on selects
+  ['filterTipo','filterPrioridad','filterEstado'].forEach(id => {
+    const el = document.getElementById(id);
+    el.classList.toggle('active', el.value !== '');
+  });
+
+  let result = clientes.filter(c => {
+    // search
+    if (searchTerm && !c.nombre.toLowerCase().includes(searchTerm) && !c.codigo.toLowerCase().includes(searchTerm)) return false;
+    // tipo
+    if (filterTipo && !c.alertas.includes(filterTipo)) return false;
+    // prioridad
+    if (filterPrior && c.prioridad !== filterPrior) return false;
+    // estado
+    if (filterEstado === 'pendiente' && !c.pendiente) return false;
+    if (filterEstado === 'sin' && c.pendiente) return false;
+    return true;
+  });
+
+  renderGrid(result);
+}
+
+// Search with debounce
+let debounceTimer;
+document.getElementById('searchInput').addEventListener('input', function() {
+  searchTerm = this.value.trim().toLowerCase();
+  const clearBtn = document.getElementById('searchClear');
+  clearBtn.classList.toggle('visible', searchTerm.length > 0);
+  clearTimeout(debounceTimer);
+  debounceTimer = setTimeout(applyFilters, 260);
+});
+
+function clearSearch() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchClear').classList.remove('visible');
+  searchTerm = '';
+  applyFilters();
+}
+
+function resetFilters() {
+  clearSearch();
+  document.getElementById('filterTipo').value      = '';
+  document.getElementById('filterPrioridad').value = '';
+  document.getElementById('filterEstado').value    = '';
+  filterTipo = filterPrior = filterEstado = '';
+  document.querySelectorAll('.filter-select').forEach(s => s.classList.remove('active'));
+  applyFilters();
+}
+
+// ══════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════
+function goToClient(id, nombre) {
+  showToast(`Abriendo perfil: ${nombre}`, 'success');
+  // En producción: window.location.href = `/clientes/${id}`
+}
+
+// ══════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ══════════════════════════════════════════════
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el   = document.createElement('div');
+  el.className   = 'toast ' + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 220); }, 3500);
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+renderGrid(clientes);
+</script>
+
+<script src="vendIA-global.js"></script>
+</body>
+</html>

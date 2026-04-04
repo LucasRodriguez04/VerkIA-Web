@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VendIA — Home · Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="vendIA-global.css">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --deep:    #064e3b;
+  --mid:     #006c49;
+  --accent:  #22c55e;
+  --sage:    #d1fae5;
+  --surface: #ecfdf5;
+  --bg:      #f0fdf4;
+  --border:  #a7f3d0;
+  --muted:   #4b7c68;
+  --dark:    #191c1e;
+  --alert:   #ea580c;
+  --warning: #ca8a04;
+}
+
+html, body { height: 100%; font-family: 'DM Sans', sans-serif; background: var(--bg); overflow: hidden; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+
+/* ══════════════════ SIDEBAR ══════════════════ */
+.sidebar {
+  width: 220px; flex-shrink: 0; background: var(--deep);
+  display: flex; flex-direction: column; height: 100vh;
+  z-index: 200; transition: transform 0.28s cubic-bezier(0.16,1,0.3,1);
+}
+.sb-logo { padding: 24px 20px 16px; }
+.sb-logo-name { font-family: 'Barlow Condensed', sans-serif; font-size: 26px; font-weight: 700; color: var(--accent); letter-spacing: -0.5px; line-height: 1; }
+.sb-logo-sub  { font-size: 10px; font-weight: 500; color: rgba(255,255,255,0.28); letter-spacing: 2.5px; text-transform: uppercase; margin-top: 3px; }
+.sb-div { height: 1px; background: rgba(255,255,255,0.07); margin: 8px 0; }
+.sb-nav { flex: 1; display: flex; flex-direction: column; padding: 4px 0; overflow-y: auto; overflow-x: hidden; }
+.sb-nav::-webkit-scrollbar { width: 0; }
+.sb-lbl { font-size: 9.5px; font-weight: 600; color: rgba(255,255,255,0.25); letter-spacing: 1.8px; text-transform: uppercase; padding: 10px 20px 6px; }
+.nl {
+  display: flex; align-items: center; gap: 10px; padding: 9px 14px; margin: 1px 10px;
+  border-radius: 8px; cursor: pointer; color: rgba(255,255,255,0.55); font-size: 13.5px;
+  font-weight: 500; border: none; background: none; width: calc(100% - 20px); text-align: left;
+  border-left: 3px solid transparent; transition: background 0.15s, color 0.15s; white-space: nowrap;
+}
+.nl:hover  { background: rgba(255,255,255,0.08); color: white; }
+.nl.active { background: rgba(34,197,94,0.14); color: #22c55e; border-left-color: var(--accent); font-weight: 600; }
+.nl svg    { flex-shrink: 0; width: 17px; height: 17px; }
+.nl-badge  { margin-left: auto; background: var(--alert); color: white; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 999px; display: flex; align-items: center; justify-content: center; padding: 0 5px; }
+.sb-bottom { padding: 8px 0 16px; }
+.sb-user   { display: flex; align-items: center; gap: 10px; padding: 10px 16px; margin: 0 10px; }
+.sb-av     { width: 34px; height: 34px; border-radius: 50%; background: var(--mid); color: white; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.sb-uname  { font-size: 13px; font-weight: 600; color: white; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sb-role   { display: inline-block; font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; margin-top: 2px; letter-spacing: 0.5px; text-transform: uppercase; background: rgba(34,197,94,0.18); color: var(--accent); }
+.btn-logout { display: flex; align-items: center; gap: 8px; padding: 8px 16px; margin: 4px 10px 0; border-radius: 8px; border: none; background: none; cursor: pointer; color: rgba(255,255,255,0.35); font-family: 'DM Sans', sans-serif; font-size: 13px; width: calc(100% - 20px); transition: background 0.15s, color 0.15s; }
+.btn-logout:hover { background: rgba(234,88,12,0.12); color: var(--alert); }
+
+/* ══════════════════ MAIN ══════════════════ */
+.main-col { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+
+.topbar { height: 56px; background: white; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; flex-shrink: 0; }
+.tb-left  { display: flex; align-items: center; gap: 8px; }
+.tb-title { font-size: 16px; font-weight: 600; color: var(--dark); }
+.hamburger { display: none; width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; color: var(--dark); align-items: center; justify-content: center; }
+.hamburger:hover { background: var(--surface); }
+.tb-right { display: flex; align-items: center; gap: 4px; }
+.tb-btn   { width: 36px; height: 36px; border-radius: 8px; border: none; background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--muted); position: relative; transition: background 0.15s, color 0.15s; }
+.tb-btn:hover { background: var(--surface); color: var(--deep); }
+.tb-notif { position: absolute; top: 5px; right: 5px; width: 16px; height: 16px; background: var(--alert); color: white; font-size: 9px; font-weight: 700; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+.tb-sep   { width: 1px; height: 22px; background: rgba(0,0,0,0.08); margin: 0 8px; }
+.tb-user  { display: flex; align-items: center; gap: 8px; padding: 4px 8px; border-radius: 8px; cursor: pointer; transition: background 0.15s; }
+.tb-user:hover { background: var(--surface); }
+.tb-av   { width: 32px; height: 32px; border-radius: 50%; background: var(--mid); color: white; font-size: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.tb-name { font-size: 13px; font-weight: 600; color: var(--dark); }
+.tb-role { font-size: 9.5px; font-weight: 600; padding: 1px 7px; border-radius: 999px; text-transform: uppercase; background: rgba(6,78,59,0.08); color: var(--deep); }
+
+.content { flex: 1; overflow-y: auto; padding: 28px; }
+.content::-webkit-scrollbar { width: 6px; }
+.content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
+
+/* ══════════════════════════════════════
+   HOME — VISTA ADMIN
+══════════════════════════════════════ */
+
+/* Hero */
+.hero {
+  background: var(--deep);
+  border-radius: 16px;
+  padding: 32px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 28px;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(34,197,94,0.06);
+  top: -80px; right: -40px; pointer-events: none;
+}
+.hero::after {
+  content: '';
+  position: absolute;
+  width: 150px; height: 150px; border-radius: 50%;
+  background: rgba(34,197,94,0.04);
+  bottom: -40px; right: 140px; pointer-events: none;
+}
+.hero-eyebrow {
+  font-size: 11px; font-weight: 600; color: var(--accent);
+  letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.eyebrow-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px rgba(34,197,94,0.7);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.6;transform:scale(.85)} }
+.hero-title {
+  font-family: 'Barlow Condensed', sans-serif;
+  font-size: 38px; font-weight: 700; color: white;
+  letter-spacing: -0.5px; line-height: 1.05; margin-bottom: 8px;
+}
+.hero-sub { font-size: 14px; color: rgba(255,255,255,0.5); margin-bottom: 22px; line-height: 1.5; }
+.hero-sub strong { color: white; }
+.hero-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.btn-hero-p {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: var(--accent); color: var(--deep);
+  border: none; border-radius: 9px; padding: 9px 18px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700;
+  cursor: pointer; transition: background 0.15s, transform 0.15s;
+}
+.btn-hero-p:hover { background: #16a34a; transform: translateY(-1px); }
+.btn-hero-g {
+  display: inline-flex; align-items: center; gap: 7px;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.75);
+  border: 1px solid rgba(255,255,255,0.12); border-radius: 9px; padding: 9px 16px;
+  font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: background 0.15s;
+}
+.btn-hero-g:hover { background: rgba(255,255,255,0.14); }
+
+/* Dropzone */
+.dropzone {
+  border: 2px dashed rgba(34,197,94,0.30); border-radius: 14px;
+  padding: 22px 24px; text-align: center; cursor: pointer; width: 220px;
+  background: rgba(34,197,94,0.04); transition: border-color 0.2s, background 0.2s;
+  position: relative; z-index: 1;
+}
+.dropzone:hover, .dropzone.over { border-color: var(--accent); background: rgba(34,197,94,0.10); }
+.dropzone.success { border-color: var(--accent); background: rgba(34,197,94,0.12); }
+.dz-icon  { color: rgba(34,197,94,0.45); margin-bottom: 8px; transition: color 0.2s; }
+.dropzone:hover .dz-icon { color: rgba(34,197,94,0.7); }
+.dropzone.success .dz-icon { color: var(--accent); }
+.dz-title { font-size: 12.5px; font-weight: 600; color: rgba(255,255,255,0.7); }
+.dz-sub   { font-size: 11px; color: rgba(255,255,255,0.3); margin-top: 3px; }
+.dz-fmt   { display: inline-block; margin-top: 8px; background: rgba(255,255,255,0.07); border-radius: 5px; padding: 2px 10px; font-family: 'DM Mono', monospace; font-size: 10px; color: rgba(255,255,255,0.35); letter-spacing: 0.5px; }
+
+/* ── KPI Grid global ── */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.kpi-card {
+  background: white; border: 1px solid var(--border); border-radius: 14px; padding: 20px;
+  cursor: pointer; transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+  animation: cardIn 0.4s ease both;
+}
+.kpi-card:nth-child(1) { animation-delay: 0.05s; }
+.kpi-card:nth-child(2) { animation-delay: 0.10s; }
+.kpi-card:nth-child(3) { animation-delay: 0.15s; }
+.kpi-card:nth-child(4) { animation-delay: 0.20s; }
+.kpi-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(6,78,59,0.10); }
+
+/* ALERT card variant */
+.kpi-card.alert-card { border-color: rgba(234,88,12,0.25); }
+.kpi-card.alert-card:hover { border-color: var(--alert); box-shadow: 0 8px 24px rgba(234,88,12,0.12); }
+
+@keyframes cardIn { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:translateY(0)} }
+
+.kpi-top  { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 14px; }
+.kpi-ico  { width: 38px; height: 38px; border-radius: 11px; background: var(--surface); border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; color: var(--mid); }
+.kpi-ico.red   { background: rgba(234,88,12,0.08); border-color: rgba(234,88,12,0.2); color: var(--alert); }
+.kpi-chip { font-size: 11px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.kpi-chip.pos  { background: rgba(34,197,94,0.10); color: #16a34a; }
+.kpi-chip.warn { background: rgba(234,88,12,0.09); color: var(--alert); }
+.kpi-chip.neu  { background: rgba(0,0,0,0.04); color: var(--muted); }
+.kpi-chip.blue { background: rgba(29,78,216,0.09); color: #1d4ed8; }
+
+.kpi-value { font-family: 'Barlow Condensed', sans-serif; font-size: 44px; font-weight: 700; line-height: 1; margin-bottom: 6px; }
+.kpi-value.a { color: var(--accent); }
+.kpi-value.r { color: var(--alert); }
+.kpi-value.d { color: var(--dark); }
+.kpi-label { font-size: 11px; font-weight: 700; color: var(--muted); letter-spacing: 0.6px; text-transform: uppercase; margin-bottom: 3px; }
+.kpi-sub   { font-size: 11.5px; color: var(--muted); line-height: 1.4; }
+
+/* ── Performance Table ── */
+.perf-header {
+  display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px;
+}
+.perf-title { font-family: 'Barlow Condensed', sans-serif; font-size: 22px; font-weight: 700; color: var(--dark); letter-spacing: -0.3px; }
+.perf-sub   { font-size: 12.5px; color: var(--muted); margin-top: 2px; }
+.btn-exportar {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 12.5px; font-weight: 600; color: var(--mid);
+  padding: 7px 14px; border-radius: 8px; border: 1.5px solid var(--border);
+  background: white; cursor: pointer; transition: border-color 0.15s, background 0.15s;
+}
+.btn-exportar:hover { border-color: var(--accent); background: var(--surface); }
+
+.table-wrap { background: white; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
+
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { background: var(--deep); }
+thead th {
+  padding: 13px 16px; text-align: left; font-weight: 600;
+  font-size: 10.5px; letter-spacing: 0.7px; text-transform: uppercase; color: rgba(255,255,255,0.7);
+}
+thead th.c { text-align: center; }
+
+tbody tr {
+  border-bottom: 1px solid var(--surface);
+  cursor: pointer; transition: background 0.15s;
+}
+tbody tr:last-child { border-bottom: none; }
+tbody tr:hover { background: var(--bg) !important; }
+tbody tr.behind { background: rgba(234,88,12,0.04); }
+tbody tr.risk   { background: rgba(202,138,4,0.04); }
+tbody td { padding: 13px 16px; color: var(--muted); vertical-align: middle; }
+tbody td.c { text-align: center; }
+
+.row-av {
+  width: 32px; height: 32px; border-radius: 50%; background: var(--mid);
+  color: white; font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.row-name { font-weight: 600; color: var(--dark); }
+
+/* progress cell */
+.prog-cell { min-width: 120px; }
+.prog-wrap { display: flex; align-items: center; gap: 8px; }
+.prog-bar-bg { flex: 1; height: 5px; background: var(--border); border-radius: 999px; overflow: hidden; }
+.prog-bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, var(--mid), var(--accent)); transition: width 0.8s ease; }
+.prog-bar-fill.warn { background: linear-gradient(90deg, #ca8a04, #fbbf24); }
+.prog-bar-fill.behind { background: linear-gradient(90deg, #dc2626, #f87171); }
+.prog-pct { font-size: 12px; font-weight: 700; color: var(--dark); white-space: nowrap; min-width: 32px; }
+
+/* status badge */
+.st { display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px; }
+.st-track  { background: rgba(34,197,94,0.10);  color: #16a34a; }
+.st-behind { background: rgba(220,38,38,0.10);  color: #dc2626; }
+.st-risk   { background: rgba(202,138,4,0.10);  color: #b45309; }
+
+/* atrasado badge */
+.badge-atrasado { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 999px; background: #fef2f2; color: #dc2626; margin-left: 4px; }
+
+/* sort indicator */
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { color: white; }
+thead th .sort-ico { display: inline-block; margin-left: 4px; opacity: 0.4; font-style: normal; }
+thead th.sort-asc  .sort-ico { opacity: 1; }
+thead th.sort-desc .sort-ico { opacity: 1; transform: rotate(180deg); display: inline-block; }
+
+/* ── Overlay + Toast ── */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 150; backdrop-filter: blur(2px); }
+.overlay.open { display: block; }
+.toast-wrap { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column-reverse; gap: 8px; pointer-events: none; }
+.toast { background: var(--deep); color: white; border-radius: 10px; padding: 12px 16px; font-size: 13.5px; font-weight: 500; display: flex; align-items: center; gap: 10px; min-width: 240px; box-shadow: 0 8px 24px rgba(0,0,0,0.18); pointer-events: all; animation: toastIn 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+.toast.success { border-left: 3px solid var(--accent); }
+.toast.error   { background: #991b1b; border-left: 3px solid #ef4444; }
+.toast-out { animation: toastOut 0.2s ease forwards; }
+@keyframes toastIn  { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { to{opacity:0;transform:translateX(16px)} }
+
+/* ── Responsive ── */
+@media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2,1fr); } .hero { grid-template-columns: 1fr; } .dropzone { width: 100%; } }
+@media (max-width: 768px)  { .sidebar { position: fixed; left:0;top:0;bottom:0; transform: translateX(-100%); } .sidebar.open { transform: translateX(0); } .hamburger { display: flex !important; } .tb-name,.tb-role { display: none; } .content { padding: 16px; } .kpi-grid { grid-template-columns: repeat(2,1fr); } .table-wrap { overflow-x: auto; } }
+@media (max-width: 480px)  { .kpi-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="overlay" id="overlay" onclick="closeSidebar()"></div>
+
+<div class="app">
+
+  <!-- ══════════ SIDEBAR ══════════ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-name">VendIA</div>
+      <div class="sb-logo-sub">Scarpatihnos.</div>
+    </div>
+    <div class="sb-div"></div>
+    <nav class="sb-nav">
+      <div class="sb-lbl">Menú</div>
+      <button class="nl active">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        Home
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Clientes
+        <span class="nl-badge">3</span>
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+        Productos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+        KPIs
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+        Objetivos
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+        Vendedores
+      </button>
+      <button class="nl">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" x2="7.01" y1="7" y2="7"/></svg>
+        Promociones
+      </button>
+    </nav>
+    <div class="sb-bottom">
+      <div class="sb-div"></div>
+      <button class="nl" style="margin: 4px 10px 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+        Configuración
+      </button>
+      <div class="sb-div" style="margin-bottom:8px"></div>
+      <div class="sb-user">
+        <div class="sb-av">AS</div>
+        <div>
+          <div class="sb-uname">Admin Scarpati</div>
+          <span class="sb-role">Admin</span>
+        </div>
+      </div>
+      <button class="btn-logout">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </aside>
+
+  <!-- ══════════ MAIN ══════════ -->
+  <div class="main-col">
+
+    <header class="topbar">
+      <div class="tb-left">
+        <button class="hamburger" onclick="openSidebar()">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+        </button>
+        <span class="tb-title">Dashboard</span>
+      </div>
+      <div class="tb-right">
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+          <span class="tb-notif">3</span>
+        </button>
+        <button class="tb-btn">
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+        </button>
+        <div class="tb-sep"></div>
+        <div class="tb-user">
+          <div class="tb-av">AS</div>
+          <span class="tb-name">Admin Scarpati</span>
+          <span class="tb-role">Admin</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="content">
+
+      <!-- HERO -->
+      <div class="hero" style="animation: cardIn 0.4s ease both">
+        <div>
+          <div class="hero-eyebrow">
+            <div class="eyebrow-dot"></div>
+            Panel de administración · Abril 2026
+          </div>
+          <div class="hero-title">BIENVENIDO,<br>ADMIN</div>
+          <div class="hero-sub">
+            El equipo tiene <strong>147 oportunidades</strong> activas este mes.<br>
+            Hay <strong style="color: #fca5a5">3 alertas atrasadas</strong> que requieren atención.
+          </div>
+          <div class="hero-actions">
+            <button class="btn-hero-p">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" x2="18" y1="20" y2="10"/><line x1="12" x2="12" y1="20" y2="4"/><line x1="6" x2="6" y1="20" y2="14"/></svg>
+              Ver reporte global
+            </button>
+            <button class="btn-hero-g">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+              Cargar objetivos
+            </button>
+          </div>
+        </div>
+
+        <!-- Dropzone -->
+        <div class="dropzone" id="dropzone">
+          <div class="dz-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 16 12 12 8 16"/><line x1="12" x2="12" y1="12" y2="21"/><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/></svg>
+          </div>
+          <div class="dz-title" id="dz-title">Importar Excel</div>
+          <div class="dz-sub" id="dz-sub">Arrastrá ventas u oportunidades<br>para actualizar VendIA</div>
+          <div class="dz-fmt">XLSX · CSV</div>
+          <input type="file" id="fileInput" accept=".xlsx,.csv" style="display:none">
+        </div>
+      </div>
+
+      <!-- KPI CARDS GLOBALES -->
+      <div class="kpi-grid">
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ico">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/></svg>
+            </div>
+            <span class="kpi-chip pos">+18% vs mes ant.</span>
+          </div>
+          <div class="kpi-value a" data-target="147">0</div>
+          <div class="kpi-label">Oportunidades Totales</div>
+          <div class="kpi-sub">En toda la empresa este mes</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ico">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" x2="12" y1="2" y2="22"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <span class="kpi-chip neu">Consolidado</span>
+          </div>
+          <div class="kpi-value a" style="font-size:36px">$4.8M</div>
+          <div class="kpi-label">$ Estimado Total</div>
+          <div class="kpi-sub">USD en oportunidades detectadas</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-top">
+            <div class="kpi-ico">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><polyline points="16 11 18 13 22 9"/></svg>
+            </div>
+            <span class="kpi-chip blue">5 de 7</span>
+          </div>
+          <div class="kpi-value a" data-target="5">0</div>
+          <div class="kpi-label">Vendedores Activos</div>
+          <div class="kpi-sub">Con acciones pendientes este mes</div>
+        </div>
+
+        <div class="kpi-card alert-card">
+          <div class="kpi-top">
+            <div class="kpi-ico red">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/><line x1="12" x2="12.01" y1="9" y2="13"/><line x1="12" x2="12.01" y1="17" y2="17"/></svg>
+            </div>
+            <span class="kpi-chip warn">Requieren atención</span>
+          </div>
+          <div class="kpi-value r" data-target="3">0</div>
+          <div class="kpi-label">Alertas Atrasadas</div>
+          <div class="kpi-sub">Acciones sin gestionar pasado el límite</div>
+        </div>
+
+      </div>
+
+      <!-- TABLA DE PERFORMANCE -->
+      <div class="perf-header">
+        <div>
+          <div class="perf-title">PERFORMANCE DEL EQUIPO</div>
+          <div class="perf-sub">Abril 2026 · Click en fila para ver la cartera del vendedor</div>
+        </div>
+        <button class="btn-exportar" onclick="showToast('Exportando CSV...', 'success')">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Exportar CSV
+        </button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="perfTable">
+          <thead>
+            <tr>
+              <th>Vendedor</th>
+              <th class="c sortable" onclick="sortTable(1)">Clientes <i class="sort-ico">↑</i></th>
+              <th class="c sortable" onclick="sortTable(2)">Oportunidades <i class="sort-ico">↑</i></th>
+              <th class="c sortable" onclick="sortTable(3)">Accionadas <i class="sort-ico">↑</i></th>
+              <th class="c" style="min-width:140px">% Objetivo</th>
+              <th class="c sortable" onclick="sortTable(5)">Estado <i class="sort-ico">↑</i></th>
+            </tr>
+          </thead>
+          <tbody id="perfBody">
+            <!-- Generado por JS -->
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<script>
+// ══════════════════════════════════════════════
+// DATA
+// ══════════════════════════════════════════════
+const vendedores = [
+  { ini:'LR', name:'Lucas Rodriguez',  clients:12, opps:34, actioned:18, pct:78, status:'ON TRACK',  st:'track',  atrasado:0 },
+  { ini:'CP', name:'Carlos Pérez',     clients:9,  opps:28, actioned:22, pct:91, status:'ON TRACK',  st:'track',  atrasado:0 },
+  { ini:'AM', name:'Ana Martínez',     clients:15, opps:41, actioned:8,  pct:34, status:'BEHIND',    st:'behind', atrasado:3 },
+  { ini:'JB', name:'Jorge Blanco',     clients:11, opps:29, actioned:14, pct:62, status:'AT RISK',   st:'risk',   atrasado:0 },
+  { ini:'MT', name:'María Torres',     clients:8,  opps:19, actioned:16, pct:88, status:'ON TRACK',  st:'track',  atrasado:0 },
+  { ini:'PG', name:'Pedro Gómez',      clients:13, opps:38, actioned:5,  pct:22, status:'BEHIND',    st:'behind', atrasado:1 },
+  { ini:'LV', name:'Lucía Varela',     clients:10, opps:24, actioned:20, pct:85, status:'ON TRACK',  st:'track',  atrasado:0 },
+];
+
+// ══════════════════════════════════════════════
+// RENDER TABLE
+// ══════════════════════════════════════════════
+let sortCol = -1;
+let sortAsc  = true;
+
+function renderTable(data) {
+  const tbody = document.getElementById('perfBody');
+  tbody.innerHTML = data.map(v => {
+    const barClass = v.st === 'behind' ? 'behind' : v.st === 'risk' ? 'warn' : '';
+    const atrasadoBadge = v.atrasado > 0
+      ? `<span class="badge-atrasado"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3z"/></svg>${v.atrasado}</span>`
+      : '';
+
+    return `
+    <tr class="${v.st}" onclick="showToast('Abriendo cartera de ${v.name}...', 'success')">
+      <td>
+        <div style="display:flex;align-items:center;gap:10px">
+          <div class="row-av">${v.ini}</div>
+          <span class="row-name">${v.name}</span>
+          ${atrasadoBadge}
+        </div>
+      </td>
+      <td class="c">${v.clients}</td>
+      <td class="c">${v.opps}</td>
+      <td class="c">${v.actioned}</td>
+      <td class="c prog-cell">
+        <div class="prog-wrap">
+          <div class="prog-bar-bg">
+            <div class="prog-bar-fill ${barClass}" data-w="${v.pct}" style="width:0%"></div>
+          </div>
+          <span class="prog-pct">${v.pct}%</span>
+        </div>
+      </td>
+      <td class="c"><span class="st st-${v.st}">${v.status}</span></td>
+    </tr>`;
+  }).join('');
+
+  // animate progress bars after render
+  requestAnimationFrame(() => {
+    document.querySelectorAll('.prog-bar-fill').forEach(bar => {
+      setTimeout(() => { bar.style.width = bar.dataset.w + '%'; }, 200);
+    });
+  });
+}
+
+// ══════════════════════════════════════════════
+// SORT
+// ══════════════════════════════════════════════
+function sortTable(col) {
+  const ths = document.querySelectorAll('thead th');
+  if (sortCol === col) sortAsc = !sortAsc;
+  else { sortCol = col; sortAsc = true; }
+
+  ths.forEach((th, i) => {
+    th.classList.remove('sort-asc', 'sort-desc');
+    if (i === col) th.classList.add(sortAsc ? 'sort-asc' : 'sort-desc');
+  });
+
+  const keys = [null, 'clients', 'opps', 'actioned', null, 'pct'];
+  const key  = keys[col];
+  if (!key) return;
+
+  const sorted = [...vendedores].sort((a, b) =>
+    sortAsc ? a[key] - b[key] : b[key] - a[key]
+  );
+  renderTable(sorted);
+}
+
+// ══════════════════════════════════════════════
+// COUNT-UP
+// ══════════════════════════════════════════════
+function countUp(el) {
+  const target = parseInt(el.dataset.target);
+  if (isNaN(target)) return;
+  const duration = 900;
+  const start = performance.now();
+  const suffix = el.dataset.suffix || '';
+  function step(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const e = 1 - Math.pow(1 - p, 3);
+    el.textContent = Math.round(e * target) + suffix;
+    if (p < 1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+}
+
+// ══════════════════════════════════════════════
+// DROPZONE
+// ══════════════════════════════════════════════
+const dz  = document.getElementById('dropzone');
+const fin = document.getElementById('fileInput');
+dz.addEventListener('click',     () => fin.click());
+dz.addEventListener('dragover',  e  => { e.preventDefault(); dz.classList.add('over'); });
+dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+dz.addEventListener('drop', e => {
+  e.preventDefault(); dz.classList.remove('over');
+  handleFile(e.dataTransfer.files[0]);
+});
+fin.addEventListener('change', e => { if (e.target.files[0]) handleFile(e.target.files[0]); });
+
+function handleFile(file) {
+  if (!file) return;
+  const ok = file.name.endsWith('.xlsx') || file.name.endsWith('.csv');
+  if (!ok) { showToast('Formato inválido. Usá .xlsx o .csv', 'error'); return; }
+  dz.classList.add('success');
+  document.getElementById('dz-title').textContent = '✓ ' + file.name;
+  document.getElementById('dz-sub').textContent   = 'Archivo cargado correctamente';
+  showToast('✓ Archivo cargado: ' + file.name, 'success');
+}
+
+// ══════════════════════════════════════════════
+// MOBILE SIDEBAR
+// ══════════════════════════════════════════════
+function openSidebar()  { document.getElementById('sidebar').classList.add('open');  document.getElementById('overlay').classList.add('open'); }
+function closeSidebar() { document.getElementById('sidebar').classList.remove('open'); document.getElementById('overlay').classList.remove('open'); }
+
+// ══════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════
+function showToast(msg, type = 'success') {
+  const wrap = document.getElementById('toastWrap');
+  const el   = document.createElement('div');
+  el.className   = 'toast ' + type;
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(() => { el.classList.add('toast-out'); setTimeout(() => el.remove(), 220); }, 3500);
+}
+
+// ══════════════════════════════════════════════
+// BOOT
+// ══════════════════════════════════════════════
+window.addEventListener('load', () => {
+  renderTable(vendedores);
+  document.querySelectorAll('[data-target]').forEach(el => countUp(el));
+});
+</script>
+
+<script src="vendIA-global.js"></script>
+</body>
+</html>
