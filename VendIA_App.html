@@ -64,6 +64,33 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .tb-role{font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:999px;text-transform:uppercase;letter-spacing:.4px}
 .tb-role.admin{background:rgba(0,0,0,.05);color:var(--deep)}
 .tb-role.vendedor{background:var(--sage);color:var(--mid)}
+/* ── Notif + User panels ── */
+.tb-panel-wrap{position:relative}
+.tb-panel{display:none;position:absolute;top:calc(100% + 10px);right:0;background:white;border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 32px rgba(0,0,0,.12);z-index:600;min-width:300px;animation:dropIn .14s ease}
+.tb-panel.open{display:block}
+.tp-header{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid var(--border)}
+.tp-title{font-size:13px;font-weight:700;color:var(--dark)}
+.tp-mark{font-size:11.5px;color:var(--mid);font-weight:600;cursor:pointer;border:none;background:none;font-family:inherit}
+.tp-mark:hover{text-decoration:underline}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
+.notif-item:last-child{border-bottom:none}
+.notif-item:hover{background:var(--surface)}
+.notif-item.unread{background:rgba(34,197,94,.04)}
+.notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
+.notif-text{font-size:12.5px;color:var(--dark);line-height:1.45;font-weight:500}
+.notif-time{font-size:11px;color:var(--muted);margin-top:2px}
+/* user menu */
+.user-panel{min-width:220px}
+.user-panel-top{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--border)}
+.user-panel-av{width:38px;height:38px;border-radius:50%;background:var(--mid);color:white;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.user-panel-name{font-size:13px;font-weight:700;color:var(--dark)}
+.user-panel-role{font-size:11px;color:var(--muted);margin-top:1px}
+.um-item{display:flex;align-items:center;gap:10px;padding:9px 16px;font-size:13px;color:var(--dark);cursor:pointer;transition:background .12s;border:none;background:none;width:100%;font-family:inherit;text-align:left}
+.um-item:hover{background:var(--surface);color:var(--deep)}
+.um-item svg{color:var(--muted);flex-shrink:0}
+.um-item.danger{color:var(--alert)}
+.um-item.danger:hover{background:rgba(234,88,12,.06);color:var(--alert)}
+.um-sep{height:1px;background:var(--border);margin:4px 0}
 .demo-toggle{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);transition:background .15s;font-family:'DM Sans',sans-serif}
 .demo-toggle:hover{background:rgba(34,197,94,.15)}
 .content{flex:1;overflow-y:auto;padding:28px}
@@ -1088,15 +1115,64 @@ tbody tr.expanded-prod{background:var(--surface)}
         Vista: <strong id="demoRoleLabel">Admin</strong>
       </button>
       <div class="tb-sep"></div>
-      <button class="tb-btn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
-        <span class="tb-notif">4</span>
-      </button>
+      <div class="tb-panel-wrap">
+        <button class="tb-btn" id="notifBtn" onclick="togglePanel('notifPanel',event)">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg>
+          <span class="tb-notif" id="notifBadge">4</span>
+        </button>
+        <div class="tb-panel" id="notifPanel">
+          <div class="tp-header">
+            <span class="tp-title">Notificaciones</span>
+            <button class="tp-mark" onclick="markAllRead()">Marcar todo como leído</button>
+          </div>
+          <div class="notif-item unread" onclick="navigate('clientes');closeAllPanels()">
+            <div class="notif-dot" style="background:var(--alert)"></div>
+            <div><div class="notif-text">Mercado Central SA entró en declive — sin compras hace 42 días</div><div class="notif-time">Hace 10 min</div></div>
+          </div>
+          <div class="notif-item unread" onclick="navigate('clientes');closeAllPanels()">
+            <div class="notif-dot" style="background:var(--warning)"></div>
+            <div><div class="notif-text">Reorden sugerido: CAR-22 para El Gaucho SRL</div><div class="notif-time">Hace 1 hora</div></div>
+          </div>
+          <div class="notif-item unread" onclick="navigate('kpis');closeAllPanels()">
+            <div class="notif-dot" style="background:var(--accent)"></div>
+            <div><div class="notif-text">Meta del mes al 78% — quedan 8 días</div><div class="notif-time">Hace 3 horas</div></div>
+          </div>
+          <div class="notif-item unread" onclick="navigate('promociones');closeAllPanels()">
+            <div class="notif-dot" style="background:#1d4ed8"></div>
+            <div><div class="notif-text">Promo "Cuchillos Verano" vence en 3 días</div><div class="notif-time">Hoy 9:00</div></div>
+          </div>
+          <div class="notif-item" onclick="closeAllPanels()">
+            <div class="notif-dot" style="background:#9ca3af"></div>
+            <div><div class="notif-text">Distribuidora Sur completó su objetivo mensual</div><div class="notif-time">Ayer</div></div>
+          </div>
+        </div>
+      </div>
       <div class="tb-sep"></div>
-      <div class="tb-user">
-        <div class="tb-av" id="tbAv">LA</div>
-        <div class="tb-name" id="tbName">Lucas Admin</div>
-        <div class="tb-role admin" id="tbRole">Admin</div>
+      <div class="tb-panel-wrap">
+        <div class="tb-user" id="userMenuBtn" onclick="togglePanel('userPanel',event)">
+          <div class="tb-av" id="tbAv">LA</div>
+          <div class="tb-name" id="tbName">Lucas Admin</div>
+          <div class="tb-role admin" id="tbRole">Admin</div>
+        </div>
+        <div class="tb-panel user-panel" id="userPanel">
+          <div class="user-panel-top">
+            <div class="user-panel-av" id="upAv">LA</div>
+            <div><div class="user-panel-name" id="upName">Lucas Admin</div><div class="user-panel-role" id="upRoleLbl">Administrador</div></div>
+          </div>
+          <button class="um-item" onclick="navigate('configuracion');closeAllPanels()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
+            Configuración
+          </button>
+          <button class="um-item" onclick="toggleRole();closeAllPanels()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+            Cambiar vista
+          </button>
+          <div class="um-sep"></div>
+          <button class="um-item danger" onclick="showToast('Sesión cerrada','success');closeAllPanels()">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Cerrar sesión
+          </button>
+        </div>
       </div>
     </div>
   </header>
@@ -1118,14 +1194,15 @@ tbody tr.expanded-prod{background:var(--surface)}
             <button class="btn-hero-g" onclick="navigate('kpis')">Ver KPIs</button>
           </div>
         </div>
-        <div class="dropzone" id="dropzone" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
+        <div class="dropzone" id="dropzone" onclick="document.getElementById('dzFileInput').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleDrop(event)">
           <div class="dz-icon">
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
           </div>
           <div class="dz-title">Importar datos</div>
-          <div class="dz-sub">Arrastrá tu archivo aquí</div>
+          <div class="dz-sub">Arrastrá o hacé click aquí</div>
           <span class="dz-fmt">.CSV · .XLSX</span>
         </div>
+        <input type="file" id="dzFileInput" accept=".csv,.xlsx,.xls" style="display:none" onchange="handleFileSelect(this)">
       </div>
 
       <!-- Admin: tabla equipo -->
@@ -2692,8 +2769,40 @@ function initHome() {
 function handleDrop(e) {
   e.preventDefault();
   document.getElementById('dropzone').classList.remove('over');
-  showToast('Archivo recibido. Procesando…','success');
+  const file = e.dataTransfer.files[0];
+  if (file) showToast('Archivo "' + file.name + '" recibido. Procesando…', 'success');
+  else showToast('Archivo recibido. Procesando…', 'success');
 }
+
+function handleFileSelect(input) {
+  const file = input.files[0];
+  if (!file) return;
+  showToast('Archivo "' + file.name + '" recibido. Procesando…', 'success');
+  input.value = '';
+}
+
+/* ── Notif / User panel ── */
+function togglePanel(id, e) {
+  if (e) e.stopPropagation();
+  const panel = document.getElementById(id);
+  const wasOpen = panel.classList.contains('open');
+  closeAllPanels();
+  if (!wasOpen) panel.classList.add('open');
+}
+
+function closeAllPanels() {
+  document.querySelectorAll('.tb-panel').forEach(p => p.classList.remove('open'));
+}
+
+function markAllRead() {
+  document.querySelectorAll('.notif-item.unread').forEach(n => n.classList.remove('unread'));
+  document.getElementById('notifBadge').style.display = 'none';
+  showToast('Notificaciones marcadas como leídas', 'success');
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.tb-panel-wrap')) closeAllPanels();
+});
 
 /* ══════════════════════════════════════════════════════════
    CLIENTES
