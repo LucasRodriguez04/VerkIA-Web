@@ -93,6 +93,47 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .um-sep{height:1px;background:var(--border);margin:4px 0}
 .demo-toggle{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);transition:background .15s;font-family:'DM Sans',sans-serif}
 .demo-toggle:hover{background:rgba(34,197,94,.15)}
+/* ══ CHATBOT ══ */
+.ai-chat-trigger{color:var(--mid)!important}
+.ai-chat-trigger.active{background:rgba(34,197,94,.12)!important;color:var(--accent)!important}
+#ai-chat-panel{position:fixed;bottom:24px;right:24px;width:380px;max-height:560px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 0 1px var(--border);display:flex;flex-direction:column;z-index:1000;transform:translateY(20px) scale(.97);opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.16,1,.3,1);overflow:hidden}
+#ai-chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
+.ai-chat-header{background:var(--deep);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.ai-chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-chat-avatar svg{color:var(--accent)}
+.ai-chat-hinfo{flex:1}
+.ai-chat-hname{font-size:14px;font-weight:700;color:white;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
+.ai-chat-hstatus{font-size:11px;color:rgba(255,255,255,.45);display:flex;align-items:center;gap:5px;margin-top:1px}
+.ai-status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite}
+.ai-chat-close{width:30px;height:30px;border-radius:8px;border:none;background:rgba(255,255,255,.08);cursor:pointer;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.6);transition:background .15s}
+.ai-chat-close:hover{background:rgba(255,255,255,.15);color:white}
+.ai-chips{padding:12px 14px 0;display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.ai-chip{font-size:11.5px;font-weight:500;padding:4px 10px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--muted);cursor:pointer;transition:all .15s;white-space:nowrap;font-family:'DM Sans',sans-serif}
+.ai-chip:hover{border-color:var(--mid);color:var(--mid);background:var(--sage)}
+.ai-chat-msgs{flex:1;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.ai-chat-msgs::-webkit-scrollbar{width:4px}
+.ai-chat-msgs::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+.ai-msg{display:flex;gap:8px;align-items:flex-start}
+.ai-msg.user{flex-direction:row-reverse}
+.ai-msg-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700}
+.ai-msg.bot .ai-msg-av{background:rgba(6,78,59,.1);color:var(--deep)}
+.ai-msg.user .ai-msg-av{background:var(--mid);color:white}
+.ai-msg-bubble{max-width:78%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;font-family:'DM Sans',sans-serif}
+.ai-msg.bot .ai-msg-bubble{background:var(--surface);color:var(--dark);border-bottom-left-radius:4px}
+.ai-msg.user .ai-msg-bubble{background:var(--deep);color:white;border-bottom-right-radius:4px}
+.ai-typing{display:flex;gap:4px;align-items:center;padding:4px 0}
+.ai-typing span{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:aiDot 1.2s infinite}
+.ai-typing span:nth-child(2){animation-delay:.2s}
+.ai-typing span:nth-child(3){animation-delay:.4s}
+@keyframes aiDot{0%,80%,100%{transform:scale(.6);opacity:.4}40%{transform:scale(1);opacity:1}}
+.ai-chat-footer{padding:12px 14px;border-top:1px solid var(--surface);flex-shrink:0}
+.ai-input-row{display:flex;gap:8px;align-items:center}
+.ai-input{flex:1;border:1.5px solid var(--border);border-radius:12px;padding:9px 13px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;resize:none;transition:border-color .15s;line-height:1.4;background:var(--surface);max-height:100px}
+.ai-input:focus{border-color:var(--mid);background:white}
+.ai-input::placeholder{color:#9ca3af}
+.ai-send{width:36px;height:36px;border-radius:10px;border:none;background:var(--deep);color:var(--accent);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s,transform .12s}
+.ai-send:hover{background:var(--mid);transform:scale(1.05)}
+.ai-send:disabled{opacity:.45;cursor:not-allowed;transform:none}
 .content{flex:1;overflow-y:auto;padding:28px}
 .content::-webkit-scrollbar{width:6px}
 .content::-webkit-scrollbar-thumb{background:var(--border);border-radius:999px}
@@ -1147,6 +1188,10 @@ tbody tr.expanded-prod{background:var(--surface)}
           </div>
         </div>
       </div>
+      <div class="tb-sep"></div>
+      <button class="tb-btn ai-chat-trigger" onclick="toggleAIChat()" title="Asistente VendIA">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
+      </button>
       <div class="tb-sep"></div>
       <div class="tb-panel-wrap">
         <div class="tb-user" id="userMenuBtn" onclick="togglePanel('userPanel',event)">
@@ -5082,6 +5127,140 @@ window.mountClienteCharts = function() {
   if (mEl) { if (!window._chartRoots.cliMix)  window._chartRoots.cliMix  = ReactDOM.createRoot(mEl); window._chartRoots.cliMix.render(<MixChart/>); }
   if (hEl) { if (!window._chartRoots.cliHist) window._chartRoots.cliHist = ReactDOM.createRoot(hEl); window._chartRoots.cliHist.render(<HistorialTable/>); }
 };
+</script>
+
+<!-- ══════════════════════════════════════════════════════
+     CHATBOT VendIA
+══════════════════════════════════════════════════════ -->
+<div id="ai-chat-panel">
+  <div class="ai-chat-header">
+    <div class="ai-chat-avatar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 015 5v3H7V7a5 5 0 015-5z"/><rect x="2" y="10" width="20" height="12" rx="3"/><circle cx="8" cy="16" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/></svg>
+    </div>
+    <div class="ai-chat-hinfo">
+      <div class="ai-chat-hname">Asistente VendIA</div>
+      <div class="ai-chat-hstatus"><span class="ai-status-dot"></span>En línea · Scarpati Hnos.</div>
+    </div>
+    <button class="ai-chat-close" onclick="toggleAIChat()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="ai-chips" id="aiChips">
+    <button class="ai-chip" onclick="sendChip(this)">¿Quién vende más?</button>
+    <button class="ai-chip" onclick="sendChip(this)">Clientes en riesgo</button>
+    <button class="ai-chip" onclick="sendChip(this)">Alertas pendientes</button>
+    <button class="ai-chip" onclick="sendChip(this)">Promos activas</button>
+    <button class="ai-chip" onclick="sendChip(this)">Resumen general</button>
+  </div>
+  <div class="ai-chat-msgs" id="aiMsgs">
+    <div class="ai-msg bot">
+      <div class="ai-msg-av">V</div>
+      <div class="ai-msg-bubble">¡Hola! Soy el asistente de VendIA para <strong>Scarpati Hnos.</strong> Conozco todos los datos de vendedores, clientes, KPIs, objetivos y promociones. ¿En qué puedo ayudarte hoy?</div>
+    </div>
+  </div>
+  <div class="ai-chat-footer">
+    <div class="ai-input-row">
+      <textarea class="ai-input" id="aiInput" placeholder="Preguntá sobre vendedores, clientes, KPIs..." rows="1"
+        onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendAIMessage()}"
+        oninput="this.style.height='auto';this.style.height=this.scrollHeight+'px'"></textarea>
+      <button class="ai-send" id="aiSendBtn" onclick="sendAIMessage()">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══ CHATBOT VendIA ══
+var aiOpen = false;
+var aiHistory = [];
+var aiTyping = false;
+
+var AI_CONTEXT = "Sos el asistente inteligente de VendIA, la app de gestion de ventas de Scarpati Hnos., empresa dedicada a la venta de cuchilleria, maquinaria y herramientas para el sector carnico.\n\nResponde siempre en espanol rioplatense, de forma concisa, profesional y util. Podes usar emojis ocasionalmente.\n\n=== DATOS ACTUALES DE LA EMPRESA ===\n\nVENDEDORES (performance actual - Abril 2026):\n- Lucas Rodriguez (Zona Norte): 12 clientes, conversion 64%, ventas $284.500 vs obj $310.000 (78%). Estado: En objetivo. 3 alertas.\n- Valentina Torres (Zona Sur): 9 clientes, conversion 74%, ventas $198.000 vs obj $220.000 (90%). Estado: En objetivo. 1 alerta.\n- Marcos Heredia (Zona Oeste): 11 clientes, conversion 42%, ventas $145.000 vs obj $265.000 (55%). Estado: ATRASADO. 5 alertas.\n- Sol Ferreyra (Zona Este): 13 clientes, conversion 71%, ventas $312.000 vs obj $340.000 (92%). Estado: En objetivo. 2 alertas.\n- Diego Castillo (CABA Centro): 8 clientes, conversion 73%, ventas $178.000 vs obj $210.000 (85%). Estado: En objetivo. 1 alerta.\n- Camila Nunes (GBA Sur): 15 clientes, conversion 60%, ventas $268.000 vs obj $390.000 (69%). Estado: EN RIESGO. 4 alertas.\n- Ramiro Blanco (Interior): 7 clientes, conversion 50%, ventas $98.000 vs obj $185.000 (53%). Estado: ATRASADO. 6 alertas.\n\nCLIENTES (cartera activa):\n- Mercado Central SA (Lucas R.): valor $18.400, progreso 45%, prioridad ALTA, senales: declive + pago atrasado. Ultimo contacto: hace 3 dias.\n- El Gaucho SRL (Lucas R.): valor $32.100, progreso 88%, prioridad media, senales: cross-sell + reorden.\n- Distribuidora Sur (Valentina): valor $9.800, progreso 62%, prioridad baja, senal: reorden.\n- Frigorifico Norte (Marcos H.): valor $41.500, progreso 95%, prioridad media, senales: upsell + cross-sell.\n- Carnes & Co. (Sol F.): valor $7.200, progreso 28%, prioridad ALTA, senal: declive. Ultimo contacto: hace 8 dias.\n- Chacinados Rosario (Diego C.): valor $24.300, progreso 78%, senales: reorden + promo activa.\n- La Pampa Foods (Camila N.): valor $15.600, progreso 55%, senales: cross-sell + upsell.\n- Norte Carnes (Ramiro B.): valor $5.400, progreso 20%, prioridad ALTA, senal: pago atrasado. Ultimo contacto: hace 10 dias.\n- Del Campo SRL (Lucas R.): valor $19.800, progreso 72%, senal: reorden.\n\nALERTAS PENDIENTES:\n- Mercado Central SA: CAR22 Cuchillo Deshuesador 6 pulgadas - reorden ATRASADO (02/04/2026)\n- El Gaucho SRL: Juego de chairas + ganchos - cross-sell pendiente\n- Carnes & Co.: Volumen -38% vs mes anterior - declive pendiente\n- Norte Carnes: Kit Herramientas Basico - cross-sell ATRASADO\n- La Pampa Foods: Embutidoras -15% activa - promo pendiente\n\nPRODUCTOS:\n- CAR22 Cuchillos blancos 22cm: $142.00, margen 34%, EN PROMO\n- CAR467 Chairas premium: $89.50, margen 28%\n- ENV-99 Embutidoras basicas: $215.00, margen 41%, EN PROMO\n\nPROMOCIONES ACTIVAS:\n- Promo Cuchillos Abril: CAR22 + CAR467, vigente 01/04-30/04/2026, 12 clientes, total $284.500\n- Embutidoras -15%: ENV-99, vigente 15/04-15/05/2026, 5 clientes, total $122.300\n- Campana Invierno Herramientas: proxima mayo 2026, 18 clientes potenciales\n\nKPIs GENERALES:\n- Clientes activos: 68%, En riesgo: 18%, Perdidos: 9%\n- Potencial cross-sell sin accionar: $84.200\n\nOBJETIVOS:\n- Lucas: $284.500 (+12%), progreso 78%\n- Valentina: $198.000 (+13%), progreso 90%\n- Marcos: $240.000 (+14%), progreso 55% EN RIESGO\n- Sol: $325.000 (+12%), progreso 92%\n- Diego: $178.000 (+15%), progreso 85%\n- Camila: $380.000 (+12%), progreso 69% EN RIESGO\n- Ramiro: $192.000 (+16%), progreso 53% CRITICO\n\nCuando te pregunten algo, usa estos datos para responder con precision.";
+
+function toggleAIChat() {
+  aiOpen = !aiOpen;
+  document.getElementById('ai-chat-panel').classList.toggle('open', aiOpen);
+  var btn = document.querySelector('.ai-chat-trigger');
+  if (btn) btn.classList.toggle('active', aiOpen);
+  if (aiOpen) { setTimeout(function(){ var inp = document.getElementById('aiInput'); if(inp) inp.focus(); }, 300); }
+}
+
+function sendChip(btn) {
+  var text = btn.textContent.trim();
+  document.getElementById('aiChips').style.display = 'none';
+  document.getElementById('aiInput').value = text;
+  sendAIMessage();
+}
+
+function addMsg(role, text) {
+  var msgs = document.getElementById('aiMsgs');
+  var div = document.createElement('div');
+  div.className = 'ai-msg ' + (role === 'user' ? 'user' : 'bot');
+  var av = document.createElement('div');
+  av.className = 'ai-msg-av';
+  av.textContent = role === 'user' ? 'U' : 'V';
+  var bubble = document.createElement('div');
+  bubble.className = 'ai-msg-bubble';
+  bubble.innerHTML = text;
+  div.appendChild(av);
+  div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function showTyping() {
+  var msgs = document.getElementById('aiMsgs');
+  var div = document.createElement('div');
+  div.className = 'ai-msg bot';
+  div.id = 'aiTypingIndicator';
+  var av = document.createElement('div'); av.className = 'ai-msg-av'; av.textContent = 'V';
+  var bubble = document.createElement('div'); bubble.className = 'ai-msg-bubble';
+  bubble.innerHTML = '<div class="ai-typing"><span></span><span></span><span></span></div>';
+  div.appendChild(av); div.appendChild(bubble);
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+}
+
+function hideTyping() {
+  var t = document.getElementById('aiTypingIndicator');
+  if (t) t.remove();
+}
+
+async function sendAIMessage() {
+  var input = document.getElementById('aiInput');
+  var text = input.value.trim();
+  if (!text || aiTyping) return;
+  input.value = '';
+  input.style.height = 'auto';
+  document.getElementById('aiSendBtn').disabled = true;
+  aiTyping = true;
+  addMsg('user', text);
+  aiHistory.push({ role: 'user', content: text });
+  showTyping();
+  try {
+    var BACKEND_URL = window.VENDIA_BACKEND_URL || 'http://localhost:5000/api/chat';
+    var response = await fetch(BACKEND_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ model: 'claude-sonnet-4-20250514', max_tokens: 800, system: AI_CONTEXT, messages: aiHistory })
+    });
+    hideTyping();
+    var data = await response.json();
+    var reply = (data.content && data.content[0] && data.content[0].text) ? data.content[0].text : 'No pude procesar la respuesta.';
+    var formatted = reply.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\n/g, '<br>');
+    addMsg('bot', formatted);
+    aiHistory.push({ role: 'assistant', content: reply });
+  } catch (err) {
+    hideTyping();
+    addMsg('bot', 'Hubo un error al conectar con el asistente. En la demo en vivo el backend estará activo.');
+    console.error('AI Chat error:', err);
+  }
+  aiTyping = false;
+  document.getElementById('aiSendBtn').disabled = false;
+  var inp = document.getElementById('aiInput');
+  if (inp) inp.focus();
+}
 </script>
 </body>
 </html>
