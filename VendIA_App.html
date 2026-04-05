@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VendIA — Scarpati Hnos.</title>
+<title>VerkIA — Scarpati Hnos.</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -1063,7 +1063,7 @@ tbody tr.expanded-prod{background:var(--surface)}
   <div class="login-grid"></div>
   <div class="login-content">
   <div class="login-box">
-    <div class="login-logo">VendIA</div>
+    <div class="login-logo">VerkIA</div>
     <div class="login-sub">Scarpati Hnos. · Motor de ventas</div>
     <div class="login-label">Email</div>
     <input id="loginEmail" class="login-input" type="email" placeholder="usuario@scarpati.com" value="admin1@scarpati.com">
@@ -1081,7 +1081,7 @@ tbody tr.expanded-prod{background:var(--surface)}
         <span class="demo-role">Vista vendedor</span>
       </button>
     </div>
-    <div class="login-footer">VendIA v1.0 · Demo Prototype · 2026</div>
+    <div class="login-footer">VerkIA v1.0 · Demo Prototype · 2026</div>
   </div>
   </div>
 </div>
@@ -1093,7 +1093,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 <!-- ══════ SIDEBAR ══════ -->
 <aside class="sidebar" id="sidebar">
   <div class="sb-logo">
-    <div class="sb-logo-name">VendIA</div>
+    <div class="sb-logo-name">VerkIA</div>
     <div class="sb-logo-sub">Scarpati Hnos.</div>
   </div>
   <div class="sb-div"></div>
@@ -1189,7 +1189,7 @@ tbody tr.expanded-prod{background:var(--surface)}
         </div>
       </div>
       <div class="tb-sep"></div>
-      <button class="tb-btn ai-chat-trigger" onclick="toggleAIChat()" title="Asistente VendIA">
+      <button class="tb-btn ai-chat-trigger" onclick="toggleAIChat()" title="Asistente VerkIA">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/><circle cx="9" cy="10" r="1" fill="currentColor"/><circle cx="12" cy="10" r="1" fill="currentColor"/><circle cx="15" cy="10" r="1" fill="currentColor"/></svg>
       </button>
       <div class="tb-sep"></div>
@@ -5130,7 +5130,7 @@ window.mountClienteCharts = function() {
 </script>
 
 <!-- ══════════════════════════════════════════════════════
-     CHATBOT VendIA
+     CHATBOT VerkIA
 ══════════════════════════════════════════════════════ -->
 <div id="ai-chat-panel">
   <div class="ai-chat-header">
@@ -5138,7 +5138,7 @@ window.mountClienteCharts = function() {
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a5 5 0 015 5v3H7V7a5 5 0 015-5z"/><rect x="2" y="10" width="20" height="12" rx="3"/><circle cx="8" cy="16" r="1.5" fill="currentColor"/><circle cx="16" cy="16" r="1.5" fill="currentColor"/></svg>
     </div>
     <div class="ai-chat-hinfo">
-      <div class="ai-chat-hname">Asistente VendIA</div>
+      <div class="ai-chat-hname">Asistente VerkIA</div>
       <div class="ai-chat-hstatus"><span class="ai-status-dot"></span>En línea · Scarpati Hnos.</div>
     </div>
     <button class="ai-chat-close" onclick="toggleAIChat()">
@@ -5155,7 +5155,7 @@ window.mountClienteCharts = function() {
   <div class="ai-chat-msgs" id="aiMsgs">
     <div class="ai-msg bot">
       <div class="ai-msg-av">V</div>
-      <div class="ai-msg-bubble">¡Hola! Soy el asistente de VendIA para <strong>Scarpati Hnos.</strong> Conozco todos los datos de vendedores, clientes, KPIs, objetivos y promociones. ¿En qué puedo ayudarte hoy?</div>
+      <div class="ai-msg-bubble">¡Hola! Soy el asistente de VerkIA para <strong>Scarpati Hnos.</strong> Conozco todos los datos de vendedores, clientes, KPIs, objetivos y promociones. ¿En qué puedo ayudarte hoy?</div>
     </div>
   </div>
   <div class="ai-chat-footer">
@@ -5171,12 +5171,12 @@ window.mountClienteCharts = function() {
 </div>
 
 <script>
-// ══ CHATBOT VendIA ══
+// ══ CHATBOT VerkIA ══
 var aiOpen = false;
 var aiHistory = [];
 var aiTyping = false;
 
-var AI_CONTEXT = "Sos el asistente inteligente de VendIA, la app de gestion de ventas de Scarpati Hnos., empresa dedicada a la venta de cuchilleria, maquinaria y herramientas para el sector carnico.\n\nResponde siempre en espanol rioplatense, de forma concisa, profesional y util. Podes usar emojis ocasionalmente.\n\n=== DATOS ACTUALES DE LA EMPRESA ===\n\nVENDEDORES (performance actual - Abril 2026):\n- Lucas Rodriguez (Zona Norte): 12 clientes, conversion 64%, ventas $284.500 vs obj $310.000 (78%). Estado: En objetivo. 3 alertas.\n- Valentina Torres (Zona Sur): 9 clientes, conversion 74%, ventas $198.000 vs obj $220.000 (90%). Estado: En objetivo. 1 alerta.\n- Marcos Heredia (Zona Oeste): 11 clientes, conversion 42%, ventas $145.000 vs obj $265.000 (55%). Estado: ATRASADO. 5 alertas.\n- Sol Ferreyra (Zona Este): 13 clientes, conversion 71%, ventas $312.000 vs obj $340.000 (92%). Estado: En objetivo. 2 alertas.\n- Diego Castillo (CABA Centro): 8 clientes, conversion 73%, ventas $178.000 vs obj $210.000 (85%). Estado: En objetivo. 1 alerta.\n- Camila Nunes (GBA Sur): 15 clientes, conversion 60%, ventas $268.000 vs obj $390.000 (69%). Estado: EN RIESGO. 4 alertas.\n- Ramiro Blanco (Interior): 7 clientes, conversion 50%, ventas $98.000 vs obj $185.000 (53%). Estado: ATRASADO. 6 alertas.\n\nCLIENTES (cartera activa):\n- Mercado Central SA (Lucas R.): valor $18.400, progreso 45%, prioridad ALTA, senales: declive + pago atrasado. Ultimo contacto: hace 3 dias.\n- El Gaucho SRL (Lucas R.): valor $32.100, progreso 88%, prioridad media, senales: cross-sell + reorden.\n- Distribuidora Sur (Valentina): valor $9.800, progreso 62%, prioridad baja, senal: reorden.\n- Frigorifico Norte (Marcos H.): valor $41.500, progreso 95%, prioridad media, senales: upsell + cross-sell.\n- Carnes & Co. (Sol F.): valor $7.200, progreso 28%, prioridad ALTA, senal: declive. Ultimo contacto: hace 8 dias.\n- Chacinados Rosario (Diego C.): valor $24.300, progreso 78%, senales: reorden + promo activa.\n- La Pampa Foods (Camila N.): valor $15.600, progreso 55%, senales: cross-sell + upsell.\n- Norte Carnes (Ramiro B.): valor $5.400, progreso 20%, prioridad ALTA, senal: pago atrasado. Ultimo contacto: hace 10 dias.\n- Del Campo SRL (Lucas R.): valor $19.800, progreso 72%, senal: reorden.\n\nALERTAS PENDIENTES:\n- Mercado Central SA: CAR22 Cuchillo Deshuesador 6 pulgadas - reorden ATRASADO (02/04/2026)\n- El Gaucho SRL: Juego de chairas + ganchos - cross-sell pendiente\n- Carnes & Co.: Volumen -38% vs mes anterior - declive pendiente\n- Norte Carnes: Kit Herramientas Basico - cross-sell ATRASADO\n- La Pampa Foods: Embutidoras -15% activa - promo pendiente\n\nPRODUCTOS:\n- CAR22 Cuchillos blancos 22cm: $142.00, margen 34%, EN PROMO\n- CAR467 Chairas premium: $89.50, margen 28%\n- ENV-99 Embutidoras basicas: $215.00, margen 41%, EN PROMO\n\nPROMOCIONES ACTIVAS:\n- Promo Cuchillos Abril: CAR22 + CAR467, vigente 01/04-30/04/2026, 12 clientes, total $284.500\n- Embutidoras -15%: ENV-99, vigente 15/04-15/05/2026, 5 clientes, total $122.300\n- Campana Invierno Herramientas: proxima mayo 2026, 18 clientes potenciales\n\nKPIs GENERALES:\n- Clientes activos: 68%, En riesgo: 18%, Perdidos: 9%\n- Potencial cross-sell sin accionar: $84.200\n\nOBJETIVOS:\n- Lucas: $284.500 (+12%), progreso 78%\n- Valentina: $198.000 (+13%), progreso 90%\n- Marcos: $240.000 (+14%), progreso 55% EN RIESGO\n- Sol: $325.000 (+12%), progreso 92%\n- Diego: $178.000 (+15%), progreso 85%\n- Camila: $380.000 (+12%), progreso 69% EN RIESGO\n- Ramiro: $192.000 (+16%), progreso 53% CRITICO\n\nCuando te pregunten algo, usa estos datos para responder con precision.";
+var AI_CONTEXT = "Sos el asistente inteligente de VerkIA, la app de gestion de ventas de Scarpati Hnos., empresa dedicada a la venta de cuchilleria, maquinaria y herramientas para el sector carnico.\n\nResponde siempre en espanol rioplatense, de forma concisa, profesional y util. Podes usar emojis ocasionalmente.\n\n=== DATOS ACTUALES DE LA EMPRESA ===\n\nVENDEDORES (performance actual - Abril 2026):\n- Lucas Rodriguez (Zona Norte): 12 clientes, conversion 64%, ventas $284.500 vs obj $310.000 (78%). Estado: En objetivo. 3 alertas.\n- Valentina Torres (Zona Sur): 9 clientes, conversion 74%, ventas $198.000 vs obj $220.000 (90%). Estado: En objetivo. 1 alerta.\n- Marcos Heredia (Zona Oeste): 11 clientes, conversion 42%, ventas $145.000 vs obj $265.000 (55%). Estado: ATRASADO. 5 alertas.\n- Sol Ferreyra (Zona Este): 13 clientes, conversion 71%, ventas $312.000 vs obj $340.000 (92%). Estado: En objetivo. 2 alertas.\n- Diego Castillo (CABA Centro): 8 clientes, conversion 73%, ventas $178.000 vs obj $210.000 (85%). Estado: En objetivo. 1 alerta.\n- Camila Nunes (GBA Sur): 15 clientes, conversion 60%, ventas $268.000 vs obj $390.000 (69%). Estado: EN RIESGO. 4 alertas.\n- Ramiro Blanco (Interior): 7 clientes, conversion 50%, ventas $98.000 vs obj $185.000 (53%). Estado: ATRASADO. 6 alertas.\n\nCLIENTES (cartera activa):\n- Mercado Central SA (Lucas R.): valor $18.400, progreso 45%, prioridad ALTA, senales: declive + pago atrasado. Ultimo contacto: hace 3 dias.\n- El Gaucho SRL (Lucas R.): valor $32.100, progreso 88%, prioridad media, senales: cross-sell + reorden.\n- Distribuidora Sur (Valentina): valor $9.800, progreso 62%, prioridad baja, senal: reorden.\n- Frigorifico Norte (Marcos H.): valor $41.500, progreso 95%, prioridad media, senales: upsell + cross-sell.\n- Carnes & Co. (Sol F.): valor $7.200, progreso 28%, prioridad ALTA, senal: declive. Ultimo contacto: hace 8 dias.\n- Chacinados Rosario (Diego C.): valor $24.300, progreso 78%, senales: reorden + promo activa.\n- La Pampa Foods (Camila N.): valor $15.600, progreso 55%, senales: cross-sell + upsell.\n- Norte Carnes (Ramiro B.): valor $5.400, progreso 20%, prioridad ALTA, senal: pago atrasado. Ultimo contacto: hace 10 dias.\n- Del Campo SRL (Lucas R.): valor $19.800, progreso 72%, senal: reorden.\n\nALERTAS PENDIENTES:\n- Mercado Central SA: CAR22 Cuchillo Deshuesador 6 pulgadas - reorden ATRASADO (02/04/2026)\n- El Gaucho SRL: Juego de chairas + ganchos - cross-sell pendiente\n- Carnes & Co.: Volumen -38% vs mes anterior - declive pendiente\n- Norte Carnes: Kit Herramientas Basico - cross-sell ATRASADO\n- La Pampa Foods: Embutidoras -15% activa - promo pendiente\n\nPRODUCTOS:\n- CAR22 Cuchillos blancos 22cm: $142.00, margen 34%, EN PROMO\n- CAR467 Chairas premium: $89.50, margen 28%\n- ENV-99 Embutidoras basicas: $215.00, margen 41%, EN PROMO\n\nPROMOCIONES ACTIVAS:\n- Promo Cuchillos Abril: CAR22 + CAR467, vigente 01/04-30/04/2026, 12 clientes, total $284.500\n- Embutidoras -15%: ENV-99, vigente 15/04-15/05/2026, 5 clientes, total $122.300\n- Campana Invierno Herramientas: proxima mayo 2026, 18 clientes potenciales\n\nKPIs GENERALES:\n- Clientes activos: 68%, En riesgo: 18%, Perdidos: 9%\n- Potencial cross-sell sin accionar: $84.200\n\nOBJETIVOS:\n- Lucas: $284.500 (+12%), progreso 78%\n- Valentina: $198.000 (+13%), progreso 90%\n- Marcos: $240.000 (+14%), progreso 55% EN RIESGO\n- Sol: $325.000 (+12%), progreso 92%\n- Diego: $178.000 (+15%), progreso 85%\n- Camila: $380.000 (+12%), progreso 69% EN RIESGO\n- Ramiro: $192.000 (+16%), progreso 53% CRITICO\n\nCuando te pregunten algo, usa estos datos para responder con precision.";
 
 function toggleAIChat() {
   aiOpen = !aiOpen;
