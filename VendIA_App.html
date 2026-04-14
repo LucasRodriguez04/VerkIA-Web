@@ -10,7 +10,7 @@
 /* ═══ RESET + VARS ══════════════════════════════════════ */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --deep:#022c22;--mid:#006c49;--accent:#22c55e;--sage:#dcfce7;
+  --deep:#450a0a;--mid:#991b1b;--accent:#ef4444;--sage:#fee2e2;
   --surface:#f8fafc;--bg:#f1f4f7;--border:#e2e8f0;--muted:#6b7a8d;
   --dark:#191c1e;--alert:#ea580c;--warning:#ca8a04;
   --pending-bg:#fef3c7;--pending-bd:#fcd34d;
@@ -32,7 +32,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .sb-lbl{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:1.8px;text-transform:uppercase;padding:10px 20px 6px}
 .nl{display:flex;align-items:center;gap:10px;padding:9px 14px;margin:1px 10px;border-radius:8px;cursor:pointer;color:rgba(255,255,255,.55);font-size:13.5px;font-weight:500;border:none;background:none;width:calc(100% - 20px);text-align:left;border-left:3px solid transparent;transition:background .15s,color .15s;white-space:nowrap}
 .nl:hover{background:rgba(255,255,255,.08);color:white}
-.nl.active{background:rgba(34,197,94,.14);color:#22c55e;border-left-color:var(--accent);font-weight:600}
+.nl.active{background:rgba(239,68,68,.14);color:#ef4444;border-left-color:var(--accent);font-weight:600}
 .nl svg{flex-shrink:0;width:17px;height:17px}
 .nl-badge{margin-left:auto;background:var(--alert);color:white;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:999px;display:flex;align-items:center;justify-content:center;padding:0 5px}
 .sb-bottom{padding:8px 0 16px}
@@ -40,7 +40,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .sb-av{width:34px;height:34px;border-radius:50%;background:var(--mid);color:white;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .sb-uname{font-size:13px;font-weight:600;color:white;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .sb-role{display:inline-block;font-size:9.5px;font-weight:600;padding:1px 7px;border-radius:999px;margin-top:2px;letter-spacing:.5px;text-transform:uppercase}
-.sb-role.admin{background:rgba(34,197,94,.18);color:var(--accent)}
+.sb-role.admin{background:rgba(239,68,68,.18);color:var(--accent)}
 .sb-role.vendedor{background:rgba(255,255,255,.08);color:rgba(255,255,255,.55)}
 .btn-logout{display:flex;align-items:center;gap:8px;padding:8px 16px;margin:4px 10px 0;border-radius:8px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.35);font-family:'DM Sans',sans-serif;font-size:13px;width:calc(100% - 20px);text-align:left;transition:background .15s,color .15s}
 .btn-logout:hover{background:rgba(234,88,12,.12);color:var(--alert)}
@@ -75,7 +75,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .notif-item{display:flex;align-items:flex-start;gap:10px;padding:11px 16px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .12s}
 .notif-item:last-child{border-bottom:none}
 .notif-item:hover{background:var(--surface)}
-.notif-item.unread{background:rgba(34,197,94,.04)}
+.notif-item.unread{background:rgba(239,68,68,.04)}
 .notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px}
 .notif-text{font-size:12.5px;color:var(--dark);line-height:1.45;font-weight:500}
 .notif-time{font-size:11px;color:var(--muted);margin-top:2px}
@@ -91,15 +91,15 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .um-item.danger{color:var(--alert)}
 .um-item.danger:hover{background:rgba(234,88,12,.06);color:var(--alert)}
 .um-sep{height:1px;background:var(--border);margin:4px 0}
-.demo-toggle{display:flex;align-items:center;gap:6px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.25);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);transition:background .15s;font-family:'DM Sans',sans-serif}
-.demo-toggle:hover{background:rgba(34,197,94,.15)}
+.demo-toggle{display:flex;align-items:center;gap:6px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.25);border-radius:8px;padding:5px 10px;cursor:pointer;font-size:12px;font-weight:600;color:var(--mid);transition:background .15s;font-family:'DM Sans',sans-serif}
+.demo-toggle:hover{background:rgba(239,68,68,.15)}
 /* ══ CHATBOT ══ */
 .ai-chat-trigger{color:var(--mid)!important}
-.ai-chat-trigger.active{background:rgba(34,197,94,.12)!important;color:var(--accent)!important}
+.ai-chat-trigger.active{background:rgba(239,68,68,.12)!important;color:var(--accent)!important}
 #ai-chat-panel{position:fixed;bottom:24px;right:24px;width:380px;max-height:560px;background:white;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.18),0 0 0 1px var(--border);display:flex;flex-direction:column;z-index:1000;transform:translateY(20px) scale(.97);opacity:0;pointer-events:none;transition:all .25s cubic-bezier(.16,1,.3,1);overflow:hidden}
 #ai-chat-panel.open{transform:translateY(0) scale(1);opacity:1;pointer-events:all}
 .ai-chat-header{background:var(--deep);padding:16px 18px;display:flex;align-items:center;gap:12px;flex-shrink:0}
-.ai-chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ai-chat-avatar{width:36px;height:36px;border-radius:50%;background:rgba(239,68,68,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .ai-chat-avatar svg{color:var(--accent)}
 .ai-chat-hinfo{flex:1}
 .ai-chat-hname{font-size:14px;font-weight:700;color:white;font-family:'Barlow Condensed',sans-serif;letter-spacing:.3px}
@@ -116,7 +116,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .ai-msg{display:flex;gap:8px;align-items:flex-start}
 .ai-msg.user{flex-direction:row-reverse}
 .ai-msg-av{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:700}
-.ai-msg.bot .ai-msg-av{background:rgba(6,78,59,.1);color:var(--deep)}
+.ai-msg.bot .ai-msg-av{background:rgba(127,29,29,.1);color:var(--deep)}
 .ai-msg.user .ai-msg-av{background:var(--mid);color:white}
 .ai-msg-bubble{max-width:78%;padding:10px 13px;border-radius:14px;font-size:13px;line-height:1.55;font-family:'DM Sans',sans-serif}
 .ai-msg.bot .ai-msg-bubble{background:var(--surface);color:var(--dark);border-bottom-left-radius:4px}
@@ -161,7 +161,7 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 /* ═══ BUTTONS ══════════════════════════════════════════ */
 .btn{display:inline-flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;font-weight:600;font-size:13px;border-radius:8px;border:none;cursor:pointer;transition:background .15s,color .15s,transform .12s,box-shadow .15s;padding:8px 16px}
 .btn-primary{background:var(--accent);color:var(--deep)}
-.btn-primary:hover{background:#16a34a;color:var(--deep);transform:translateY(-1px);box-shadow:0 4px 12px rgba(34,197,94,.3)}
+.btn-primary:hover{background:#dc2626;color:var(--deep);transform:translateY(-1px);box-shadow:0 4px 12px rgba(239,68,68,.3)}
 .btn-primary:active{transform:translateY(0)}
 .btn-primary:disabled{opacity:.6;cursor:not-allowed;transform:none;box-shadow:none}
 .btn-secondary{background:transparent;color:var(--mid);border:1.5px solid var(--mid)}
@@ -199,9 +199,9 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .b-promo,.badge-promo{background:var(--deep);color:var(--accent);border-color:var(--accent)}
 .badge-alta{background:#fef2f2;color:#dc2626;border-color:#fca5a5}
 .badge-media{background:var(--pending-bg);color:#b45309;border-color:var(--pending-bd)}
-.badge-baja{background:#f0fdf4;color:#16a34a;border-color:#86efac}
+.badge-baja{background:#fef2f2;color:#dc2626;border-color:#86efac}
 .st{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
-.st-track{background:rgba(34,197,94,.10);color:#16a34a}
+.st-track{background:rgba(239,68,68,.10);color:#dc2626}
 .st-behind{background:rgba(220,38,38,.10);color:#dc2626}
 .st-risk{background:rgba(202,138,4,.10);color:#b45309}
 
@@ -220,7 +220,7 @@ tbody tr.behind{background:rgba(234,88,12,.04)}
 tbody tr.risk{background:rgba(202,138,4,.04)}
 tbody tr.row-inactive{background:rgba(0,0,0,.03)}
 tbody tr.row-inactive td{color:var(--muted)}
-tbody tr.row-editing{background:rgba(34,197,94,.04);outline:2px solid rgba(34,197,94,.2);outline-offset:-2px}
+tbody tr.row-editing{background:rgba(239,68,68,.04);outline:2px solid rgba(239,68,68,.2);outline-offset:-2px}
 tbody td{padding:12px 16px;color:var(--muted);vertical-align:middle}
 tbody td.c{text-align:center}
 tbody td.n{color:var(--dark);font-weight:600}
@@ -247,7 +247,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .form-group{margin-bottom:16px}
 .form-label{display:block;font-size:12.5px;font-weight:600;color:var(--dark);margin-bottom:6px}
 .form-input{width:100%;padding:9px 13px;border:1px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--dark);outline:none;transition:border-color .15s,box-shadow .15s;background:white}
-.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,.15)}
+.form-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(239,68,68,.15)}
 .form-input.error{border-color:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.08)}
 .form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234b7c68' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:32px;cursor:pointer}
 .form-textarea{resize:vertical;min-height:80px}
@@ -258,7 +258,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 
 /* ═══ MULTI-SELECT ══════════════════════════════════════ */
 .ms-wrap{border:1px solid var(--border);border-radius:8px;overflow:hidden;transition:border-color .15s,box-shadow .15s}
-.ms-wrap:focus-within{border-color:var(--mid);box-shadow:0 0 0 3px rgba(0,108,73,.08)}
+.ms-wrap:focus-within{border-color:var(--mid);box-shadow:0 0 0 3px rgba(153,27,27,.08)}
 .ms-input-row{display:flex;flex-wrap:wrap;gap:5px;padding:7px 10px;background:white;cursor:text;min-height:40px;align-items:center}
 .ms-search{border:none;outline:none;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--dark);flex:1;min-width:80px;background:transparent;padding:2px 0}
 .ms-search::placeholder{color:#9ca3af}
@@ -308,20 +308,20 @@ tbody td.n{color:var(--dark);font-weight:600}
    HOME PAGE
 ════════════════════════════════════════════════════════ */
 .hero{background:var(--deep);border-radius:16px;padding:32px;margin-bottom:20px;display:grid;grid-template-columns:1fr auto;gap:28px;align-items:center;position:relative;overflow:hidden}
-.hero::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(34,197,94,.06);top:-80px;right:-40px;pointer-events:none}
+.hero::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(239,68,68,.06);top:-80px;right:-40px;pointer-events:none}
 .hero-eyebrow{font-size:11px;font-weight:600;color:var(--accent);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:8px;display:flex;align-items:center;gap:6px}
-.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(34,197,94,.7);animation:pulse 2s ease-in-out infinite}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px rgba(239,68,68,.7);animation:pulse 2s ease-in-out infinite}
 .hero-title{font-family:'Barlow Condensed',sans-serif;font-size:38px;font-weight:700;color:white;letter-spacing:-.5px;line-height:1.05;margin-bottom:8px}
 .hero-sub{font-size:14px;color:rgba(255,255,255,.5);margin-bottom:22px;line-height:1.5}
 .hero-sub strong{color:white}
 .hero-actions{display:flex;gap:10px;flex-wrap:wrap}
 .btn-hero-p{display:inline-flex;align-items:center;gap:7px;background:var(--accent);color:var(--deep);border:none;border-radius:9px;padding:9px 18px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:background .15s,transform .15s}
-.btn-hero-p:hover{background:#16a34a;transform:translateY(-1px)}
+.btn-hero-p:hover{background:#dc2626;transform:translateY(-1px)}
 .btn-hero-g{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.75);border:1px solid rgba(255,255,255,.12);border-radius:9px;padding:9px 16px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s}
 .btn-hero-g:hover{background:rgba(255,255,255,.14)}
-.dropzone{border:2px dashed rgba(34,197,94,.30);border-radius:14px;padding:22px 24px;text-align:center;cursor:pointer;width:220px;background:rgba(34,197,94,.04);transition:border-color .2s,background .2s;position:relative;z-index:1}
-.dropzone:hover,.dropzone.over{border-color:var(--accent);background:rgba(34,197,94,.10)}
-.dz-icon{color:rgba(34,197,94,.45);margin-bottom:8px}
+.dropzone{border:2px dashed rgba(239,68,68,.30);border-radius:14px;padding:22px 24px;text-align:center;cursor:pointer;width:220px;background:rgba(239,68,68,.04);transition:border-color .2s,background .2s;position:relative;z-index:1}
+.dropzone:hover,.dropzone.over{border-color:var(--accent);background:rgba(239,68,68,.10)}
+.dz-icon{color:rgba(239,68,68,.45);margin-bottom:8px}
 .dz-title{font-size:12.5px;font-weight:600;color:rgba(255,255,255,.7)}
 .dz-sub{font-size:11px;color:rgba(255,255,255,.3);margin-top:3px}
 .dz-fmt{display:inline-block;margin-top:8px;background:rgba(255,255,255,.07);border-radius:5px;padding:2px 10px;font-family:'DM Mono',monospace;font-size:10px;color:rgba(255,255,255,.35)}
@@ -334,7 +334,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .kpi-ico{width:38px;height:38px;border-radius:11px;background:var(--surface);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;color:var(--mid)}
 .kpi-ico.red{background:rgba(234,88,12,.08);border-color:rgba(234,88,12,.2);color:var(--alert)}
 .kpi-chip{font-size:11px;font-weight:600;padding:2px 9px;border-radius:999px;white-space:nowrap}
-.kpi-chip.pos{background:rgba(34,197,94,.10);color:#16a34a}
+.kpi-chip.pos{background:rgba(239,68,68,.10);color:#dc2626}
 .kpi-chip.warn{background:rgba(234,88,12,.09);color:var(--alert)}
 .kpi-chip.neu{background:rgba(0,0,0,.04);color:var(--muted)}
 .kpi-chip.blue{background:rgba(29,78,216,.09);color:#1d4ed8}
@@ -362,7 +362,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .search-ico{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
 .search-input{width:100%;padding:9px 36px;border:1.5px solid var(--border);border-radius:9px;font-family:'DM Sans',sans-serif;font-size:13.5px;color:var(--dark);background:white;outline:none;transition:border-color .2s,box-shadow .2s}
 .search-input::placeholder{color:#a0aec0}
-.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,.10)}
+.search-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(239,68,68,.10)}
 .search-clear{position:absolute;right:10px;top:50%;transform:translateY(-50%);width:18px;height:18px;border-radius:50%;border:none;background:var(--border);color:var(--muted);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:10px;font-weight:700}
 .search-clear.visible{display:flex}
 .search-clear:hover{background:var(--accent);color:white}
@@ -377,7 +377,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .cc-header{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}
 .cc-name{font-size:15px;font-weight:600;color:var(--dark);line-height:1.2}
 .status-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px}
-.status-dot.green{background:var(--accent);box-shadow:0 0 0 2px rgba(34,197,94,.2)}
+.status-dot.green{background:var(--accent);box-shadow:0 0 0 2px rgba(239,68,68,.2)}
 .status-dot.yellow{background:var(--warning);box-shadow:0 0 0 2px rgba(202,138,4,.2)}
 .status-dot.red{background:var(--alert);box-shadow:0 0 0 2px rgba(234,88,12,.2)}
 .card-vendor{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted)}
@@ -457,13 +457,13 @@ tbody td.n{color:var(--dark);font-weight:600}
    OBJETIVOS PAGE
 ════════════════════════════════════════════════════════ */
 .global-obj-card{background:var(--deep);border-radius:16px;padding:28px 32px;margin-bottom:24px;display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;position:relative;overflow:hidden}
-.global-obj-card::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(34,197,94,.06);top:-60px;right:-40px;pointer-events:none}
+.global-obj-card::before{content:'';position:absolute;width:200px;height:200px;border-radius:50%;background:rgba(239,68,68,.06);top:-60px;right:-40px;pointer-events:none}
 .gobj-label{font-size:11px;font-weight:600;color:rgba(255,255,255,.55);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:6px}
 .gobj-val{font-family:'Barlow Condensed',sans-serif;font-size:52px;font-weight:700;color:var(--accent);line-height:1}
 .gobj-sub{font-size:13px;color:rgba(255,255,255,.5);margin-top:4px}
 .gobj-toggle{display:flex;align-items:center;gap:0;background:rgba(255,255,255,.08);border-radius:8px;padding:3px}
 .gobj-tab{padding:6px 14px;border-radius:6px;border:none;background:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);transition:background .15s,color .15s}
-.gobj-tab.active{background:rgba(34,197,94,.18);color:var(--accent)}
+.gobj-tab.active{background:rgba(239,68,68,.18);color:var(--accent)}
 .obj-table-wrap{background:white;border:1px solid var(--border);border-radius:16px;overflow:hidden;margin-bottom:20px}
 .obj-editable{background:transparent;border:none;border-bottom:1.5px solid var(--accent);font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--mid);padding:2px 4px;outline:none;width:100px;text-align:right}
 .publish-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:16px 0}
@@ -471,7 +471,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .dirty-badge.visible{display:inline-flex;align-items:center;gap:5px}
 /* vendor view */
 .kpi-hero-tab{background:var(--deep);border-radius:16px;padding:32px;margin-bottom:18px;position:relative;overflow:hidden}
-.kpi-hero-tab::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(34,197,94,.06);top:-80px;right:-40px;pointer-events:none}
+.kpi-hero-tab::before{content:'';position:absolute;width:300px;height:300px;border-radius:50%;background:rgba(239,68,68,.06);top:-80px;right:-40px;pointer-events:none}
 .hero-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.6);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
 .hero-val{font-family:'Barlow Condensed',sans-serif;font-size:64px;font-weight:700;color:var(--accent);line-height:1;margin-bottom:6px}
 .hero-sub{font-size:14px;color:rgba(255,255,255,.7)}
@@ -545,7 +545,7 @@ tbody td.n{color:var(--dark);font-weight:600}
 .feed-producto{font-size:12px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .feed-estado-badge{font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap}
 .fst-pendiente{background:rgba(202,138,4,.10);color:#b45309}
-.fst-realizado{background:rgba(34,197,94,.10);color:#16a34a}
+.fst-realizado{background:rgba(239,68,68,.10);color:#dc2626}
 .fst-atrasado{background:rgba(220,38,38,.10);color:#dc2626}
 
 /* ════════════════════════════════════════════════════════
@@ -564,8 +564,8 @@ tbody td.n{color:var(--dark);font-weight:600}
 .promo-clients{display:flex;align-items:center;gap:5px;font-size:13px;font-weight:600;color:var(--muted);white-space:nowrap;padding-right:12px;border-right:1px solid var(--border)}
 .promo-badge{display:inline-flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700;padding:3px 9px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase}
 .promo-badge::before{content:'';width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.pb-activa{background:rgba(34,197,94,.12);color:#16a34a}
-.pb-activa::before{background:#16a34a}
+.pb-activa{background:rgba(239,68,68,.12);color:#dc2626}
+.pb-activa::before{background:#dc2626}
 .pb-proxima{background:rgba(59,130,246,.10);color:#1d4ed8}
 .pb-proxima::before{background:#3b82f6}
 .pb-finalizada{background:rgba(0,0,0,.05);color:#6b7280}
@@ -597,12 +597,12 @@ tbody td.n{color:var(--dark);font-weight:600}
    CONFIGURACION PAGE
 ════════════════════════════════════════════════════════ */
 .inline-input{border:1px solid var(--border);border-radius:6px;padding:5px 9px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;width:100%;min-width:80px;transition:border-color .15s}
-.inline-input:focus{border-color:var(--mid);box-shadow:0 0 0 3px rgba(0,108,73,.08)}
+.inline-input:focus{border-color:var(--mid);box-shadow:0 0 0 3px rgba(153,27,27,.08)}
 .inline-input.narrow{max-width:80px}
 .row-actions{display:flex;align-items:center;gap:4px}
 .confirm-row-btn{width:28px;height:28px;border:none;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;transition:background .15s}
-.confirm-row-btn.ok{background:rgba(34,197,94,.12);color:#16a34a}
-.confirm-row-btn.ok:hover{background:rgba(34,197,94,.22)}
+.confirm-row-btn.ok{background:rgba(239,68,68,.12);color:#dc2626}
+.confirm-row-btn.ok:hover{background:rgba(239,68,68,.22)}
 .confirm-row-btn.cancel{background:rgba(0,0,0,.05);color:var(--muted)}
 .confirm-row-btn.cancel:hover{background:rgba(0,0,0,.10)}
 .crit-list{display:flex;flex-direction:column;gap:8px}
@@ -619,11 +619,11 @@ tbody td.n{color:var(--dark);font-weight:600}
 .crit-desc{font-size:12px;color:var(--muted);margin-top:2px}
 .crit-right{display:flex;align-items:center;gap:14px;flex-shrink:0}
 .weight-input{width:60px;border:1px solid var(--border);border-radius:6px;padding:5px 8px;font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--dark);text-align:center;outline:none;transition:border-color .15s}
-.weight-input:focus{border-color:var(--mid);box-shadow:0 0 0 3px rgba(0,108,73,.08)}
+.weight-input:focus{border-color:var(--mid);box-shadow:0 0 0 3px rgba(153,27,27,.08)}
 .weight-label{font-size:11px;color:var(--muted);text-align:center;margin-top:2px}
 .save-bar{display:flex;align-items:center;justify-content:flex-end;gap:10px;margin-top:16px}
 .st-user{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px}
-.st-activo{background:rgba(34,197,94,.10);color:#16a34a}
+.st-activo{background:rgba(239,68,68,.10);color:#dc2626}
 .st-inactivo{background:rgba(0,0,0,.06);color:#6b7280}
 .role-badge{display:inline-block;font-size:10px;font-weight:700;padding:2px 8px;border-radius:999px;letter-spacing:.4px;text-transform:uppercase}
 .rb-admin{background:rgba(0,0,0,.05);color:var(--deep)}
@@ -666,28 +666,28 @@ tbody td.n{color:var(--dark);font-weight:600}
 #loginScreen{position:fixed;inset:0;z-index:9999;background:var(--deep);display:flex;align-items:center;justify-content:center;transition:opacity .5s ease;overflow:hidden}
 #loginScreen.fade-out{opacity:0;pointer-events:none}
 .login-blob{position:absolute;border-radius:50%;filter:blur(80px);opacity:.18;pointer-events:none}
-.login-blob-1{width:520px;height:520px;background:#22c55e;top:-120px;right:-80px;animation:lbDrift1 14s ease-in-out infinite alternate}
-.login-blob-2{width:320px;height:320px;background:#006c49;bottom:-60px;right:80px;animation:lbDrift2 18s ease-in-out infinite alternate}
-.login-blob-3{width:200px;height:200px;background:#22c55e;bottom:20%;left:5%;opacity:.08;animation:lbDrift3 22s ease-in-out infinite alternate}
-.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(34,197,94,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(34,197,94,.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.login-blob-1{width:520px;height:520px;background:#ef4444;top:-120px;right:-80px;animation:lbDrift1 14s ease-in-out infinite alternate}
+.login-blob-2{width:320px;height:320px;background:#991b1b;bottom:-60px;right:80px;animation:lbDrift2 18s ease-in-out infinite alternate}
+.login-blob-3{width:200px;height:200px;background:#ef4444;bottom:20%;left:5%;opacity:.08;animation:lbDrift3 22s ease-in-out infinite alternate}
+.login-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(239,68,68,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(239,68,68,.04) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
 @keyframes lbDrift1{from{transform:translate(0,0) scale(1)}to{transform:translate(-40px,30px) scale(1.08)}}
 @keyframes lbDrift2{from{transform:translate(0,0) scale(1)}to{transform:translate(20px,-40px) scale(.92)}}
 @keyframes lbDrift3{from{transform:translate(0,0)}to{transform:translate(30px,20px)}}
 .login-content{position:relative;z-index:2;animation:fadeUp .7s ease both}
 .login-box{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:44px 40px;width:100%;max-width:420px;backdrop-filter:blur(20px)}
-.login-logo{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#22c55e;letter-spacing:-1px;line-height:1;margin-bottom:4px}
+.login-logo{font-family:'Barlow Condensed',sans-serif;font-size:36px;font-weight:700;color:#ef4444;letter-spacing:-1px;line-height:1;margin-bottom:4px}
 .login-sub{font-size:11px;font-weight:600;color:rgba(255,255,255,.35);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:32px}
 .login-label{font-size:12px;font-weight:600;color:rgba(255,255,255,.55);margin-bottom:6px;letter-spacing:.3px}
 .login-input{width:100%;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);border-radius:10px;padding:12px 14px;color:white;font-family:'DM Sans',sans-serif;font-size:14px;outline:none;margin-bottom:14px;transition:border-color .15s}
 .login-input::placeholder{color:rgba(255,255,255,.28)}
-.login-input:focus{border-color:rgba(34,197,94,.5);background:rgba(255,255,255,.10)}
-.btn-login{width:100%;padding:13px;border-radius:10px;border:none;background:#22c55e;color:#012d1e;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:background .15s,transform .1s}
-.btn-login:hover{background:#16a34a;transform:translateY(-1px)}
+.login-input:focus{border-color:rgba(239,68,68,.5);background:rgba(255,255,255,.10)}
+.btn-login{width:100%;padding:13px;border-radius:10px;border:none;background:#ef4444;color:#012d1e;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-top:4px;transition:background .15s,transform .1s}
+.btn-login:hover{background:#dc2626;transform:translateY(-1px)}
 .login-divider{display:flex;align-items:center;gap:10px;margin:20px 0;color:rgba(255,255,255,.2);font-size:12px}
 .login-divider::before,.login-divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,.1)}
 .demo-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .btn-demo{padding:10px 8px;border-radius:9px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.04);color:rgba(255,255,255,.75);font-family:'DM Sans',sans-serif;font-size:12.5px;font-weight:600;cursor:pointer;transition:background .15s,border-color .15s;text-align:center}
-.btn-demo:hover{background:rgba(255,255,255,.10);border-color:rgba(34,197,94,.4);color:white}
+.btn-demo:hover{background:rgba(255,255,255,.10);border-color:rgba(239,68,68,.4);color:white}
 .btn-demo .demo-role{font-size:10px;font-weight:500;color:rgba(255,255,255,.4);display:block;margin-top:2px}
 .login-footer{text-align:center;margin-top:28px;font-size:12px;color:rgba(255,255,255,.2)}
 /* ════════════════════════════════════════════════════════
@@ -705,7 +705,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .p-sku{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);background:var(--surface);padding:2px 6px;border-radius:4px;display:inline-block}
 .price-val{font-family:'DM Mono',monospace;font-size:12px}
 .margin-val{font-size:12px;font-weight:600;color:var(--mid)}
-.b-activo{background:rgba(34,197,94,.10);color:#16a34a}
+.b-activo{background:rgba(239,68,68,.10);color:#dc2626}
 .b-disc{background:rgba(0,0,0,.06);color:var(--muted)}
 .b-rec{background:rgba(29,78,216,.09);color:#1d4ed8}
 .action-ico{width:30px;height:30px;border-radius:7px;border:none;background:none;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;color:var(--muted);transition:background .15s,color .15s}
@@ -730,7 +730,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .heredero-results{position:absolute;top:calc(100% + 4px);left:0;right:0;background:white;border:1px solid var(--border);border-radius:8px;box-shadow:0 8px 24px rgba(0,0,0,.08);z-index:100}
 .heredero-result-item{padding:9px 12px;font-size:12.5px;cursor:pointer;transition:background .12s;display:flex;justify-content:space-between}
 .heredero-result-item:hover{background:var(--surface)}
-.heredero-assigned{display:flex;align-items:center;gap:8px;background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:8px;padding:8px 12px}
+.heredero-assigned{display:flex;align-items:center;gap:8px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;padding:8px 12px}
 .heredero-assigned-name{font-size:13px;font-weight:600;color:var(--dark)}
 .btn-remove-heredero{background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;margin-left:auto}
 .btn-remove-heredero:hover{color:var(--alert)}
@@ -789,10 +789,10 @@ tbody tr.expanded-prod{background:var(--surface)}
 .preview-table tbody td{padding:9px 10px;border-bottom:1px solid var(--surface)}
 .preview-table tbody tr:last-child td{border-bottom:none}
 .price-old{color:var(--muted);text-decoration:line-through;font-family:'DM Mono',monospace;font-size:11px}
-.price-new.up{color:#16a34a;font-weight:700;font-family:'DM Mono',monospace}
+.price-new.up{color:#dc2626;font-weight:700;font-family:'DM Mono',monospace}
 .price-new.down{color:#dc2626;font-weight:700;font-family:'DM Mono',monospace}
 .change-badge{font-size:11px;font-weight:700;padding:2px 7px;border-radius:999px}
-.change-up{background:rgba(34,197,94,.10);color:#16a34a}
+.change-up{background:rgba(239,68,68,.10);color:#dc2626}
 .change-down{background:rgba(220,38,38,.10);color:#dc2626}
 /* upload modal */
 .upload-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:900;align-items:center;justify-content:center}
@@ -802,7 +802,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .upload-modal-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
 .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:28px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s}
 .upload-zone:hover,.upload-zone.over{border-color:var(--accent);background:var(--surface)}
-.upload-zone.done{border-color:var(--accent);background:rgba(34,197,94,.06)}
+.upload-zone.done{border-color:var(--accent);background:rgba(239,68,68,.06)}
 .upload-label{font-size:13.5px;font-weight:600;color:var(--dark);margin-top:10px}
 .upload-sub{font-size:12px;color:var(--muted);margin-top:4px}
 .upload-instruction{background:var(--surface);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--muted);margin-top:12px;text-align:left}
@@ -829,10 +829,10 @@ tbody tr.expanded-prod{background:var(--surface)}
 .meta-item svg{flex-shrink:0;color:var(--muted);opacity:.7}
 .meta-sep{width:3px;height:3px;border-radius:50%;background:var(--border)}
 .badge-estado{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px}
-.badge-estado.activo{background:rgba(34,197,94,.12);color:#16a34a}
+.badge-estado.activo{background:rgba(239,68,68,.12);color:#dc2626}
 .badge-estado-dot{width:5px;height:5px;border-radius:50%;background:currentColor}
 .salud-chip{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:999px}
-.salud-chip.green{background:rgba(34,197,94,.12);color:#16a34a}
+.salud-chip.green{background:rgba(239,68,68,.12);color:#dc2626}
 .salud-chip.yellow{background:rgba(202,138,4,.10);color:#b45309}
 .salud-chip.red{background:rgba(220,38,38,.10);color:#dc2626}
 .salud-label{font-size:12px;color:var(--muted)}
@@ -866,7 +866,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .td-precio{font-family:'DM Mono',monospace;font-size:12.5px;color:var(--dark)}
 .sug-badge{display:inline-flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;padding:3px 10px;border-radius:999px;letter-spacing:.3px;white-space:nowrap;transition:all .25s ease}
 .sug-pendiente{background:rgba(202,138,4,.12);color:#b45309}
-.sug-realizado{background:rgba(34,197,94,.12);color:#16a34a}
+.sug-realizado{background:rgba(239,68,68,.12);color:#dc2626}
 .sug-pospuesto{background:rgba(29,78,216,.10);color:#1d4ed8}
 .sug-descartado{background:rgba(0,0,0,.06);color:var(--muted)}
 
@@ -901,7 +901,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .rec-item.crosssell-item{border-left-color:#1d4ed8}
 .rec-item.upsell-item{border-left-color:#7c3aed}
 .rec-item.dragging{opacity:.6;transform:scale(1.02);box-shadow:0 12px 32px rgba(0,0,0,.13)}
-.rec-item.estado-realizado{background:rgba(34,197,94,.04);border-left-color:#16a34a;border-color:rgba(34,197,94,.22)}
+.rec-item.estado-realizado{background:rgba(239,68,68,.04);border-left-color:#dc2626;border-color:rgba(239,68,68,.22)}
 .rec-item.estado-realizado .rec-item-actions{display:none}
 .rec-item.estado-realizado .realizado-badge{display:inline-flex}
 .rec-item.fading{animation:itemFadeOut .3s ease forwards;pointer-events:none}
@@ -924,7 +924,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .rec-item-header-left{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .rec-item-ratio,.rec-item-ref{font-family:'DM Mono',monospace;font-size:11px;font-weight:500;color:var(--muted)}
 .gap-accent{color:var(--accent);font-weight:700}
-.satisfied-line{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#16a34a;margin-top:5px}
+.satisfied-line{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:600;color:#dc2626;margin-top:5px}
 
 /* Reorden qty panel */
 .reorden-qty{text-align:center;flex-shrink:0;padding-left:20px;min-width:90px}
@@ -932,7 +932,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .reorden-qty-label{font-size:10px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-top:2px}
 
 /* Realizado badge */
-.realizado-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#16a34a;background:rgba(34,197,94,.10);padding:3px 10px;border-radius:999px;margin-top:8px;width:fit-content}
+.realizado-badge{display:none;align-items:center;gap:5px;font-size:11px;font-weight:700;color:#dc2626;background:rgba(239,68,68,.10);padding:3px 10px;border-radius:999px;margin-top:8px;width:fit-content}
 
 /* Action buttons row */
 .rec-item-actions{display:flex;align-items:center;gap:7px;margin-top:12px;flex-wrap:wrap}
@@ -970,7 +970,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .rec-note-section{overflow:hidden;max-height:0;transition:max-height .22s ease,margin-top .22s ease}
 .rec-note-section.open{max-height:280px;margin-top:10px}
 .rec-note-textarea{width:100%;min-height:70px;resize:vertical;border:1.5px solid var(--border);border-radius:8px;padding:9px 12px;font-family:'DM Sans',sans-serif;font-size:13px;color:var(--dark);outline:none;transition:border-color .2s,box-shadow .2s}
-.rec-note-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,.08)}
+.rec-note-textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(239,68,68,.08)}
 .rec-note-btns{display:flex;gap:7px;margin-top:7px}
 .rec-saved-note{display:none;font-size:12.5px;color:var(--dark);line-height:1.55;background:var(--surface);border-radius:8px;padding:10px 12px;margin-top:10px}
 .rec-saved-note.visible{display:block}
@@ -989,7 +989,7 @@ tbody tr.expanded-prod{background:var(--surface)}
 .modal-field{margin-bottom:14px}
 .modal-label{font-size:12px;font-weight:600;color:var(--dark);margin-bottom:5px;display:block}
 .modal-input{width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:14px;color:var(--dark);outline:none;transition:border-color .2s,box-shadow .2s}
-.modal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(34,197,94,.10)}
+.modal-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(239,68,68,.10)}
 .modal-input.error{border-color:#dc2626;box-shadow:0 0 0 3px rgba(220,38,38,.08)}
 .modal-field-error{font-size:11px;color:#dc2626;margin-top:4px;display:none}
 .modal-field-error.visible{display:block}
@@ -1301,7 +1301,7 @@ tbody tr.expanded-prod{background:var(--surface)}
         <div class="table-card"><table><thead><tr><th>Cliente</th><th>Acción detectada</th><th class="c">Potencial</th><th class="c">Urgencia</th></tr></thead>
         <tbody>
           <tr onclick="openCliente(1)" style="cursor:pointer"><td class="n"><div style="display:flex;align-items:center;gap:8px"><div class="row-av">MC</div>Mercado Central SA</div></td><td><span class="badge b-reorden" style="background:rgba(202,138,4,.12);color:var(--warning)">Reorden</span> CAR-22</td><td class="c" style="font-family:'DM Mono',monospace;font-weight:600">$12.400</td><td class="c"><span class="st st-behind">Urgente</span></td></tr>
-          <tr onclick="openCliente(2)" style="cursor:pointer"><td class="n"><div style="display:flex;align-items:center;gap:8px"><div class="row-av">EG</div>El Gaucho SRL</div></td><td><span class="badge b-cross" style="background:rgba(34,197,94,.10);color:#16a34a">Cross-sell</span> ENV-99</td><td class="c" style="font-family:'DM Mono',monospace;font-weight:600">$89.000</td><td class="c"><span class="st st-track">Normal</span></td></tr>
+          <tr onclick="openCliente(2)" style="cursor:pointer"><td class="n"><div style="display:flex;align-items:center;gap:8px"><div class="row-av">EG</div>El Gaucho SRL</div></td><td><span class="badge b-cross" style="background:rgba(239,68,68,.10);color:#dc2626">Cross-sell</span> ENV-99</td><td class="c" style="font-family:'DM Mono',monospace;font-weight:600">$89.000</td><td class="c"><span class="st st-track">Normal</span></td></tr>
           <tr onclick="openCliente(3)" style="cursor:pointer"><td class="n"><div style="display:flex;align-items:center;gap:8px"><div class="row-av">DS</div>Distribuidora Sur</div></td><td><span class="badge b-reorden" style="background:rgba(202,138,4,.12);color:var(--warning)">Reorden</span> INS-01</td><td class="c" style="font-family:'DM Mono',monospace;font-weight:600">$4.200</td><td class="c"><span class="st st-track">Normal</span></td></tr>
         </tbody></table></div>
         <div class="chart-card" style="margin-top:20px">
@@ -1661,7 +1661,7 @@ tbody tr.expanded-prod{background:var(--surface)}
             <div class="chart-card nb" style="border:none;padding:0;box-shadow:none">
               <div id="promoImpactRoot" style="width:100%;height:240px"></div>
               <div style="display:flex;align-items:center;gap:14px;margin-top:8px;font-size:11.5px;color:var(--muted)">
-                <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#22c55e;display:inline-block"></span>Con promo activa</span>
+                <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#ef4444;display:inline-block"></span>Con promo activa</span>
                 <span style="display:flex;align-items:center;gap:5px"><span style="width:10px;height:10px;border-radius:2px;background:#94a3b8;display:inline-block"></span>Sin promo</span>
               </div>
             </div>
@@ -2709,20 +2709,20 @@ const CLIENT_DETAILS = {
                {tipo:'compra',titulo:'Pedido #4790 · $22.800',sub:'CAR-467 ×4, CAR-901 ×1, INS-01 ×10',fecha:'18/03'},
                {tipo:'promo',titulo:'Promo Cuchillos Abril aplicada',sub:'Descuento del 12% en próximo pedido activado',fecha:'01/04'}],
      ops:[{tipo:'reorden',nombre:'CAR-22 Cuchillo Deshuesador',desc:'Cadencia vencida · Última compra: 02/04',val:'$12.400',color:'#ea580c'},
-          {tipo:'cross',nombre:'CAR-901 Set Pro 6 pzas',desc:'Cross-sell detectado · Compra cuchillos sin set',val:'$68.000',color:'#22c55e'},
+          {tipo:'cross',nombre:'CAR-901 Set Pro 6 pzas',desc:'Cross-sell detectado · Compra cuchillos sin set',val:'$68.000',color:'#ef4444'},
           {tipo:'upsell',nombre:'ENV-99 Embutidora Manual 5 Kg',desc:'Upsell: cliente compra tripas pero no embutidora',val:'$89.000',color:'#7c3aed'}],
      recs:[{score:92,nombre:'CAR-22 Cuchillo Deshuesador',razon:'Reorden vencida hace 12 días',val:'$12.400'},{score:85,nombre:'CHA-44 Chaira 30cm',razon:'Ratio cross-sell: compra cuchillos sin chaira',val:'$8.900'},{score:71,nombre:'INS-01 Tripa Natural',razon:'Promo activa + historial de compra regular',val:'$4.200'}],
      trendData:[{m:'Oct',v:18},{m:'Nov',v:24},{m:'Dic',v:9},{m:'Ene',v:22},{m:'Feb',v:28},{m:'Mar',v:18}],
-     donutData:[{name:'Cuchillería',value:58,color:'#22c55e'},{name:'Insumos',value:22,color:'#ea580c'},{name:'Herramientas',value:14,color:'#7c3aed'},{name:'Embalaje',value:6,color:'#ca8a04'}]},
+     donutData:[{name:'Cuchillería',value:58,color:'#ef4444'},{name:'Insumos',value:22,color:'#ea580c'},{name:'Herramientas',value:14,color:'#7c3aed'},{name:'Embalaje',value:6,color:'#ca8a04'}]},
   2:{stats:[{v:'$98.400',l:'Comprado YTD',t:'+8% vs año ant.',up:true},{v:'8',l:'Órdenes en 2026',t:'Último: hoy',up:true},{v:'$12.300',l:'Ticket promedio',t:'−3% vs media',up:false},{v:'2',l:'Oportunidades',t:'$24.800 potencial',up:true}],
      timeline:[{tipo:'compra',titulo:'Pedido #4835 · $32.100',sub:'CAR-467 ×6, HER-22 ×4, INS-02 ×8',fecha:'02/04'},
                {tipo:'promo',titulo:'Promo Cuchillos Abril activada',sub:'Cliente eligió 3 productos del bundle',fecha:'01/04'},
                {tipo:'visita',titulo:'Visita presencial · Lucas R.',sub:'Muy receptivo. Pidió cotización embutidoras.',fecha:'22/03'},
                {tipo:'compra',titulo:'Pedido #4802 · $28.600',sub:'CAR-22 ×8, INS-04 ×6, EMB-01 ×5',fecha:'10/03'}],
-     ops:[{tipo:'cross',nombre:'ENV-99 Embutidora Manual',desc:'Compra tripas regularmente — sin embutidora',val:'$89.000',color:'#22c55e'},{tipo:'reorden',nombre:'INS-02 Tripa Colágeno',desc:'Cadencia: cada 21 días. Próxima: en 3 días.',val:'$5.800',color:'#ea580c'}],
+     ops:[{tipo:'cross',nombre:'ENV-99 Embutidora Manual',desc:'Compra tripas regularmente — sin embutidora',val:'$89.000',color:'#ef4444'},{tipo:'reorden',nombre:'INS-02 Tripa Colágeno',desc:'Cadencia: cada 21 días. Próxima: en 3 días.',val:'$5.800',color:'#ea580c'}],
      recs:[{score:88,nombre:'ENV-99 Embutidora Manual 5 Kg',razon:'Cross-sell: alta compra de tripas',val:'$89.000'},{score:76,nombre:'INS-04 Condimento Chorizo',razon:'Ratio histórico con tripa colágeno',val:'$2.900'},{score:65,nombre:'CAR-901 Set Cuchillos Pro',razon:'Upgrade sugerido desde CAR-467',val:'$68.000'}],
      trendData:[{m:'Oct',v:12},{m:'Nov',v:18},{m:'Dic',v:8},{m:'Ene',v:24},{m:'Feb',v:20},{m:'Mar',v:32}],
-     donutData:[{name:'Cuchillería',value:44,color:'#22c55e'},{name:'Insumos',value:36,color:'#ea580c'},{name:'Herramientas',value:14,color:'#7c3aed'},{name:'Embalaje',value:6,color:'#ca8a04'}]},
+     donutData:[{name:'Cuchillería',value:44,color:'#ef4444'},{name:'Insumos',value:36,color:'#ea580c'},{name:'Herramientas',value:14,color:'#7c3aed'},{name:'Embalaje',value:6,color:'#ca8a04'}]},
   3:{stats:[{v:'$42.100',l:'Comprado YTD',t:'−5% vs año ant.',up:false},{v:'5',l:'Órdenes en 2026',t:'Último: hace 5 días',up:false},{v:'$8.420',l:'Ticket promedio',t:'−12% vs media',up:false},{v:'1',l:'Oportunidades',t:'$9.800 potencial',up:false}],
      timeline:[{tipo:'alerta',titulo:'Declive detectado: −15% vs Q1 2025',sub:'Motor detectó caída sostenida 3 meses',fecha:'30/03'},
                {tipo:'compra',titulo:'Pedido #4815 · $9.800',sub:'INS-01 ×12, EMB-01 ×8',fecha:'28/03'},
@@ -2736,10 +2736,10 @@ const CLIENT_DETAILS = {
                {tipo:'visita',titulo:'Visita presencial · Marcos H.',sub:'Renovación contrato anual de herramientas.',fecha:'25/03'},
                {tipo:'compra',titulo:'Pedido #4801 · $38.200',sub:'CAR-901 ×1, CAR-467 ×6, HER-22 ×3',fecha:'12/03'},
                {tipo:'promo',titulo:'Promo Cuchillos Abril',sub:'Eligible. No activada aún.',fecha:'01/04'}],
-     ops:[{tipo:'upsell',nombre:'MOL-10 Molino Eléctrico',desc:'Compra herramientas regularmente — molino complementario',val:'$142.000',color:'#7c3aed'},{tipo:'cross',nombre:'INS-01 Tripa Natural',desc:'Frigorífico sin insumos de embutido',val:'$4.200',color:'#22c55e'}],
+     ops:[{tipo:'upsell',nombre:'MOL-10 Molino Eléctrico',desc:'Compra herramientas regularmente — molino complementario',val:'$142.000',color:'#7c3aed'},{tipo:'cross',nombre:'INS-01 Tripa Natural',desc:'Frigorífico sin insumos de embutido',val:'$4.200',color:'#ef4444'}],
      recs:[{score:90,nombre:'MOL-10 Molino Eléctrico 10 Kg',razon:'Upsell: perfil de uso compatible',val:'$142.000'},{score:74,nombre:'CAR-901 Set Cuchillos Pro',razon:'Usa cuchillos individuales — upgrade natural',val:'$68.000'},{score:61,nombre:'INS-01 Tripa Natural 5m',razon:'Primer pedido de insumos — potencial cross-sell',val:'$4.200'}],
      trendData:[{m:'Oct',v:28},{m:'Nov',v:32},{m:'Dic',v:22},{m:'Ene',v:38},{m:'Feb',v:35},{m:'Mar',v:42}],
-     donutData:[{name:'Herramientas',value:48,color:'#7c3aed'},{name:'Cuchillería',value:38,color:'#22c55e'},{name:'Maquinaria',value:14,color:'#1d4ed8'}]},
+     donutData:[{name:'Herramientas',value:48,color:'#7c3aed'},{name:'Cuchillería',value:38,color:'#ef4444'},{name:'Maquinaria',value:14,color:'#1d4ed8'}]},
   5:{stats:[{v:'$28.800',l:'Comprado YTD',t:'−8% vs año ant.',up:false},{v:'4',l:'Órdenes en 2026',t:'Último: hace 8 días',up:false},{v:'$7.200',l:'Ticket promedio',t:'−18% vs media',up:false},{v:'1',l:'Oportunidades',t:'$7.200 potencial',up:false}],
      timeline:[{tipo:'alerta',titulo:'Declive detectado: −22% vs Q1 2025',sub:'Motor marcó cliente en riesgo de fuga',fecha:'28/03'},
                {tipo:'compra',titulo:'Pedido #4808 · $7.200',sub:'INS-04 ×4, EMB-02 ×6',fecha:'25/03'},
@@ -2757,13 +2757,13 @@ const CLIENT_DETAILS = {
      ops:[{tipo:'cross',nombre:'ENV-202 Embutidora Eléctrica',desc:'Gran consumidor de insumos — embutidora eléctr. coherente',val:'$185.000',color:'#1d4ed8'},{tipo:'reorden',nombre:'INS-03 Sal Industrial',desc:'Cadencia 30 días. Vencida en 2 días.',val:'$3.100',color:'#ea580c'}],
      recs:[{score:86,nombre:'ENV-202 Embutidora Eléctrica 10 Kg',razon:'Perfil de alto volumen de insumos',val:'$185.000'},{score:78,nombre:'INS-01 Tripa Natural',razon:'Compra condimento sin tripa natural',val:'$4.200'},{score:63,nombre:'ENV-99 Embutidora Manual 5 Kg',razon:'Alternativa accesible a ENV-202',val:'$89.000'}],
      trendData:[{m:'Oct',v:18},{m:'Nov',v:22},{m:'Dic',v:14},{m:'Ene',v:25},{m:'Feb',v:22},{m:'Mar',v:24}],
-     donutData:[{name:'Insumos',value:65,color:'#ea580c'},{name:'Embalaje',value:25,color:'#ca8a04'},{name:'Cuchillería',value:10,color:'#22c55e'}]},
+     donutData:[{name:'Insumos',value:65,color:'#ea580c'},{name:'Embalaje',value:25,color:'#ca8a04'},{name:'Cuchillería',value:10,color:'#ef4444'}]},
   7:{stats:[{v:'$31.200',l:'Comprado YTD',t:'−18% vs año ant.',up:false},{v:'4',l:'Órdenes en 2026',t:'Último: hace 4 días',up:false},{v:'$7.800',l:'Ticket promedio',t:'−14% vs media',up:false},{v:'2',l:'Oportunidades',t:'$13.000 potencial',up:false}],
      timeline:[{tipo:'alerta',titulo:'Declive detectado: −18% vs Q1 2025',sub:'Motor detectó caída + baja frecuencia de compra',fecha:'29/03'},
                {tipo:'compra',titulo:'Pedido #4816 · $15.600',sub:'EMB-01 ×8, INS-02 ×4',fecha:'29/03'},
                {tipo:'visita',titulo:'Visita presencial · Camila N.',sub:'Sin contacto 3 semanas. Dejar mensaje.',fecha:'08/03'},
                {tipo:'compra',titulo:'Pedido #4782 · $9.800',sub:'EMB-02 ×10, INS-01 ×6',fecha:'01/03'}],
-     ops:[{tipo:'cross',nombre:'CAR-22 Cuchillo Deshuesador',desc:'Embalaje sin cuchillería — patrón inusual',val:'$12.400',color:'#22c55e'},{tipo:'reorden',nombre:'INS-02 Tripa Colágeno',desc:'Compra irregular. Reorden pendiente.',val:'$5.800',color:'#ea580c'}],
+     ops:[{tipo:'cross',nombre:'CAR-22 Cuchillo Deshuesador',desc:'Embalaje sin cuchillería — patrón inusual',val:'$12.400',color:'#ef4444'},{tipo:'reorden',nombre:'INS-02 Tripa Colágeno',desc:'Compra irregular. Reorden pendiente.',val:'$5.800',color:'#ea580c'}],
      recs:[{score:70,nombre:'CAR-22 Cuchillo Deshuesador',razon:'Cross-sell: solo compra embalaje e insumos',val:'$12.400'},{score:58,nombre:'INS-02 Tripa Colágeno',razon:'Reorden: última compra hace 30 días',val:'$5.800'}],
      trendData:[{m:'Oct',v:12},{m:'Nov',v:10},{m:'Dic',v:7},{m:'Ene',v:9},{m:'Feb',v:8},{m:'Mar',v:16}],
      donutData:[{name:'Embalaje',value:58,color:'#ca8a04'},{name:'Insumos',value:32,color:'#ea580c'},{name:'Maquinaria',value:10,color:'#1d4ed8'}]},
@@ -3082,7 +3082,7 @@ function initObjVendorView(factor) {
 
 function renderObjFamilyGrid(factor, container) {
   const fams = [
-    {n:'Cuchillería',real:42,obj:55,color:'#22c55e'},
+    {n:'Cuchillería',real:42,obj:55,color:'#ef4444'},
     {n:'Maquinaria',real:8,obj:18,color:'#1d4ed8'},
     {n:'Herramientas',real:15,obj:20,color:'#7c3aed'},
     {n:'Insumos',real:28,obj:35,color:'#ea580c'},
@@ -3110,7 +3110,7 @@ function initVendedores() {
 function progressRing(pct, estado) {
   const r=42, C=2*Math.PI*r;
   const filled=Math.min(pct/100,1)*C;
-  const color = estado==='track'?'#22c55e':estado==='behind'?'#dc2626':'#ca8a04';
+  const color = estado==='track'?'#ef4444':estado==='behind'?'#dc2626':'#ca8a04';
   return `<svg width="100" height="100" viewBox="0 0 100 100">
     <circle cx="50" cy="50" r="${r}" fill="none" stroke="var(--border)" stroke-width="9"/>
     <circle cx="50" cy="50" r="${r}" fill="none" stroke="${color}" stroke-width="9"
@@ -4262,8 +4262,8 @@ const { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend,
 window._chartRoots = {};
 
 const FAMILIAS    = ['Cuchillería','Maquinaria','Herramientas','Insumos','Embalaje'];
-const FAM_COLORS  = { Cuchillería:'#22c55e', Maquinaria:'#1d4ed8', Herramientas:'#7c3aed', Insumos:'#ea580c', Embalaje:'#ca8a04' };
-const TIP_STYLE   = { background:'#064e3b', border:'none', borderRadius:10, color:'white', fontSize:12, fontFamily:'DM Sans', padding:'10px 14px', boxShadow:'0 8px 24px rgba(0,0,0,0.2)' };
+const FAM_COLORS  = { Cuchillería:'#ef4444', Maquinaria:'#1d4ed8', Herramientas:'#7c3aed', Insumos:'#ea580c', Embalaje:'#ca8a04' };
+const TIP_STYLE   = { background:'#7f1d1d', border:'none', borderRadius:10, color:'white', fontSize:12, fontFamily:'DM Sans', padding:'10px 14px', boxShadow:'0 8px 24px rgba(0,0,0,0.2)' };
 
 const BASE_6M = [
   { mes:'Oct', Cuchillería:240, Maquinaria:45, Herramientas:85, Insumos:160, Embalaje:120 },
@@ -4297,14 +4297,14 @@ function scaleSalesData(factor) {
 }
 
 const DONUT_KPI = [
-  { name:'Activos',   value:68, color:'#22c55e', count:6 },
+  { name:'Activos',   value:68, color:'#ef4444', count:6 },
   { name:'En Riesgo', value:18, color:'#ca8a04', count:2 },
   { name:'Perdidos',  value:9,  color:'#ea580c', count:1 },
   { name:'Overdue',   value:5,  color:'#9ca3af', count:0 },
 ];
 const DONUT_VEND = {
-  1:[{name:'Activos',value:67,color:'#22c55e',count:8},{name:'En Riesgo',value:25,color:'#ca8a04',count:3},{name:'Perdidos',value:8,color:'#ea580c',count:1}],
-  3:[{name:'Activos',value:40,color:'#22c55e',count:5},{name:'En Riesgo',value:33,color:'#ca8a04',count:4},{name:'Perdidos',value:20,color:'#ea580c',count:2},{name:'Overdue',value:7,color:'#9ca3af',count:1}],
+  1:[{name:'Activos',value:67,color:'#ef4444',count:8},{name:'En Riesgo',value:25,color:'#ca8a04',count:3},{name:'Perdidos',value:8,color:'#ea580c',count:1}],
+  3:[{name:'Activos',value:40,color:'#ef4444',count:5},{name:'En Riesgo',value:33,color:'#ca8a04',count:4},{name:'Perdidos',value:20,color:'#ea580c',count:2},{name:'Overdue',value:7,color:'#9ca3af',count:1}],
 };
 const OBJ_LINE_DATA = {
   '3m': [{ m:'Ene',real:195,obj:240 },{ m:'Feb',real:228,obj:255 },{ m:'Mar',real:285,obj:300 }],
@@ -4317,7 +4317,7 @@ function SalesBarChart({ data, hidden, onToggle }) {
     if (!active || !payload?.length) return null;
     return (
       <div style={TIP_STYLE}>
-        <div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>
+        <div style={{fontWeight:700,marginBottom:6,color:'#ef4444',fontSize:13}}>{label}</div>
         {payload.map(p=><div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
           <div style={{width:8,height:8,borderRadius:2,background:p.fill,flexShrink:0}}/>
           <span style={{color:'rgba(255,255,255,0.7)'}}>{p.dataKey}:</span>
@@ -4342,7 +4342,7 @@ function SalesBarChart({ data, hidden, onToggle }) {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false}/>
         <XAxis dataKey="mes" tick={{fontSize:11,fill:'#6b7a8d',fontFamily:'DM Sans'}} axisLine={false} tickLine={false}/>
         <YAxis tick={{fontSize:11,fill:'#6b7a8d',fontFamily:'DM Sans'}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}k`}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Legend content={renderLegend}/>
         {FAMILIAS.map(f=><Bar key={f} dataKey={f} stackId="a" fill={FAM_COLORS[f]} hide={!!hidden[f]} radius={f==='Embalaje'?[4,4,0,0]:[0,0,0,0]} isAnimationActive animationDuration={600}/>)}
       </BarChart>
@@ -4435,7 +4435,7 @@ function ObjLineApp({ period, factor }) {
     if (!active || !payload?.length) return null;
     return (
       <div style={TIP_STYLE}>
-        <div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>
+        <div style={{fontWeight:700,marginBottom:6,color:'#ef4444',fontSize:13}}>{label}</div>
         {payload.map(p=><div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
           <div style={{width:8,height:8,borderRadius:'50%',background:p.color,flexShrink:0}}/>
           <span style={{color:'rgba(255,255,255,0.75)'}}>{p.dataKey==='real'?'Real':'Objetivo'}:</span>
@@ -4451,8 +4451,8 @@ function ObjLineApp({ period, factor }) {
         <XAxis dataKey="m" tick={{fontSize:11,fill:'#6b7a8d',fontFamily:'DM Sans'}} axisLine={false} tickLine={false}/>
         <YAxis tick={{fontSize:11,fill:'#6b7a8d',fontFamily:'DM Sans'}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}k`}/>
         <Tooltip content={<CustomTooltip/>}/>
-        <Line type="monotone" dataKey="real" stroke="#22c55e" strokeWidth={2.5} dot={{r:4,fill:'#22c55e'}} activeDot={{r:6}} animationDuration={700}/>
-        <Line type="monotone" dataKey="obj"  stroke="#006c49" strokeWidth={2} strokeDasharray="5 4" dot={false} animationDuration={700}/>
+        <Line type="monotone" dataKey="real" stroke="#ef4444" strokeWidth={2.5} dot={{r:4,fill:'#ef4444'}} activeDot={{r:6}} animationDuration={700}/>
+        <Line type="monotone" dataKey="obj"  stroke="#991b1b" strokeWidth={2} strokeDasharray="5 4" dot={false} animationDuration={700}/>
       </LineChart>
     </ResponsiveContainer>
   );
@@ -4501,7 +4501,7 @@ function HomeWeeklyChart() {
     if (!active || !payload?.length) return null;
     return (
       <div style={TIP_STYLE}>
-        <div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div>
+        <div style={{fontWeight:700,marginBottom:6,color:'#ef4444',fontSize:13}}>{label}</div>
         {payload.map(p=>(
           <div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginBottom:2}}>
             <div style={{width:8,height:8,borderRadius:'50%',background:p.color,flexShrink:0}}/>
@@ -4520,7 +4520,7 @@ function HomeWeeklyChart() {
         <YAxis tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
         <Tooltip content={<CustomTooltip/>}/>
         <Line type="monotone" dataKey="ops" name="Oportunidades" stroke="#1d4ed8" strokeWidth={2} dot={{r:3,fill:'#1d4ed8'}} animationDuration={700}/>
-        <Line type="monotone" dataKey="acc" name="Acciones" stroke="#22c55e" strokeWidth={2.5} dot={{r:3,fill:'#22c55e'}} animationDuration={700}/>
+        <Line type="monotone" dataKey="acc" name="Acciones" stroke="#ef4444" strokeWidth={2.5} dot={{r:3,fill:'#ef4444'}} animationDuration={700}/>
       </LineChart>
     </ResponsiveContainer>
   );
@@ -4530,7 +4530,7 @@ function HomeRankChart() {
   const sorted = [...HOME_RANK].sort((a,b)=>b.conversion-a.conversion);
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#22c55e',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>Conversión: <span style={{fontWeight:700,color:'white'}}>{payload[0]?.value}%</span></div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#ef4444',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>Conversión: <span style={{fontWeight:700,color:'white'}}>{payload[0]?.value}%</span></div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4538,9 +4538,9 @@ function HomeRankChart() {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false}/>
         <XAxis type="number" domain={[0,100]} tick={{fontSize:10,fill:'#6b7a8d'}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/>
         <YAxis type="category" dataKey="nombre" tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false} width={52}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey="conversion" radius={[0,4,4,0]} animationDuration={600}>
-          {sorted.map((d,i)=><Cell key={i} fill={d.conversion>=70?'#22c55e':d.conversion>=55?'#ca8a04':'#ea580c'}/>)}
+          {sorted.map((d,i)=><Cell key={i} fill={d.conversion>=70?'#ef4444':d.conversion>=55?'#ca8a04':'#ea580c'}/>)}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -4561,12 +4561,12 @@ window.mountHomeCharts = function() {
 ══════════════════════════════════════════════════════ */
 const CLI_ALERT_DATA = [
   {tipo:'Declive',    count:3, fill:'#ea580c'},
-  {tipo:'Reorden',    count:5, fill:'#22c55e'},
+  {tipo:'Reorden',    count:5, fill:'#ef4444'},
   {tipo:'Cross-sell', count:4, fill:'#1d4ed8'},
   {tipo:'Up-sell',    count:2, fill:'#7c3aed'},
 ];
 const CLI_ESTADO_DATA = [
-  {name:'Sano',      value:4, color:'#22c55e', count:4},
+  {name:'Sano',      value:4, color:'#ef4444', count:4},
   {name:'En riesgo', value:3, color:'#ca8a04', count:3},
   {name:'Crítico',   value:2, color:'#ea580c', count:2},
 ];
@@ -4574,7 +4574,7 @@ const CLI_ESTADO_DATA = [
 function CliBarChart() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#22c55e',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} cliente(s)</div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#ef4444',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} cliente(s)</div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4582,7 +4582,7 @@ function CliBarChart() {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false}/>
         <XAxis dataKey="tipo" tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
         <YAxis tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey="count" radius={[4,4,0,0]} animationDuration={600}>
           {CLI_ALERT_DATA.map((d,i)=><Cell key={i} fill={d.fill}/>)}
         </Bar>
@@ -4632,12 +4632,12 @@ function KPITrendChart({ view }) {
   const data   = KPI_TREND_DATA[view] || KPI_TREND_DATA.conversion;
   const isPct  = view === 'conversion';
   const isCurr = view === 'ticket';
-  const color  = view === 'conversion' ? '#22c55e' : view === 'ticket' ? '#1d4ed8' : '#7c3aed';
+  const color  = view === 'conversion' ? '#ef4444' : view === 'ticket' ? '#1d4ed8' : '#7c3aed';
   const fmt    = v => isCurr ? '$' + v.toLocaleString('es-AR') : isPct ? v + '%' : v;
 
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,marginBottom:6,color:'#22c55e',fontSize:13}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{fmt(payload[0]?.value)}</div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,marginBottom:6,color:'#ef4444',fontSize:13}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{fmt(payload[0]?.value)}</div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4672,7 +4672,7 @@ const OBJ_ADMIN_RANK = [
   {nombre:'Patri. L.', pct:72, estado:'risk'},
 ];
 const OBJ_ADMIN_DONUT = [
-  {name:'En objetivo', value:3, color:'#22c55e'},
+  {name:'En objetivo', value:3, color:'#ef4444'},
   {name:'En riesgo',   value:2, color:'#ca8a04'},
   {name:'Atrasado',    value:2, color:'#ea580c'},
 ];
@@ -4682,7 +4682,7 @@ function ObjAdminBarChart() {
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     const pct = payload[0]?.value;
-    const c = pct>=80?'#22c55e':pct>=65?'#ca8a04':'#ea580c';
+    const c = pct>=80?'#ef4444':pct>=65?'#ca8a04':'#ea580c';
     return <div style={TIP_STYLE}><div style={{fontWeight:700,color:c,marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{pct}% del objetivo</div></div>;
   };
   return (
@@ -4691,9 +4691,9 @@ function ObjAdminBarChart() {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false}/>
         <XAxis type="number" domain={[0,100]} tick={{fontSize:10,fill:'#6b7a8d'}} axisLine={false} tickLine={false} tickFormatter={v=>`${v}%`}/>
         <YAxis type="category" dataKey="nombre" tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false} width={58}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey="pct" radius={[0,4,4,0]} animationDuration={600}>
-          {sorted.map((d,i)=><Cell key={i} fill={d.pct>=80?'#22c55e':d.pct>=65?'#ca8a04':'#ea580c'}/>)}
+          {sorted.map((d,i)=><Cell key={i} fill={d.pct>=80?'#ef4444':d.pct>=65?'#ca8a04':'#ea580c'}/>)}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -4732,11 +4732,11 @@ window._vendRankMetric = 'conversion';
 function VendRankChart({ metric }) {
   const labels = {conversion:'Conversión (%)', clientes:'Nro. Clientes', real:'$ Ventas'};
   const sorted = [...HOME_RANK].sort((a,b)=>b[metric]-a[metric]);
-  const color  = metric==='conversion'?'#22c55e':metric==='clientes'?'#1d4ed8':'#7c3aed';
+  const color  = metric==='conversion'?'#ef4444':metric==='clientes'?'#1d4ed8':'#7c3aed';
   const fmt    = v => metric==='real' ? `$${Math.round(v/1000)}k` : metric==='conversion' ? `${v}%` : v;
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#22c55e',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{labels[metric]}: <span style={{fontWeight:700,color:'white'}}>{fmt(payload[0]?.value)}</span></div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#ef4444',marginBottom:4}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{labels[metric]}: <span style={{fontWeight:700,color:'white'}}>{fmt(payload[0]?.value)}</span></div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4744,7 +4744,7 @@ function VendRankChart({ metric }) {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false}/>
         <XAxis type="number" tick={{fontSize:10,fill:'#6b7a8d'}} axisLine={false} tickLine={false} tickFormatter={fmt}/>
         <YAxis type="category" dataKey="nombre" tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false} width={56}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey={metric} radius={[0,4,4,0]} fill={color} animationDuration={600}/>
       </BarChart>
     </ResponsiveContainer>
@@ -4767,9 +4767,9 @@ const PROMO_IMPACT_DATA = [
   [{period:'S-4',v:62,p:false},{period:'S-3',v:70,p:false},{period:'S-2',v:68,p:false},{period:'S-1',v:75,p:false},{period:'P1',v:148,p:true},{period:'P2',v:162,p:true},{period:'P3',v:155,p:true},{period:'S+1',v:88,p:false},{period:'S+2',v:82,p:false}],
 ];
 const PROMO_DONUT_DATA = [
-  [{name:'Astarita SH',value:35,color:'#22c55e'},{name:'Mauro Heikele',value:25,color:'#1d4ed8'},{name:'Carpintería J.',value:20,color:'#7c3aed'},{name:'Fema Gastro.',value:12,color:'#ea580c'},{name:'Otros',value:8,color:'#9ca3af'}],
-  [{name:'JPS Grupo',value:40,color:'#22c55e'},{name:'Estudio Mod.',value:30,color:'#1d4ed8'},{name:'Astarita SH',value:18,color:'#7c3aed'},{name:'Otros',value:12,color:'#9ca3af'}],
-  [{name:'Fema Gastro.',value:45,color:'#22c55e'},{name:'Mauro Heikele',value:28,color:'#1d4ed8'},{name:'Otros',value:27,color:'#9ca3af'}],
+  [{name:'Astarita SH',value:35,color:'#ef4444'},{name:'Mauro Heikele',value:25,color:'#1d4ed8'},{name:'Carpintería J.',value:20,color:'#7c3aed'},{name:'Fema Gastro.',value:12,color:'#ea580c'},{name:'Otros',value:8,color:'#9ca3af'}],
+  [{name:'JPS Grupo',value:40,color:'#ef4444'},{name:'Estudio Mod.',value:30,color:'#1d4ed8'},{name:'Astarita SH',value:18,color:'#7c3aed'},{name:'Otros',value:12,color:'#9ca3af'}],
+  [{name:'Fema Gastro.',value:45,color:'#ef4444'},{name:'Mauro Heikele',value:28,color:'#1d4ed8'},{name:'Otros',value:27,color:'#9ca3af'}],
 ];
 window._currentPromoIdx = 0;
 
@@ -4778,7 +4778,7 @@ function PromoImpactChart({ idx }) {
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     const d = data.find(x=>x.period===label);
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#22c55e',marginBottom:4}}>{label}{d?.p?' (Promo)':''}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} unidades</div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#ef4444',marginBottom:4}}>{label}{d?.p?' (Promo)':''}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} unidades</div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4786,9 +4786,9 @@ function PromoImpactChart({ idx }) {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" vertical={false}/>
         <XAxis dataKey="period" tick={{fontSize:10,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
         <YAxis tick={{fontSize:11,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey="v" radius={[4,4,0,0]} animationDuration={600}>
-          {data.map((d,i)=><Cell key={i} fill={d.p?'#22c55e':'#94a3b8'}/>)}
+          {data.map((d,i)=><Cell key={i} fill={d.p?'#ef4444':'#94a3b8'}/>)}
         </Bar>
       </BarChart>
     </ResponsiveContainer>
@@ -4826,14 +4826,14 @@ window.mountPromoCharts = function(idx) {
    PRODUCTOS CHARTS
 ══════════════════════════════════════════════════════ */
 const PROD_TOP_DATA = [
-  {name:'Cuchillos CAR22',   unidades:850, fill:'#22c55e'},
+  {name:'Cuchillos CAR22',   unidades:850, fill:'#ef4444'},
   {name:'Cintas Industrial', unidades:680, fill:'#ea580c'},
   {name:'Chairas CAR467',    unidades:420, fill:'#7c3aed'},
   {name:'Embalaje B35',      unidades:380, fill:'#ca8a04'},
   {name:'Embutidora ENV-99', unidades:24,  fill:'#1d4ed8'},
 ];
 const PROD_FAMILY_DATA = [
-  {name:'Cuchillería',  value:38, color:'#22c55e'},
+  {name:'Cuchillería',  value:38, color:'#ef4444'},
   {name:'Insumos',      value:25, color:'#ea580c'},
   {name:'Herramientas', value:17, color:'#7c3aed'},
   {name:'Embalaje',     value:12, color:'#ca8a04'},
@@ -4845,7 +4845,7 @@ function ProdTopChart() {
   const sorted = [...PROD_TOP_DATA].sort((a,b)=>b.unidades-a.unidades);
   const CustomTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
-    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#22c55e',marginBottom:4,maxWidth:150,whiteSpace:'normal'}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} uds./mes</div></div>;
+    return <div style={TIP_STYLE}><div style={{fontWeight:700,color:'#ef4444',marginBottom:4,maxWidth:150,whiteSpace:'normal'}}>{label}</div><div style={{color:'rgba(255,255,255,0.75)',fontSize:12}}>{payload[0]?.value} uds./mes</div></div>;
   };
   return (
     <ResponsiveContainer width="100%" height="100%">
@@ -4853,7 +4853,7 @@ function ProdTopChart() {
         <CartesianGrid strokeDasharray="3 3" stroke="#e2e8f0" horizontal={false}/>
         <XAxis type="number" tick={{fontSize:10,fill:'#6b7a8d'}} axisLine={false} tickLine={false}/>
         <YAxis type="category" dataKey="name" tick={{fontSize:10.5,fill:'#6b7a8d'}} axisLine={false} tickLine={false} width={96}/>
-        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(34,197,94,0.06)'}}/>
+        <Tooltip content={<CustomTooltip/>} cursor={{fill:'rgba(239,68,68,0.06)'}}/>
         <Bar dataKey="unidades" radius={[0,4,4,0]} animationDuration={600}>
           {sorted.map((d,i)=><Cell key={i} fill={d.fill}/>)}
         </Bar>
@@ -4892,7 +4892,7 @@ window.mountProdCharts = function(period) {
 
 /* ── Cliente Profile Charts ── */
 
-const CLI_FAM_COLORS = { 'Cuchillería':'#22c55e', 'Maquinaria':'#1d4ed8', 'Herramientas':'#7c3aed', 'Insumos':'#ea580c' };
+const CLI_FAM_COLORS = { 'Cuchillería':'#ef4444', 'Maquinaria':'#1d4ed8', 'Herramientas':'#7c3aed', 'Insumos':'#ea580c' };
 const CLI_ALL_MONTHS = ['May','Jun','Jul','Ago','Sep','Oct','Nov','Dic','Ene','Feb','Mar','Abr'];
 const CLI_ALL_SERIES = {
   'Cuchillería':  [72,65,78,82,75,80,95,72,88,91,80,85],
@@ -4902,10 +4902,10 @@ const CLI_ALL_SERIES = {
 };
 const CLI_PERIOD_COUNT = { '1M':1,'3M':3,'6M':7,'12M':12,'Hist.':12 };
 const CLI_PIE_DATA = [
-  { name:'Cuchillería',  value:45, color:'#22c55e', est:'$152.400' },
-  { name:'Insumos',      value:28, color:'#006c49', est:'$94.800'  },
-  { name:'Herramientas', value:18, color:'#a7f3d0', est:'$60.900'  },
-  { name:'Maquinaria',   value:9,  color:'#064e3b', est:'$30.450'  },
+  { name:'Cuchillería',  value:45, color:'#ef4444', est:'$152.400' },
+  { name:'Insumos',      value:28, color:'#991b1b', est:'$94.800'  },
+  { name:'Herramientas', value:18, color:'#fecaca', est:'$60.900'  },
+  { name:'Maquinaria',   value:9,  color:'#7f1d1d', est:'$30.450'  },
 ];
 const CLI_HIST_ALL = [
   { fecha:'15/03/2026', familia:'Cuchillería',  producto:'Cuchillos CAR22',   sku:'CAR22',  cant:80,  importe:'$11.360' },
@@ -4942,7 +4942,7 @@ function EvolucionChart() {
   const LineTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-      <div style={{background:'white',border:'1px solid #a7f3d0',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
+      <div style={{background:'white',border:'1px solid #fecaca',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
         <div style={{fontWeight:700,marginBottom:5,color:'#191c1e'}}>{label}</div>
         {payload.map(p => (
           <div key={p.dataKey} style={{display:'flex',alignItems:'center',gap:6,marginTop:2}}>
@@ -5003,7 +5003,7 @@ function MixChart() {
     if (!active || !payload?.[0]) return null;
     const d = payload[0].payload;
     return (
-      <div style={{background:'white',border:'1px solid #a7f3d0',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
+      <div style={{background:'white',border:'1px solid #fecaca',borderRadius:10,padding:'9px 13px',fontSize:12,boxShadow:'0 4px 16px rgba(0,0,0,.10)'}}>
         <div style={{fontWeight:700,color:'#191c1e',marginBottom:3}}>{d.name}</div>
         <div style={{color:'#6b7a8d'}}>{d.value}%</div>
         <div style={{color:'#6b7a8d',marginTop:2}}>Est. {d.est}</div>
