@@ -44,6 +44,13 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);over
 .sb-role.vendedor{background:rgba(255,255,255,.08);color:rgba(255,255,255,.55)}
 .btn-logout{display:flex;align-items:center;gap:8px;padding:8px 16px;margin:4px 10px 0;border-radius:8px;border:none;background:none;cursor:pointer;color:rgba(255,255,255,.35);font-family:'DM Sans',sans-serif;font-size:13px;width:calc(100% - 20px);text-align:left;transition:background .15s,color .15s}
 .btn-logout:hover{background:rgba(234,88,12,.12);color:var(--alert)}
+/* ── Palette switcher ── */
+.palette-wrap{padding:8px 16px 4px}
+.palette-label{font-size:9.5px;font-weight:600;color:rgba(255,255,255,.25);letter-spacing:1.8px;text-transform:uppercase;margin-bottom:8px}
+.palette-dots{display:flex;gap:7px;flex-wrap:wrap}
+.pdot{width:20px;height:20px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:transform .15s,border-color .15s;flex-shrink:0}
+.pdot:hover{transform:scale(1.2)}
+.pdot.active{border-color:white;transform:scale(1.15)}
 
 /* ═══ MAIN + TOPBAR ═══════════════════════════════════ */
 .main-col{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0}
@@ -1126,6 +1133,11 @@ tbody tr.expanded-prod{background:var(--surface)}
     </button>
   </nav>
   <div class="sb-bottom">
+    <div class="sb-div"></div>
+    <div class="palette-wrap">
+      <div class="palette-label">Tema</div>
+      <div class="palette-dots" id="paletteDots"></div>
+    </div>
     <div class="sb-div"></div>
     <div class="sb-user">
       <div class="sb-av" id="sbAv">LA</div>
@@ -2569,6 +2581,53 @@ function applyLogin(role, name) {
   ls.classList.add('fade-out');
   setTimeout(() => { ls.style.display = 'none'; navigate('home'); }, 500);
 }
+/* ══════════════════════════════════════════════════════════
+   PALETTE SWITCHER
+══════════════════════════════════════════════════════════ */
+const PALETTES = [
+  { id:'verde',   label:'Verde',   accent:'#22c55e', deep:'#022c22', mid:'#006c49', sage:'#dcfce7' },
+  { id:'rojo',    label:'Rojo',    accent:'#ef4444', deep:'#450a0a', mid:'#991b1b', sage:'#fee2e2' },
+  { id:'azul',    label:'Azul',    accent:'#3b82f6', deep:'#0c1a3a', mid:'#1e40af', sage:'#dbeafe' },
+  { id:'violeta', label:'Violeta', accent:'#a855f7', deep:'#2e1065', mid:'#6d28d9', sage:'#ede9fe' },
+  { id:'naranja', label:'Naranja', accent:'#f97316', deep:'#431407', mid:'#c2410c', sage:'#ffedd5' },
+  { id:'slate',   label:'Slate',   accent:'#64748b', deep:'#0f172a', mid:'#334155', sage:'#f1f5f9' },
+];
+let activePalette = 'rojo';
+
+function applyPalette(id) {
+  const p = PALETTES.find(x => x.id === id);
+  if (!p) return;
+  activePalette = id;
+  const r = document.documentElement.style;
+  r.setProperty('--deep',   p.deep);
+  r.setProperty('--mid',    p.mid);
+  r.setProperty('--accent', p.accent);
+  r.setProperty('--sage',   p.sage);
+  document.querySelectorAll('.pdot').forEach(d => d.classList.toggle('active', d.dataset.id === id));
+  try { localStorage.setItem('verkai_palette', id); } catch(e){}
+}
+
+function initPaletteDots() {
+  const wrap = document.getElementById('paletteDots');
+  if (!wrap) return;
+  PALETTES.forEach(p => {
+    const d = document.createElement('button');
+    d.className = 'pdot' + (p.id === activePalette ? ' active' : '');
+    d.dataset.id = p.id;
+    d.title = p.label;
+    d.style.background = p.accent;
+    d.onclick = () => applyPalette(p.id);
+    wrap.appendChild(d);
+  });
+  // restore saved palette
+  try {
+    const saved = localStorage.getItem('verkai_palette');
+    if (saved && PALETTES.find(x => x.id === saved)) applyPalette(saved);
+  } catch(e){}
+}
+
+document.addEventListener('DOMContentLoaded', initPaletteDots);
+
 function doLogout() {
   showConfirm('¿Cerrar sesión?', 'Serás redirigido al login.', () => {
     const ls = document.getElementById('loginScreen');
